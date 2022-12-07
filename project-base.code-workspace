@@ -1,0 +1,57 @@
+{
+	"folders": [
+		{
+			"path": "../project-base"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.ejs": "html",
+			"render_cpu.c": "cpp",
+			"render.c": "cpp",
+			"interface.c": "cpp",
+			"iosfwd": "c",
+			"sdl.h": "c",
+			"*.rc": "c",
+			"cjson.c": "cpp",
+			"cmath": "c",
+			"mono.c": "cpp",
+			"xutility": "c",
+			"initializer_list": "c",
+			"type_traits": "c",
+			"*.rh": "c",
+			"algorithm": "c",
+			"limits": "c",
+			"popup_window.h": "c",
+			"wingdi.h": "c",
+			"info_png.h": "c",
+			"project_base.h": "c",
+			"cstdlib": "c",
+			"array": "cpp",
+			"deque": "cpp",
+			"fstream": "cpp",
+			"iterator": "cpp",
+			"list": "cpp",
+			"memory": "cpp",
+			"sstream": "cpp",
+			"system_error": "cpp",
+			"utility": "cpp",
+			"vector": "cpp",
+			"xhash": "cpp",
+			"xlocale": "cpp",
+			"xlocnum": "cpp",
+			"xmemory": "cpp",
+			"xstring": "cpp",
+			"atomic": "cpp",
+			"*.tcc": "cpp",
+			"string": "cpp",
+			"string_view": "cpp",
+			"objects.h": "c",
+			"map.h": "c",
+			"zombies.h": "c"
+		}
+	}
+}
