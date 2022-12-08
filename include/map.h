@@ -31,7 +31,7 @@ typedef struct t_map_info {
 	int tile_width;
 	int tile_height;
 	int px_raised_per_h;
-	int px_incline;
+	float px_incline;
 } map_info;
 
 // data data that is stored on disk

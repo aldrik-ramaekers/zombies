@@ -5,17 +5,8 @@
 
 #include "map.h"
 #include "objects.h"
-
-typedef struct t_bullet {
-	bool active;
-	vec3f position;
-	float endx;
-	float endy;
-	float alive_time;
-} bullet;
-
-bullet bullets[500] = {0};
-int max_bullets = 500;
+#include "zombies.h"
+#include "math_helper.h"
 
 float sec_since_last_shot = 10.0f;
 float playerx = 3;

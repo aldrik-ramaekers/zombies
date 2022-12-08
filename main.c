@@ -4,11 +4,15 @@
 #include "include/objects.h"
 #include "include/map.h"
 #include "include/zombies.h"
+#include "include/math_helper.h"
+#include "include/bullets.h"
 
 #include "map.c"
 #include "players.c"
 #include "objects.c"
 #include "zombies.c"
+#include "bullets.c"
+#include "math_helper.c"
 
 #define CONFIG_DIRECTORY "zombieshooter"
 
@@ -17,7 +21,6 @@ void update_func(platform_window* window) {
 
 	draw_grid(window);
 	draw_spawners(window);
-	draw_bullets(window);
 }
 
 void resize_func(platform_window* window, u32 change_x,u32 change_y) {

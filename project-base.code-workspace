@@ -51,7 +51,9 @@
 			"string_view": "cpp",
 			"objects.h": "c",
 			"map.h": "c",
-			"zombies.h": "c"
+			"zombies.h": "c",
+			"math.h": "c",
+			"math_helper.h": "c"
 		}
 	}
 }

@@ -1,6 +1,8 @@
 #include "include/zombies.h"
 
 void spawn_zombie(int x, int y) {
+	return;
+
 	for (int i = 0; i < max_zombies; i++) {
 		zombie o = zombies[i];
 		if (o.alive) continue;
@@ -62,7 +64,7 @@ void draw_zombies_at_tile(platform_window* window, int x, int y) {
 		zombies[i].position.y += diry*speed;
 		zombies[i].position.z = height;
 
-		box box = get_box_of_square(window, (vec3f){o.position.x, o.position.y, height}, o.size);
+		box box = get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, height}, o.size);
 		render_quad_with_outline(box.tl_b, box.tr_b, box.bl_b, box.br_b);
 		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u);
 		render_quad_with_outline(box.tl_u, box.tl_b, box.bl_u, box.bl_b);
