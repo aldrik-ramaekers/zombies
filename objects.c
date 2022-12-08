@@ -1,20 +1,24 @@
 #include "include/objects.h"
 
-box get_box_of_object(platform_window* window, object o) {
+box get_box_of_square(platform_window* window, vec3f position, vec3f size) {
 	map_info info = get_map_info(window);
-	float render_x = (info.tile_width * o.position.x) + (info.px_incline * o.position.y);
-	vec2f rendertl = (vec2f){render_x, info.tile_width * o.position.y - o.h*info.px_raised_per_h};
-	vec2f rendertr = (vec2f){render_x + info.tile_width, info.tile_height * o.position.y - o.h*info.px_raised_per_h};
-	vec2f renderbr = (vec2f){render_x + info.px_incline+info.tile_width, info.tile_height * o.position.y + info.tile_height - o.h*info.px_raised_per_h};
-	vec2f renderbl = (vec2f){render_x + info.px_incline, info.tile_height * o.position.y + info.tile_height - o.h*info.px_raised_per_h};
+	float render_x = (info.tile_width * position.x) + (info.px_incline * position.y);
+	vec2f rendertl = (vec2f){render_x, info.tile_width * position.y - position.z*info.px_raised_per_h};
+	vec2f rendertr = (vec2f){render_x + info.tile_width*size.x, info.tile_height * position.y - position.z*info.px_raised_per_h};
+	vec2f renderbr = (vec2f){render_x + (info.px_incline+info.tile_width)*size.x, info.tile_height * position.y + info.tile_height*size.y - position.z*info.px_raised_per_h};
+	vec2f renderbl = (vec2f){render_x + info.px_incline*size.x, info.tile_height * position.y + info.tile_height*size.y - position.z*info.px_raised_per_h};
 
-	o.h += o.size.z;
-	vec2f rendertl2 = (vec2f){render_x, info.tile_width * o.position.y - o.h*info.px_raised_per_h};
-	vec2f rendertr2 = (vec2f){render_x + info.tile_width, info.tile_height * o.position.y - o.h*info.px_raised_per_h};
-	vec2f renderbr2 = (vec2f){render_x + info.px_incline+info.tile_width, info.tile_height * o.position.y + info.tile_height - o.h*info.px_raised_per_h};
-	vec2f renderbl2 = (vec2f){render_x + info.px_incline, info.tile_height * o.position.y + info.tile_height - o.h*info.px_raised_per_h};
+	position.z += size.z;
+	vec2f rendertl2 = (vec2f){render_x, info.tile_width * position.y - position.z*info.px_raised_per_h};
+	vec2f rendertr2 = (vec2f){render_x + info.tile_width*size.x, info.tile_height * position.y - position.z*info.px_raised_per_h};
+	vec2f renderbr2 = (vec2f){render_x + (info.px_incline+info.tile_width)*size.x, info.tile_height * position.y + info.tile_height*size.y - position.z*info.px_raised_per_h};
+	vec2f renderbl2 = (vec2f){render_x + info.px_incline*size.x, info.tile_height * position.y + info.tile_height*size.y - position.z*info.px_raised_per_h};
 
 	return (box){rendertl, rendertr, renderbl, renderbr, rendertl2, rendertr2, renderbl2, renderbr2};
+}
+
+box get_box_of_object(platform_window* window, object o) {
+	return get_box_of_square(window, (vec3f){o.position.x, o.position.y, o.h}, o.size);
 }
 
 void render_quad_with_outline(vec2f tl, vec2f tr, vec2f bl, vec2f br) {
@@ -45,9 +49,9 @@ void draw_objects_at_row(platform_window* window, int row) {
 
 	bool did_player_draw = false;
 	int x_of_player = playerx;
-	int y_of_player = playery;
+	int y_of_player = ceil(playery);
 
-	for (int i = 10; i >= 0; i--) {
+	for (int i = MAP_SIZE_X-1; i >= 0; i--) {
 		object o = get_object_at_tile(i, row);
 		
 		if (row == y_of_player && x_of_player == i) {

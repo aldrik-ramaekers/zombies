@@ -95,8 +95,8 @@ static int get_height_of_tile_tr(int current_height, int x, int y) {
 
 // load hardcoded map.
 void load_map_from_data() {
-	for (int y = 0; y < 10; y++) {
-		for (int x = 9; x >= 0; x--) {
+	for (int y = 0; y < MAP_SIZE_Y; y++) {
+		for (int x = MAP_SIZE_X-1; x >= 0; x--) {
 			int h = map[y][x];
 			int highest_point_topleft = get_height_of_tile_tl(h, x, y);
 			int highest_point_topright = get_height_of_tile_tr(h, x, y);
@@ -156,15 +156,14 @@ bool is_in_bounds(platform_window* window, float x, float y) {
 	int tile_width = get_tile_width(window);
 	int tile_height = get_tile_height(window);
 	int xdiff_between_bottom_and_top = tile_width/3;
-	return (x >= 0 && x <= 10 && y >= 0 && y < 10);
+	return (x >= 0 && x <= MAP_SIZE_X && y >= 0 && y < MAP_SIZE_Y);
 }
-
 
 void draw_grid(platform_window* window) {
 	map_info info = get_map_info(window);
 
-	for (int y = 0; y < 10; y++) {
-		for (int x = 9; x >= 0; x--) {
+	for (int y = 0; y < MAP_SIZE_Y; y++) {
+		for (int x = MAP_SIZE_X-1; x >= 0; x--) {
 			tile tile = map_loaded[y][x];
 
 			int xdiff_between_bottom_and_top = info.tile_width/3;

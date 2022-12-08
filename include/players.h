@@ -8,16 +8,16 @@
 
 typedef struct t_bullet {
 	bool active;
-	float x;
-	float y;
-	float h;
-	float xacceleration;
-	float yacceleration;
+	vec3f position;
+	float endx;
+	float endy;
+	float alive_time;
 } bullet;
 
 bullet bullets[500] = {0};
 int max_bullets = 500;
 
+float sec_since_last_shot = 10.0f;
 float playerx = 3;
 float playery = 3;
 
