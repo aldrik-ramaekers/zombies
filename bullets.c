@@ -26,7 +26,7 @@ void shoot(platform_window* window) {
 	}
 }
 
-bool check_if_bullet_collided_with_section(bullet* b, float* dist_of_closest_intersect, vec2f bstart, vec2f bend, vec2f l1, vec2f l2) {
+bool check_if_bullet_collided_with_section(float* dist_of_closest_intersect, vec2f bstart, vec2f bend, vec2f l1, vec2f l2, vec2f* intersect_point_buf) {
 	if (lines_intersect(bstart, bend, l1, l2)) {
 		vec2f intersect_point = get_intersection_point(bstart, bend, l1, l2);
 
@@ -38,9 +38,7 @@ bool check_if_bullet_collided_with_section(bullet* b, float* dist_of_closest_int
 			return false;
 		}
 		*dist_of_closest_intersect = length_of_shot;
-		
-		b->endy = intersect_point.y;
-		b->endx = intersect_point.x;
+		*intersect_point_buf = intersect_point;
 		return true;
 	}
 	return false;
@@ -61,17 +59,23 @@ bool check_if_bullet_collided_with_object(bullet* b, platform_window* window) {
 		if (!o.active) continue;
 		if (b->position.z <= o.h + o.size.z && b->position.z >= o.h) {
 			box obj_box = get_box_of_square(window, (vec3f){o.position.x, o.position.y, o.h}, o.size);
-			if (check_if_bullet_collided_with_section(b, &dist_of_closest_intersect, bstart, bend, obj_box.bl_b, obj_box.br_b)) {
+			vec2f intersect_point;
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.bl_b, obj_box.br_b, &intersect_point)) {
 				result = true;
 			}
-			if (check_if_bullet_collided_with_section(b, &dist_of_closest_intersect, bstart, bend, obj_box.tl_b, obj_box.tr_b)) {
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_b, obj_box.tr_b, &intersect_point)) {
 				result = true;
 			}
-			if (check_if_bullet_collided_with_section(b, &dist_of_closest_intersect, bstart, bend, obj_box.tl_b, obj_box.bl_b)) {
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_b, obj_box.bl_b, &intersect_point)) {
 				result = true;
 			}
-			if (check_if_bullet_collided_with_section(b, &dist_of_closest_intersect, bstart, bend, obj_box.tr_b, obj_box.br_b)) {
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tr_b, obj_box.br_b, &intersect_point)) {
 				result = true;
+			}
+
+			if (result) {
+				b->endy = intersect_point.y;
+				b->endx = intersect_point.x;
 			}
 		}
 	}
@@ -83,6 +87,10 @@ bool check_if_bullet_collided_with_zombie(bullet b, platform_window* window, boo
 	map_info info = get_map_info(window);
 	float size = get_bullet_size_in_tile(window);
 
+	bool result = false;
+	float dist_of_closest_intersect = __FLT_MAX__;
+	int index_of_closest_zombie = -1;
+	
 	for (int i = 0; i < max_zombies; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
@@ -91,20 +99,38 @@ bool check_if_bullet_collided_with_zombie(bullet b, platform_window* window, boo
 		vec2f bend = (vec2f){b.endx, b.endy};
 
 		if (b.position.z <= o.position.z + o.size.z && b.position.z >= o.position.z) {
-			if (lines_intersect(bstart, bend, (vec2f){o.position.x, o.position.y+o.size.y}, (vec2f){o.position.x+o.size.x, o.position.y+o.size.y}) || // bottom
-				lines_intersect(bstart, bend, (vec2f){o.position.x, o.position.y}, (vec2f){o.position.x+o.size.x, o.position.y}) || // top
-				lines_intersect(bstart, bend, (vec2f){o.position.x, o.position.y}, (vec2f){o.position.x, o.position.y+o.size.y}) || // left
-				lines_intersect(bstart, bend, (vec2f){o.position.x+o.size.x, o.position.y}, (vec2f){o.position.x+o.size.x, o.position.y+o.size.y})) // right
-			{
-				if (kill_if_collided) {
-					zombies[i].alive = false;
-				}
-				return true;
-			}		
+			vec2f intersect_point;
+			box obj_box = get_box_of_square(window, (vec3f){o.position.x, o.position.y, o.position.z}, o.size);
+			bool this_zombie_collided = false;
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.bl_b, obj_box.br_b, &intersect_point)) {
+				this_zombie_collided = true;
+				index_of_closest_zombie = i;
+			}
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_b, obj_box.tr_b, &intersect_point)) {
+				this_zombie_collided = true;
+				index_of_closest_zombie = i;
+			}
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_b, obj_box.bl_b, &intersect_point)) {
+				this_zombie_collided = true;
+				index_of_closest_zombie = i;
+			}
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tr_b, obj_box.br_b, &intersect_point)) {
+				this_zombie_collided = true;
+				index_of_closest_zombie = i;
+			}
+
+			if (this_zombie_collided) {
+				result = true;
+			}
 		}
 	}
 
-	return false;
+	if (kill_if_collided && result) {
+		zombies[index_of_closest_zombie].alive = false;
+		return result;
+	}
+
+	return result;
 }
 
 void draw_bullets(platform_window* window) {
@@ -131,6 +157,7 @@ void draw_bullets(platform_window* window) {
 		if (check_if_bullet_collided_with_object(&b, window)) {
 			bullets[i].endy = b.endy;
 			bullets[i].endx = b.endx;
+			b = bullets[i];
 		}
 		
 		if (check_if_bullet_collided_with_zombie(b, window, true)) {

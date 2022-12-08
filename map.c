@@ -245,7 +245,7 @@ inline map_info get_map_info(platform_window* window) {
 	map_info info;
 	info.tile_width = get_tile_width(window);
 	info.tile_height = get_tile_height(window);
-	info.px_incline = info.tile_width/3;
+	info.px_incline = info.tile_width/3; // info.tile_width/3;
 	info.px_raised_per_h = info.tile_height/2.5;
 	return info;
 }

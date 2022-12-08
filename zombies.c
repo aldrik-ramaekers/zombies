@@ -1,8 +1,6 @@
 #include "include/zombies.h"
 
 void spawn_zombie(int x, int y) {
-	return;
-
 	for (int i = 0; i < max_zombies; i++) {
 		zombie o = zombies[i];
 		if (o.alive) continue;
