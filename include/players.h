@@ -11,6 +11,9 @@
 float sec_since_last_shot = 10.0f;
 float playerx = 3;
 float playery = 3;
+float gunx = 0.0f;
+float guny = 0.0f;
+float gun_height = 0.0f;
 
 void shoot(platform_window* window);
 void draw_player(platform_window* window);

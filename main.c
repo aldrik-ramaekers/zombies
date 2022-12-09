@@ -37,6 +37,7 @@ int main(int argc, char **argv)
 
     platform_window *window = platform_open_window_ex("Zombies!", 700, 700, 1200, 1000, 500, 500, FLAGS_MINIMIZE, update_func, resize_func, close_func, 0, 0);
 	settings_set_number("USE_GPU", 1);
+	platform_toggle_vsync(window, true);
 	
 	//fnt = assets_load_font(mono_ttf, mono_ttf+mono_ttf_len, 16);
 	load_map_from_data();

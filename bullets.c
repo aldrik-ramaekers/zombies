@@ -12,8 +12,12 @@ void shoot(platform_window* window) {
 	dirx /= length;
 	diry /= length;
 
-	float bulletx = playerx + (get_player_size_in_tile()/2);
-	float bullety = playery + (get_player_size_in_tile()/2);
+	#define SPRAY_BOUNDS (0.1f)
+	dirx += ((float)rand()/(float)(RAND_MAX/SPRAY_BOUNDS)-(SPRAY_BOUNDS/2));
+	diry += ((float)rand()/(float)(RAND_MAX/SPRAY_BOUNDS)-(SPRAY_BOUNDS/2));
+
+	float bulletx = gunx;
+	float bullety = guny;
 	float bullet_end_point_x = bulletx+dirx*bullet_range;
 	float bullet_end_point_y = bullety+diry*bullet_range;
 
@@ -163,8 +167,13 @@ void draw_bullets(platform_window* window) {
 	map_info info = get_map_info(window);
 
 	for (int i = 0; i < max_bullets; i++) {
+		bullets[i].position.x = gunx;
+		bullets[i].position.y = guny;
+		bullets[i].position.z = gun_height;
 		bullet b = bullets[i];
 		if (!b.active) continue;
+
+		
 		
 		if (check_if_bullet_collided_with_ground(&b, window)) {
 			bullets[i].endy = b.endy;

@@ -90,9 +90,11 @@ void draw_player(platform_window* window) {
 	take_player_input(window);
 
 	sec_since_last_shot += update_delta;
+	float bullets_per_sec = 10;
+	float time_between_bullets = 1.0f/bullets_per_sec;
 	if (is_left_down()) {
-		if (sec_since_last_shot > 0.1f) {
-			shoot(window);
+		if (sec_since_last_shot > time_between_bullets) {
+			for (int i = 0; i < 3; i++) shoot(window);
 			sec_since_last_shot = 0.0f;
 		}
 	}
@@ -100,6 +102,20 @@ void draw_player(platform_window* window) {
 	float player_render_x = playerx*info.tile_width + (playery*info.px_incline);
 	float player_render_y = playery*info.tile_height - (height*info.px_raised_per_h);
 	renderer->render_rectangle(player_render_x, player_render_y, size, size, rgb(200,150,120));
+
+	float dirx = (_global_mouse.x - (window->width/2));
+	float diry = (_global_mouse.y - (window->height/2));
+	double length = sqrt(dirx * dirx + diry * diry);
+	dirx /= length;
+	diry /= length;
+
+	gunx = playerx + (get_player_size_in_tile()/2) + dirx/2;
+	guny = playery + (get_player_size_in_tile()/2) + diry/2;
+	gun_height = height+0.5;
+	float gun_render_x = gunx*info.tile_width + (guny*info.px_incline);
+	float gun_render_y = guny*info.tile_height - (gun_height*info.px_raised_per_h);
+
+	renderer->render_rectangle(gun_render_x, gun_render_y, size/4, size/4, rgb(20,255,20));
 
 	_global_camera.x = -(window->width / 2) + player_render_x;
 	_global_camera.y = -(window->height / 2) + player_render_y;

@@ -32,7 +32,7 @@ void draw_objects_at_row(platform_window* window, int row) {
 
 	bool did_player_draw = false;
 	int x_of_player = playerx;
-	int y_of_player = ceil(playery);
+	int y_of_player = playery+get_player_size_in_tile();
 
 	for (int i = MAP_SIZE_X-1; i >= 0; i--) {
 		object o = get_object_at_tile(i, row);
