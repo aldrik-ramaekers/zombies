@@ -47,7 +47,7 @@ void take_player_input(platform_window* window) {
 
 	if (keyboard_is_key_down(KEY_W)) {
 		float newy = playery - speed;
-		if (is_in_bounds(window, playerx, newy)) {
+		if (is_in_bounds(playerx, newy)) {
 			playery = newy;
 			object o = check_if_player_collided_with_object(window);
 			if (o.active) playery = o.position.y+o.size.y - get_player_size_in_tile() + pad_between_player_and_obj;
@@ -56,7 +56,7 @@ void take_player_input(platform_window* window) {
 
 	if (keyboard_is_key_down(KEY_S)) {
 		float newy = playery + speed;
-		if (is_in_bounds(window, playerx, newy)) {
+		if (is_in_bounds(playerx, newy)) {
 			playery = newy;
 			object o = check_if_player_collided_with_object(window);
 			if (o.active) playery = o.position.y - get_player_size_in_tile() - pad_between_player_and_obj;
@@ -65,7 +65,7 @@ void take_player_input(platform_window* window) {
 
 	if (keyboard_is_key_down(KEY_A)) {
 		float newx = playerx - speed;
-		if (is_in_bounds(window, newx, playery)) {
+		if (is_in_bounds(newx, playery)) {
 			playerx = newx;
 			object o = check_if_player_collided_with_object(window);
 			if (o.active) playerx = o.position.x+o.size.x + pad_between_player_and_obj;
@@ -74,7 +74,7 @@ void take_player_input(platform_window* window) {
 
 	if (keyboard_is_key_down(KEY_D)) {
 		float newx = playerx + speed;
-		if (is_in_bounds(window, newx, playery)) {
+		if (is_in_bounds(newx, playery)) {
 			playerx = newx;
 			object o = check_if_player_collided_with_object(window);
 			if (o.active) playerx = o.position.x-get_player_size_in_tile() - pad_between_player_and_obj;
@@ -91,7 +91,7 @@ void draw_player(platform_window* window) {
 
 	sec_since_last_shot += update_delta;
 	if (is_left_down()) {
-		if (sec_since_last_shot > 0.3f) {
+		if (sec_since_last_shot > 0.1f) {
 			shoot(window);
 			sec_since_last_shot = 0.0f;
 		}

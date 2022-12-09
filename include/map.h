@@ -62,7 +62,7 @@ tile get_tile_under_coords(platform_window* window, float x, float y);
 float get_height_of_tile_under_coords(platform_window* window, float tocheckx, float tochecky);
 int get_tile_height(platform_window* window);
 int get_tile_width(platform_window* window);
-bool is_in_bounds(platform_window* window, float x, float y);
+bool is_in_bounds(float x, float y);
 void draw_grid(platform_window* window);
 map_info get_map_info(platform_window* window);
 

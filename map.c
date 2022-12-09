@@ -152,15 +152,18 @@ inline int get_tile_height(platform_window* window) {
 	return tile_height;
 }
 
-bool is_in_bounds(platform_window* window, float x, float y) {
-	int tile_width = get_tile_width(window);
-	int tile_height = get_tile_height(window);
-	map_info info = get_map_info(window);
-	int xdiff_between_bottom_and_top = info.px_incline;
+bool is_in_bounds(float x, float y) {
 	return (x >= 0 && x <= MAP_SIZE_X && y >= 0 && y < MAP_SIZE_Y);
 }
 
+static float offset = 0.0f;
+static bool dir = true;
 void draw_grid(platform_window* window) {
+	/*if (dir) offset += 0.005f;
+	else offset -= 0.005f;
+	if (offset >= 0.5f) dir = false;
+	if (offset <= -0.5f) dir = true;*/
+
 	map_info info = get_map_info(window);
 
 	for (int y = 0; y < MAP_SIZE_Y; y++) {
@@ -168,9 +171,9 @@ void draw_grid(platform_window* window) {
 		for (int x = MAP_SIZE_X-1; x >= 0; x--) {
 			tile tile = map_loaded[y][x];
 
-			int xdiff_between_bottom_and_top = info.px_incline;
-			int render_x =  (info.tile_width * x) + (xdiff_between_bottom_and_top * y);
-			int render_y = info.tile_height * y;
+			float xdiff_between_bottom_and_top = info.px_incline;
+			float render_x =  (info.tile_width * x) + (xdiff_between_bottom_and_top * y);
+			float render_y = info.tile_height * y;
 			render_y -= tile.height*info.px_raised_per_h;
 
 			vec2f topleft;
@@ -233,19 +236,10 @@ void draw_grid(platform_window* window) {
 }
 
 inline map_info get_map_info(platform_window* window) {
-	/*
-	static float offset = 0.0f;
-	static bool dir = true;
-	if (dir) offset += 0.00001f;
-	else offset -= 0.00001f;
-	if (offset >= 0.5f) dir = false;
-	if (offset <= -0.5f) dir = true;
-	*/
-
 	map_info info;
 	info.tile_width = get_tile_width(window);
 	info.tile_height = get_tile_height(window);
-	info.px_incline = info.tile_width/3; // info.tile_width/3;
+	info.px_incline = info.tile_width/3; // info.tile_width/3; // offset*info.tile_width;
 	info.px_raised_per_h = info.tile_height/2.5;
 	return info;
 }

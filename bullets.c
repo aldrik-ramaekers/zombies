@@ -133,6 +133,31 @@ bool check_if_bullet_collided_with_zombie(bullet b, platform_window* window, boo
 	return result;
 }
 
+static bool check_if_bullet_collided_with_ground(bullet *b, platform_window* window) {
+	map_info info = get_map_info(window);
+	float dirx = (b->endx - b->position.x);
+	float diry = (b->endy - b->position.y);
+	float length = sqrt(dirx * dirx + diry * diry);
+	dirx /= length;
+	diry /= length;
+	double nr_tiles_to_check = length*4; // check 4 points per tile.
+
+	for (int i = 1; i < nr_tiles_to_check; i++) {
+		float xtocheck = b->position.x + (dirx*i/4);
+		float ytocheck = b->position.y + (diry*i/4);
+		if (!is_in_bounds(xtocheck, ytocheck)) break;
+		tile tile = get_tile_under_coords(window, xtocheck, ytocheck);
+
+		float h = get_height_of_tile_under_coords(window, xtocheck, ytocheck);
+		if (b->position.z <= h) {
+			b->endx = xtocheck;
+			b->endy = ytocheck;
+			return true;
+		}
+	}
+	return false;
+} 
+
 void draw_bullets(platform_window* window) {
 	float size = get_bullet_size(window);
 	map_info info = get_map_info(window);
@@ -140,19 +165,12 @@ void draw_bullets(platform_window* window) {
 	for (int i = 0; i < max_bullets; i++) {
 		bullet b = bullets[i];
 		if (!b.active) continue;
-
-		/*
-		if (is_in_bounds(window, b.position.x, b.position.y)) {
-			tile t = get_tile_under_coords(window, b.position.x, b.position.y);
-
-			float h = get_height_of_tile_under_coords(window, bullets[i].position.x, bullets[i].position.y);
-			if (h >= b.position.z) {
-				bullets[i].active = false; // hit the ground.
-			}
+		
+		if (check_if_bullet_collided_with_ground(&b, window)) {
+			bullets[i].endy = b.endy;
+			bullets[i].endx = b.endx;
+			b = bullets[i];
 		}
-		else {
-			bullets[i].active = false;
-		}*/
 
 		if (check_if_bullet_collided_with_object(&b, window)) {
 			bullets[i].endy = b.endy;
@@ -165,7 +183,7 @@ void draw_bullets(platform_window* window) {
 		}
 
 		bullets[i].alive_time += update_delta;
-		if (bullets[i].alive_time > 0.03f) bullets[i].active = false;
+		bullets[i].active = false;
 
 		if (!b.active) continue;
 

@@ -20,6 +20,24 @@ int orientation(vec2f p, vec2f q, vec2f r)
     return (val > 0)? 1: 2; // clock or counterclock wise
 }
 
+vec2f get_dir_of_line(vec2f p1, vec2f p2) {
+	float dirx = (p1.x - p2.x);
+	float diry = (p1.y - p2.y);
+	double length = sqrt(dirx * dirx + diry * diry);
+	dirx /= length;
+	diry /= length;
+	return (vec2f){dirx, diry};
+}
+
+bool neg2(float p1, float p2) {
+	return p1 < 0.0f && p2 < 0.0f || abs(p1-p2) < 1.0f;
+}
+
+bool pos2(float p1, float p2) {
+	return (p1 >= 0.0f && p2 >= 0.0f) || abs(p1-p2) < 1.0f;
+}
+
+
 bool lines_intersect(vec2f p1, vec2f q1, vec2f p2, vec2f q2)
 {
     int o1 = orientation(p1, q1, p2);
@@ -28,8 +46,14 @@ bool lines_intersect(vec2f p1, vec2f q1, vec2f p2, vec2f q2)
     int o4 = orientation(p2, q2, q1);
   
     // General case
-    if (o1 != o2 && o3 != o4)
-        return true;
+    if (o1 != o2 && o3 != o4) {
+		vec2f bdir = get_dir_of_line(p1, q1);
+		vec2f pdir = get_dir_of_line(p1, p2);
+		if ((neg2(bdir.x, pdir.x) || pos2(bdir.x, pdir.x)) && (neg2(bdir.y, pdir.y) || pos2(bdir.y, pdir.y))) return true; // going down
+		//return true;
+
+		//return false;
+	}
   
     // Special Cases
     // p1, q1 and p2 are collinear and p2 lies on segment p1q1
