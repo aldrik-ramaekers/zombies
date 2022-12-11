@@ -17,6 +17,9 @@ bool can_walk_at(float x, float y)
 
 bool find_path_to(vec2f start_pos, vec2f end_pos, array *to_fill, pathfinding_request* request)
 {
+	uint64_t timestamp = platform_get_time(TIME_PROCESS, TIME_MS);
+	allocator al = create_allocator(500000);
+
 	struct path_node {
 		struct path_node *parent;
 		vec2f position;
@@ -25,10 +28,10 @@ bool find_path_to(vec2f start_pos, vec2f end_pos, array *to_fill, pathfinding_re
 		s32 f;
 	};
 	
-	list open_array = list_create(sizeof(struct path_node));
-	list closed_array = list_create(sizeof(struct path_node));
+	list open_array = list_create(sizeof(struct path_node), &al);
+	list closed_array = list_create(sizeof(struct path_node), &al);
 	
-	struct path_node *start_node = mem_alloc(sizeof(struct path_node));
+	struct path_node *start_node = allocator_alloc(&al, sizeof(struct path_node));
 	start_node->g = 0;
 	start_node->h = 0;
 	start_node->f = 0;
@@ -38,7 +41,7 @@ bool find_path_to(vec2f start_pos, vec2f end_pos, array *to_fill, pathfinding_re
 	list_push(&open_array, (uint8_t*)start_node);
 	
 	struct path_node *current_node = 0;
-	while(open_array.count > 0 && !request->cancelled)
+	while(open_array.count > 0)
 	{
 		// Get the current node
 		current_node = list_at(&open_array, 0);
@@ -63,6 +66,8 @@ bool find_path_to(vec2f start_pos, vec2f end_pos, array *to_fill, pathfinding_re
 		// Found the goal
 		if (distance_between(current_node->position, end_pos) <= 0)
 		{
+			mutex_lock(&request->mutex);
+
 			if (to_fill)
 				to_fill->length = 0;
 			struct path_node *current = current_node;
@@ -79,23 +84,25 @@ bool find_path_to(vec2f start_pos, vec2f end_pos, array *to_fill, pathfinding_re
 				
 				struct path_node *prev = current;
 				current = current->parent;
-				mem_free(prev);
 			}
 			
 			if (to_fill) {
 				array_remove_at(to_fill, to_fill->length-1);
-				request->done = true;
+				printf("PATHFINDING TOOK: %fms\n", (platform_get_time(TIME_PROCESS, TIME_MS)-timestamp)/1000.0f);
 			}
+			mutex_unlock(&request->mutex);
 
 			list_destroy(&open_array);
 			list_destroy(&closed_array);
-			
+
+			destroy_allocator(&al);
+
 			return true;
 		}
 		
 		vec2 adjecent[8] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1} };
 		
-		list children = list_create(sizeof(struct path_node));
+		list children = list_create(sizeof(struct path_node), &al);
 		
 		// Generate children
 		for (s32 i = 0; i < 8; i++)
@@ -133,7 +140,7 @@ bool find_path_to(vec2f start_pos, vec2f end_pos, array *to_fill, pathfinding_re
 			}
 			
 			// Create new node
-			struct path_node *new_node = mem_alloc(sizeof(struct path_node));
+			struct path_node *new_node = allocator_alloc(&al, sizeof(struct path_node));
 			new_node->g = 0;
 			new_node->h = 0;
 			new_node->f = 0;
@@ -204,7 +211,8 @@ bool find_path_to(vec2f start_pos, vec2f end_pos, array *to_fill, pathfinding_re
 		
 		list_remove_at(&open_array, current_index);
 	}
-	
+
+	destroy_allocator(&al);
 	return false;
 }
 
@@ -262,19 +270,13 @@ void* pathfinding_thread(void *args)
 {
 	while(1)
 	{
-		pathfinding_request request;
-		
 		mutex_lock(&global_pathfinding_queue.mutex);
 		if (global_pathfinding_queue.length)
 		{
 			pathfinding_request* request = *(pathfinding_request**)array_at(&global_pathfinding_queue, 0);
 			array_remove_at(&global_pathfinding_queue, 0);
 			mutex_unlock(&global_pathfinding_queue.mutex);
-
-			request->cancelled = false;
 			find_path_to(request->start, request->end, request->to_fill, request);
-			
-			continue;
 		}
 		else
 		{
@@ -282,7 +284,7 @@ void* pathfinding_thread(void *args)
 			continue;
 		}
 		
-		thread_sleep(100);
+		//thread_sleep(100);
 	}
 	
 	return 0;
@@ -290,19 +292,28 @@ void* pathfinding_thread(void *args)
 
 void make_pathfinding_request(vec2f start, vec2f end, array *to_fill, pathfinding_request *request)
 {
-	mutex_lock(&global_pathfinding_queue.mutex);
-
-	request->cancelled = true;
-
 	start.x = (int)start.x;
 	start.y = (int)start.y;
 	end.x = (int)end.x;
 	end.y = (int)end.y;
-	
+
+	mutex_lock(&global_pathfinding_queue.mutex);
+	for (int i = 0; i < global_pathfinding_queue.length; i++) {
+		pathfinding_request* ereq = *(pathfinding_request**)array_at(&global_pathfinding_queue, i);
+		if (request == ereq) {
+			ereq->start = start;
+			ereq->end = end;
+			ereq->timestamp = platform_get_time(TIME_PROCESS, TIME_MS);
+			mutex_unlock(&global_pathfinding_queue.mutex);
+			return;
+		}
+	}
+
 	request->start = start;
 	request->end = end;
 	request->to_fill = to_fill;
-	request->done = false;
+
+	request->timestamp = 0;
 	array_push(&global_pathfinding_queue, (uint8_t*)&request);
 	mutex_unlock(&global_pathfinding_queue.mutex);
 }

@@ -4,6 +4,8 @@
 
 #include <projectbase/project_base.h>
 
+#include "allocator.h"
+
 typedef struct t_list_item
 {
 	void *next;
@@ -15,10 +17,11 @@ typedef struct t_list
 	list_item *start;
 	u32 count;
 	u16 size;
+	allocator* al;
 } list;
 
 void list_destroy(list* list);
-list list_create(u16 size);
+list list_create(u16 size, allocator* al);
 list_item *list_push(list *list, void *data);
 void* list_at(list *list, u32 index);
 void list_remove_at(list *list, u32 index);
