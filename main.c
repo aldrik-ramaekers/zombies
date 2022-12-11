@@ -56,10 +56,13 @@ int main(int argc, char **argv)
 
 	pathfinding_init();
 
-	//networking_create_server();
-	
+	network_server *server = networking_create_server();
+
 	thread t = thread_start(pathfinding_thread, 0);
 	thread_detach(&t);
+
+	network_client *client = network_connect_to_server("127.0.0.1", "27015");
+	network_client_send(client, "Bing Bong");
 
     while(platform_keep_running(window)) {
         platform_handle_events();
@@ -68,6 +71,9 @@ int main(int argc, char **argv)
     settings_write_to_file();
     platform_destroy();
 	pathfinding_destroy();
+
+	network_client_close(client);
+	networking_destroy_server(server);
 
 	memory_print_leaks();
 
