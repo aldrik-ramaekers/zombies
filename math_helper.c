@@ -49,7 +49,8 @@ bool lines_intersect(vec2f p1, vec2f q1, vec2f p2, vec2f q2)
     if (o1 != o2 && o3 != o4) {
 		vec2f bdir = get_dir_of_line(p1, q1);
 		vec2f pdir = get_dir_of_line(p1, p2);
-		if ((neg2(bdir.x, pdir.x) || pos2(bdir.x, pdir.x)) && (neg2(bdir.y, pdir.y) || pos2(bdir.y, pdir.y))) return true; // going down
+		if (((p1.x <= p2.x && q1.x >= p2.x) || (p1.x >= p2.x && q1.x <= p2.x)) || ((p1.y <= p2.y && q1.y >= p2.y) || (p1.y >= p2.y && q1.y <= p2.y)))
+		if ((neg2(bdir.x, pdir.x) || pos2(bdir.x, pdir.x)) && (neg2(bdir.y, pdir.y) || pos2(bdir.y, pdir.y))) return true;
 	}
   
     // Special Cases

@@ -5,12 +5,17 @@
 
 #include "players.h"
 #include "objects.h"
+#include "pathfinding.h"
 
 typedef struct t_zombie {
 	bool alive;
 	float health;
 	vec3f position;
 	vec3f size;
+	array path;
+	array next_path;
+	float time_since_last_path;
+	pathfinding_request request;
 } zombie;
 
 typedef struct t_spawner {
@@ -20,10 +25,9 @@ typedef struct t_spawner {
 
 // data data that is stored on disk
 spawner spawner_tiles[2] = {
-	{9, 0, 0},
-	{1, 8, 0},
+	{15, 5, 999},
+	{3, 8, 999},
 };
-
 
 zombie zombies[50] = {0};
 int max_zombies = 50;

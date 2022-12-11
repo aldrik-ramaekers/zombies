@@ -28,8 +28,8 @@ typedef struct t_box {
 	vec2f br_u;
 } box;
 
-object objects[50];
-int max_objects = 50;
+int max_objects = 150;
+object objects[150];
 
 void create_objects();
 void draw_objects_at_row(platform_window* window, int row);

@@ -26,19 +26,19 @@ static int get_height_of_tile_tl(int current_height, int x, int y) {
 
 static int get_height_of_tile_br(int current_height, int x, int y) {
 	int highest_point = current_height;
-	if (x < 9) {
+	if (x < MAP_SIZE_X-1) {
 		int tile_right = map[y][x+1];
 		if (tile_right > highest_point) {
 			highest_point = tile_right;
 		}
 	}
-	if (y < 9 && x < 9) {
+	if (y < MAP_SIZE_Y-1 && x < MAP_SIZE_X-1) {
 		int tile_bottom_right = map[y+1][x+1];
 		if (tile_bottom_right > highest_point) {
 			highest_point = tile_bottom_right;
 		}
 	}
-	if (y < 9) {
+	if (y < MAP_SIZE_Y-1) {
 		int tile_bottom = map[y+1][x];
 		if (tile_bottom > highest_point) {
 			highest_point = tile_bottom;
@@ -55,13 +55,13 @@ static int get_height_of_tile_bl(int current_height, int x, int y) {
 			highest_point = tile_left;
 		}
 	}
-	if (y < 9 && x > 0) {
+	if (y < MAP_SIZE_Y-1 && x > 0) {
 		int tile_bottom_left = map[y+1][x-1];
 		if (tile_bottom_left > highest_point) {
 			highest_point = tile_bottom_left;
 		}
 	}
-	if (y < 9) {
+	if (y < MAP_SIZE_Y-1) {
 		int tile_bottom = map[y+1][x];
 		if (tile_bottom > highest_point) {
 			highest_point = tile_bottom;
@@ -78,13 +78,13 @@ static int get_height_of_tile_tr(int current_height, int x, int y) {
 			highest_point = tile_above;
 		}
 	}
-	if (y > 0 && x < 9) {
+	if (y > 0 && x < MAP_SIZE_X-1) {
 		int tile_above_right = map[y-1][x+1];
 		if (tile_above_right > highest_point) {
 			highest_point = tile_above_right;
 		}
 	}
-	if (x < 9) {
+	if (x < MAP_SIZE_X-1) {
 		int tile_right = map[y][x+1];
 		if (tile_right > highest_point) {
 			highest_point = tile_right;

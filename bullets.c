@@ -1,10 +1,10 @@
 #include "include/bullets.h"
 
-void shoot(platform_window* window) {
+void shoot(platform_window* window, player p) {
 	map_info info = get_map_info(window);
 	float bullet_range = 100.0f;
 
-	float hh = get_height_of_tile_under_coords(window, playerx, playery);
+	float hh = get_height_of_tile_under_coords(window, p.playerx, p.playery);
 
 	float dirx = (_global_mouse.x - (window->width/2));
 	float diry = (_global_mouse.y - (window->height/2));
@@ -16,8 +16,8 @@ void shoot(platform_window* window) {
 	dirx += ((float)rand()/(float)(RAND_MAX/SPRAY_BOUNDS)-(SPRAY_BOUNDS/2));
 	diry += ((float)rand()/(float)(RAND_MAX/SPRAY_BOUNDS)-(SPRAY_BOUNDS/2));
 
-	float bulletx = gunx;
-	float bullety = guny;
+	float bulletx = p.gunx;
+	float bullety = p.guny;
 	float bullet_end_point_x = bulletx+dirx*bullet_range;
 	float bullet_end_point_y = bullety+diry*bullet_range;
 
@@ -25,7 +25,7 @@ void shoot(platform_window* window) {
 		bullet b = bullets[i];
 		if (b.active) continue;
 
-		bullets[i] = (bullet){true, bulletx, bullety, hh + 0.5, bullet_end_point_x, bullet_end_point_y};
+		bullets[i] = (bullet){p.id, true, bulletx, bullety, hh + 0.5, bullet_end_point_x, bullet_end_point_y};
 		break;
 	}
 }
@@ -167,13 +167,12 @@ void draw_bullets(platform_window* window) {
 	map_info info = get_map_info(window);
 
 	for (int i = 0; i < max_bullets; i++) {
-		bullets[i].position.x = gunx;
-		bullets[i].position.y = guny;
-		bullets[i].position.z = gun_height;
 		bullet b = bullets[i];
 		if (!b.active) continue;
-
-		
+		player p = get_player_by_id(b.player_id);
+		bullets[i].position.x = p.gunx;
+		bullets[i].position.y = p.guny;
+		bullets[i].position.z = p.gun_height;
 		
 		if (check_if_bullet_collided_with_ground(&b, window)) {
 			bullets[i].endy = b.endy;

@@ -30,17 +30,11 @@ object get_object_at_tile(int x, int y) {
 void draw_objects_at_row(platform_window* window, int row) {
 	map_info info = get_map_info(window);
 
-	bool did_player_draw = false;
-	int x_of_player = playerx;
-	int y_of_player = playery+get_player_size_in_tile();
-
 	for (int i = MAP_SIZE_X-1; i >= 0; i--) {
 		object o = get_object_at_tile(i, row);
 	
-		if (row == y_of_player && x_of_player == i) {
-			OBJECT_RENDER_DEPTH(o.h);
-			draw_player(window);
-		}
+		OBJECT_RENDER_DEPTH(o.h);
+		draw_players_at_tile(window, i, row);
 
 		draw_zombies_at_tile(window, i, row);
 
@@ -71,12 +65,27 @@ void create_box(float x, float y, float h) {
 
 void create_objects() {
 	// rechts naar links op map.
-	create_box(4, 0, 0);
-	create_box(1, 0, 0);
-	create_box(0, 0, 0);
 
-	create_box(0, 1, 0);
-	create_box(3, 5, 0);
+	for (int i = MAP_SIZE_X-1; i >= 0; i--) {
+		create_box(i, 0, 0);
+		create_box(i, MAP_SIZE_Y-1, 0);
+	}
 
-	spawn_zombie(2, 7);
+	for (int i = MAP_SIZE_Y-1; i >= 0; i--) {
+		create_box(0, i, 0);
+		create_box(MAP_SIZE_Y-1, i, 0);
+	}
+
+	create_box(16, 8, 0);
+	create_box(14, 8, 0);
+	create_box(11, 8, 0);
+	create_box(10, 8, 0);
+
+	create_box(15, 10, 0);
+	create_box(14, 10, 0);
+	create_box(13, 10, 0);
+	create_box(11, 10, 0);
+	
+	spawn_player(my_id);
+	spawn_player(my_id+1);
 }

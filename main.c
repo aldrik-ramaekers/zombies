@@ -6,6 +6,8 @@
 #include "include/zombies.h"
 #include "include/math_helper.h"
 #include "include/bullets.h"
+#include "include/pathfinding.h"
+#include "include/list.h"
 
 #include "map.c"
 #include "players.c"
@@ -13,6 +15,8 @@
 #include "zombies.c"
 #include "bullets.c"
 #include "math_helper.c"
+#include "pathfinding.c"
+#include "list.c"
 
 #define CONFIG_DIRECTORY "zombieshooter"
 
@@ -43,12 +47,18 @@ int main(int argc, char **argv)
 	load_map_from_data();
 	create_objects();
 
+	pathfinding_init();
+
+	thread t = thread_start(pathfinding_thread, 0);
+	thread_detach(&t);
+
     while(platform_keep_running(window)) {
         platform_handle_events();
     }
 
     settings_write_to_file();
     platform_destroy();
+	pathfinding_destroy();
 
 	memory_print_leaks();
 
