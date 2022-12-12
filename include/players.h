@@ -19,12 +19,12 @@ typedef struct t_player {
 	float gun_height;
 } player;
 
-int my_id = 1;
+u32 my_id = 1;
 
 int max_players = 10;
 player players[10] = {0};
 
-player get_player_by_id(int id);
+player* get_player_by_id(u32 id);
 void draw_players_at_tile(platform_window* window, int x, int y);
 void draw_bullets(platform_window* window);
 float get_player_size(platform_window* window);

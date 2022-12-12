@@ -169,10 +169,10 @@ void draw_bullets(platform_window* window) {
 	for (int i = 0; i < max_bullets; i++) {
 		bullet b = bullets[i];
 		if (!b.active) continue;
-		player p = get_player_by_id(b.player_id);
-		bullets[i].position.x = p.gunx;
-		bullets[i].position.y = p.guny;
-		bullets[i].position.z = p.gun_height;
+		player *p = get_player_by_id(b.player_id);
+		bullets[i].position.x = p->gunx;
+		bullets[i].position.y = p->guny;
+		bullets[i].position.z = p->gun_height;
 		
 		if (check_if_bullet_collided_with_ground(&b, window)) {
 			bullets[i].endy = b.endy;

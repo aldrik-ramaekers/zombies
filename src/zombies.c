@@ -45,6 +45,17 @@ void spawn_zombie(int x, int y) {
 	}
 }
 
+void update_spawners() {
+	for (int x = 0; x < 1; x++) {
+		spawner spawner = spawner_tiles[x];
+		spawner_tiles[x].sec_since_last_spawn += update_delta;
+		if (spawner_tiles[x].sec_since_last_spawn >= 2.0f) {
+			spawn_zombie(spawner.position.x, spawner.position.y);
+			spawner_tiles[x].sec_since_last_spawn = 0;
+		}
+	}
+}
+
 void draw_spawners(platform_window* window) {
 	map_info info = get_map_info(window);
 
@@ -60,12 +71,6 @@ void draw_spawners(platform_window* window) {
 				tile.br.x, tile.br.y, 
 				tile.tr.x, tile.tr.y, 
 				rgb(100, 150, 50));	
-
-		spawner_tiles[x].sec_since_last_spawn += update_delta;
-		if (spawner_tiles[x].sec_since_last_spawn >= 2.0f) {
-			spawn_zombie(spawner.position.x, spawner.position.y);
-			spawner_tiles[x].sec_since_last_spawn = 0;
-		}
 
 		renderer->render_line(tile.tl.x, tile.tl.y, tile.tr.x, tile.tr.y, 1, rgb(0,255,255)); // top
 		renderer->render_line(tile.tl.x, tile.tl.y, tile.bl.x, tile.bl.y, 1, rgb(0,255,255)); // left
@@ -97,12 +102,7 @@ static void draw_path_of_zombie(platform_window* window, zombie o) {
 	}
 }
 
-static vec2f get_direction_to_next_tile(zombie o) {
-	vec2f dest = (vec2f){o.position.x, o.position.y};
-	if (o.path.length > 0) {
-		dest = *(vec2f*)array_at(&o.path, o.path.length-1);
-	}
-
+static vec2f get_direction_to_tile(zombie o, vec2f dest) {
 	float dirx = (dest.x - o.position.x);
 	float diry = (dest.y - o.position.y);
 	if (dirx == 0 && diry == 0) return (vec2f){0,0};
@@ -112,30 +112,61 @@ static vec2f get_direction_to_next_tile(zombie o) {
 	return (vec2f){dirx, diry};
 }
 
-static bool is_within_next_tile(zombie o) {
+static vec2f get_direction_to_next_tile(zombie o) {
+	vec2f dest = (vec2f){o.position.x, o.position.y};
 	if (o.path.length > 0) {
-		vec2f dest = *(vec2f*)array_at(&o.path, o.path.length-1);
-		if (fabs(o.position.x - dest.x) < 0.05f && fabs(o.position.y - dest.y) < 0.05f) {
-			return true;
-		}
+		dest = *(vec2f*)array_at(&o.path, o.path.length-1);
 	}
 
+	return get_direction_to_tile(o, dest);
+}
+
+static bool is_within_tile(zombie o, vec2f dest) {
+	if (fabs(o.position.x - dest.x) < 0.05f && fabs(o.position.y - dest.y) < 0.05f) {
+		return true;
+	}
 	return false;
 }
 
-void draw_zombies_at_tile(platform_window* window, int x, int y) {
-	map_info info = get_map_info(window);
+static bool is_within_next_tile(zombie o) {
+	if (o.path.length > 0) {
+		vec2f dest = *(vec2f*)array_at(&o.path, o.path.length-1);
+		is_within_tile(o, dest);
+	}
+	return false;
+}
+
+void update_zombies_client(platform_window* window) {
+	float speed = 0.05f;
+	for (int i = 0; i < max_zombies; i++) {
+		zombie o = zombies[i];
+		if (!o.alive) continue;
+		if (o.next2tiles[0].x == -1 || o.next2tiles[0].y == -1) continue; // ran out of stored path.
+
+		float height = get_height_of_tile_under_coords(window, zombies[i].position.x, zombies[i].position.y);
+
+		vec2f dir = get_direction_to_tile(o, o.next2tiles[0]);
+		zombies[i].position.x += dir.x*speed;
+		zombies[i].position.y += dir.y*speed;
+		zombies[i].position.z = height;
+
+		if (is_within_tile(zombies[i], o.next2tiles[0])) {
+			o.next2tiles[0] = o.next2tiles[1];
+			o.next2tiles[1] = (vec2f){-1,-1};
+		}
+	}
+}
+
+void update_zombies_server(platform_window* window) {
 	float speed = 0.05f;
 
 	for (int i = 0; i < max_zombies; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
 
-		if ((int)o.position.x != x || (int)ceil(o.position.y) != y) continue;
-
 		zombies[i].time_since_last_path += update_delta;
 		if (zombies[i].time_since_last_path > 0.05f) {
-			player closest_player = get_closest_player_to_tile(x, y);
+			player closest_player = get_closest_player_to_tile((int)o.position.x, (int)o.position.y);
 			make_pathfinding_request((vec2f){o.position.x,o.position.y}, 
 				(vec2f){closest_player.playerx, closest_player.playery + get_player_size_in_tile()}, 
 				&zombies[i].next_path, &zombies[i].request);
@@ -153,24 +184,43 @@ void draw_zombies_at_tile(platform_window* window, int x, int y) {
 			mutex_unlock(&zombies[i].request.mutex);
 		}
 
-		vec2f dir = get_direction_to_next_tile(o);
+		if (is_within_next_tile(zombies[i])) {
+			array_remove_at(&zombies[i].path, zombies[i].path.length-1);
+		}
 
+		vec2f dir = get_direction_to_next_tile(o);
 		float height = get_height_of_tile_under_coords(window, zombies[i].position.x, zombies[i].position.y);
 		zombies[i].position.x += dir.x*speed;
 		zombies[i].position.y += dir.y*speed;
 		zombies[i].position.z = height;
 
-		if (is_within_next_tile(zombies[i])) {
-			array_remove_at(&zombies[i].path, zombies[i].path.length-1);
+		zombies[i].next2tiles[0] = (vec2f){-1,-1};
+		zombies[i].next2tiles[1] = (vec2f){-1,-1};
+		if (o.path.length > 0) {
+			zombies[i].next2tiles[0] = *(vec2f*)array_at(&o.path, o.path.length-1);
+			if (o.path.length > 1) {
+				zombies[i].next2tiles[1] = *(vec2f*)array_at(&o.path, o.path.length-2);
+			}
 		}
+	}
+}
 
-		box box = get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, height}, o.size);
+void draw_zombies_at_tile(platform_window* window, int x, int y) {
+	map_info info = get_map_info(window);
+
+	for (int i = 0; i < max_zombies; i++) {
+		zombie o = zombies[i];
+		if (!o.alive) continue;
+
+		if ((int)o.position.x != x || (int)ceil(o.position.y) != y) continue;
+
+		box box = get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, o.position.z}, o.size);
 		render_quad_with_outline(box.tl_b, box.tr_b, box.bl_b, box.br_b);
 		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u);
 		render_quad_with_outline(box.tl_u, box.tl_b, box.bl_u, box.bl_b);
 		render_quad_with_outline(box.bl_u, box.br_u, box.bl_b, box.br_b);
 
-		draw_path_of_zombie(window, o);
+		if (global_state.server) draw_path_of_zombie(window, o);
 	}
 }
 

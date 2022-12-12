@@ -31,12 +31,12 @@ void spawn_player(int id) {
 	}
 }
 
-player get_player_by_id(int id) {
+player* get_player_by_id(u32 id) {
 	for (int i = 0; i < max_players; i++) {
 		if (!players[i].active) continue;
-		if (players[i].id == id) return players[i];
+		if (players[i].id == id) return &players[i];
 	}
-	return (player){-1};
+	return 0;
 }
 
 object check_if_player_collided_with_object(platform_window* window, player p) {
@@ -70,49 +70,34 @@ int get_my_player_index() {
 }
 
 void take_player_input(platform_window* window) {
-	float speed = 0.1f;
-	float pad_between_player_and_obj = 0.01f;
-
-	int my_index = get_my_player_index();
-	if (my_index == -1) return;
-
-	float old_x = players[my_index].playerx;
-	float old_y = players[my_index].playery;
+	player* p = get_player_by_id(my_id);
+	if (!p) return;
 
 	if (keyboard_is_key_down(KEY_W)) {
-		float newy = players[my_index].playery - speed;
-		if (is_in_bounds(players[my_index].playerx, newy)) {
-			players[my_index].playery = newy;
-			object o = check_if_player_collided_with_object(window, players[my_index]);
-			if (o.active) players[my_index].playery = o.position.y+o.size.y - get_player_size_in_tile() + pad_between_player_and_obj;
-		}
+		network_client_send(global_state.client, create_protocol_user_moved(MOVE_UP, my_id));
 	}
-
 	if (keyboard_is_key_down(KEY_S)) {
-		float newy = players[my_index].playery + speed;
-		if (is_in_bounds(players[my_index].playerx, newy)) {
-			players[my_index].playery = newy;
-			object o = check_if_player_collided_with_object(window, players[my_index]);
-			if (o.active) players[my_index].playery = o.position.y - get_player_size_in_tile() - pad_between_player_and_obj;
-		}
+		network_client_send(global_state.client, create_protocol_user_moved(MOVE_DOWN, my_id));
 	}
-
 	if (keyboard_is_key_down(KEY_A)) {
-		float newx = players[my_index].playerx - speed;
-		if (is_in_bounds(newx, players[my_index].playery)) {
-			players[my_index].playerx = newx;
-			object o = check_if_player_collided_with_object(window, players[my_index]);
-			if (o.active) players[my_index].playerx = o.position.x+o.size.x + pad_between_player_and_obj;
-		}
+		network_client_send(global_state.client, create_protocol_user_moved(MOVE_LEFT, my_id));
+	}
+	if (keyboard_is_key_down(KEY_D)) {
+		network_client_send(global_state.client, create_protocol_user_moved(MOVE_RIGHT, my_id));
 	}
 
-	if (keyboard_is_key_down(KEY_D)) {
-		float newx = players[my_index].playerx + speed;
-		if (is_in_bounds(newx, players[my_index].playery)) {
-			players[my_index].playerx = newx;
-			object o = check_if_player_collided_with_object(window, players[my_index]);
-			if (o.active) players[my_index].playerx = o.position.x-get_player_size_in_tile() - pad_between_player_and_obj;
-		}
+	// Send gun position
+	{
+		float dirx = (_global_mouse.x - (window->width/2));
+		float diry = (_global_mouse.y - (window->height/2));
+		double length = sqrt(dirx * dirx + diry * diry);
+		dirx /= length;
+		diry /= length;
+
+		p->gunx = p->playerx + (get_player_size_in_tile()/2) + dirx/2;
+		p->guny = p->playery + (get_player_size_in_tile()/2) + diry/2;
+		
+		network_client_send(global_state.client, create_protocol_user_look(my_id, p->gunx, p->guny));
 	}
 }
 
@@ -121,11 +106,7 @@ void draw_players_at_tile(platform_window* window, int x, int y) {
 		if (!players[i].active) continue;
 		if ((int)players[i].playerx != x || (int)(players[i].playery+get_player_size_in_tile()) != y) continue;
 
-		int size = get_tile_width(window) / 2;
-		map_info info = get_map_info(window);
-		float height = get_height_of_tile_under_coords(window, players[i].playerx, players[i].playery);
-
-		take_player_input(window);
+		if (players[i].id == my_id) take_player_input(window);
 
 		players[i].sec_since_last_shot += update_delta;
 		float bullets_per_sec = 10;
@@ -142,22 +123,18 @@ void draw_players_at_tile(platform_window* window, int x, int y) {
 			}
 		}
 
+		int size = get_tile_width(window) / 2;
+		map_info info = get_map_info(window);
+		float height = get_height_of_tile_under_coords(window, players[i].playerx, players[i].playery);
+
 		float player_render_x = players[i].playerx*info.tile_width + (players[i].playery*info.px_incline);
 		float player_render_y = players[i].playery*info.tile_height - (height*info.px_raised_per_h);
 		renderer->render_rectangle(player_render_x, player_render_y, size, size, rgb(200,150,120));
 
-		float dirx = (_global_mouse.x - (window->width/2));
-		float diry = (_global_mouse.y - (window->height/2));
-		double length = sqrt(dirx * dirx + diry * diry);
-		dirx /= length;
-		diry /= length;
-
-		players[i].gunx = players[i].playerx + (get_player_size_in_tile()/2) + dirx/2;
-		players[i].guny = players[i].playery + (get_player_size_in_tile()/2) + diry/2;
 		players[i].gun_height = height+0.5;
 		float gun_render_x = players[i].gunx*info.tile_width + (players[i].guny*info.px_incline);
 		float gun_render_y = players[i].guny*info.tile_height - (players[i].gun_height*info.px_raised_per_h);
-
+		
 		renderer->render_rectangle(gun_render_x, gun_render_y, size/4, size/4, rgb(20,255,20));
 
 		if (players[i].id == my_id) {

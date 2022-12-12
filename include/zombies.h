@@ -16,6 +16,7 @@ typedef struct t_zombie {
 	array next_path;
 	float time_since_last_path;
 	pathfinding_request request;
+	vec2f next2tiles[2];
 } zombie;
 
 typedef struct t_spawner {
@@ -29,8 +30,8 @@ spawner spawner_tiles[2] = {
 	{3, 8, 999},
 };
 
-zombie zombies[50] = {0};
-int max_zombies = 50;
+zombie zombies[20] = {0};
+int max_zombies = 20;
 
 void draw_spawners(platform_window* window);
 void draw_zombies_at_tile(platform_window* window, int x, int y);
