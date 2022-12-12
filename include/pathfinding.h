@@ -19,6 +19,7 @@ typedef struct t_pathfinding_request
 
 array global_pathfinding_queue;
 
+void* pathfinding_thread(void *args);
 void make_pathfinding_request(vec2f start, vec2f end, array *to_fill, pathfinding_request *request);
 
 #endif

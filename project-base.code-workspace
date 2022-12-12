@@ -58,7 +58,9 @@
 			"pathfinding.h": "c",
 			"unordered_map": "c",
 			"players.h": "c",
-			"allocator.h": "c"
+			"allocator.h": "c",
+			"protocol.h": "c",
+			"queue": "cpp"
 		}
 	}
 }

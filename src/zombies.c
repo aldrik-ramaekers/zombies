@@ -35,6 +35,7 @@ void spawn_zombie(int x, int y) {
 		zombies[i].position = (vec3f){x,y, 0};
 		zombies[i].size = (vec3f){0.4, 0.4, 1};
 		zombies[i].time_since_last_path = 0.0f;
+		zombies[i].request.to_fill = &zombies[i].next_path;
 		zombies[i].request.mutex = mutex_create();
 		
 		player closest_player = get_closest_player_to_tile(x, y);

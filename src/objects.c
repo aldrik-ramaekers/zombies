@@ -85,7 +85,4 @@ void create_objects() {
 	create_box(14, 10, 0);
 	create_box(13, 10, 0);
 	create_box(11, 10, 0);
-	
-	spawn_player(my_id);
-	//spawn_player(my_id+1);
 }
