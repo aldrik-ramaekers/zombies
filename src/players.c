@@ -1,4 +1,5 @@
 #include "../include/players.h"
+#include "../include/game.h"
 
 float get_bullet_size_in_tile(platform_window* window) {
 	return 1 / 8.0f;
@@ -105,8 +106,6 @@ void draw_players_at_tile(platform_window* window, int x, int y) {
 	for (int i = 0; i < max_players; i++) {
 		if (!players[i].active) continue;
 		if ((int)players[i].playerx != x || (int)(players[i].playery+get_player_size_in_tile()) != y) continue;
-
-		if (players[i].id == my_id) take_player_input(window);
 
 		players[i].sec_since_last_shot += update_delta;
 		float bullets_per_sec = 10;

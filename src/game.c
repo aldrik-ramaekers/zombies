@@ -158,8 +158,8 @@ void update_server(platform_window* window) {
 
 	broadcast_to_clients(create_protocol_user_list());
 	
-	if (update_timer > 0.05f) {
-		broadcast_to_clients(create_protocol_zombie_list());
+	if (update_timer > 0.2f) {
+		//broadcast_to_clients(create_protocol_zombie_list());
 		update_timer = 0.0f;
 	}
 
@@ -173,6 +173,7 @@ void update_client(platform_window* window) {
 		switch (msg->type)
 		{
 		case MESSAGE_GET_ID_DOWNSTREAM: {
+			if (global_state.network_state == CONNECTED) break;
 			protocol_get_id_downstream* msg_id = (protocol_get_id_downstream*)msg;
 			my_id = msg_id->id;
 			global_state.network_state = CONNECTED;
@@ -198,10 +199,6 @@ void update_client(platform_window* window) {
 		array_remove_at(&messages_received_on_client, i);
 		i--;
 	}
-
-	if (!global_state.server) {
-		update_zombies_client(window);
-	}
 }
 
 void update_game(platform_window* window) {
@@ -211,6 +208,11 @@ void update_game(platform_window* window) {
 	}
 
 	if (global_state.network_state == CONNECTED) {
+		if (!global_state.server) {
+			update_zombies_client(window);
+		}
+		take_player_input(window);
+
 		draw_grid(window);
 		draw_spawners(window);
 	}

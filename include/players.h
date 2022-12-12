@@ -27,6 +27,7 @@ player players[10] = {0};
 player* get_player_by_id(u32 id);
 void draw_players_at_tile(platform_window* window, int x, int y);
 void draw_bullets(platform_window* window);
+object check_if_player_collided_with_object(platform_window* window, player p);
 float get_player_size(platform_window* window);
 
 #endif
