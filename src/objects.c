@@ -1,4 +1,4 @@
-#include "include/objects.h"
+#include "../include/objects.h"
 
 box get_box_of_object(platform_window* window, object o) {
 	return get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, o.h}, o.size);

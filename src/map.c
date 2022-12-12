@@ -1,4 +1,4 @@
-#include "include/map.h"
+#include "../include/map.h"
 
 static int get_height_of_tile_tl(int current_height, int x, int y) {
 	int highest_point = current_height;

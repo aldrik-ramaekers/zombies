@@ -1,4 +1,4 @@
-#include "include/players.h"
+#include "../include/players.h"
 
 float get_bullet_size_in_tile(platform_window* window) {
 	return 1 / 8.0f;

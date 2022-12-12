@@ -1,4 +1,4 @@
-#include "include/allocator.h"
+#include "../include/allocator.h"
 
 allocator create_allocator(uint64_t size) {
 	allocator allocator;

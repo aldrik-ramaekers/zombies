@@ -1,4 +1,4 @@
-#include "include/zombies.h"
+#include "../include/zombies.h"
 
 static player get_closest_player_to_tile(int x, int y) {
 	float best_length = 99999;

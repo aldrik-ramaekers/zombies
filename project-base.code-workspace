@@ -57,7 +57,8 @@
 			"xiosbase": "c",
 			"pathfinding.h": "c",
 			"unordered_map": "c",
-			"players.h": "c"
+			"players.h": "c",
+			"allocator.h": "c"
 		}
 	}
 }

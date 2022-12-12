@@ -1,4 +1,4 @@
-#include "include/pathfinding.h"
+#include "../include/pathfinding.h"
 
 static float distance_between(vec2f v1, vec2f v2)
 {

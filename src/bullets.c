@@ -1,4 +1,4 @@
-#include "include/bullets.h"
+#include "../include/bullets.h"
 
 void shoot(platform_window* window, player p) {
 	map_info info = get_map_info(window);
