@@ -1,4 +1,5 @@
 #include "../include/protocol.h"
+#include "../include/players.h"
 
 network_message create_protocol_get_id_up() {
 	protocol_get_id_upstream* buf = (protocol_get_id_upstream*)network_buffer;

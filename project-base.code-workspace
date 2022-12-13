@@ -60,7 +60,9 @@
 			"players.h": "c",
 			"allocator.h": "c",
 			"protocol.h": "c",
-			"queue": "cpp"
+			"queue": "cpp",
+			"streambuf": "c",
+			"game.h": "c"
 		}
 	}
 }

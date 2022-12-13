@@ -32,6 +32,54 @@ void spawn_player(int id) {
 	}
 }
 
+
+void move_user(platform_window* window, u32 id, protocol_move_type move) {
+	float speed = 0.1f;
+	float pad_between_player_and_obj = 0.01f;
+
+	player* p = get_player_by_id(id);
+	if (p == 0) {
+		log_info("Unknown user moved");
+		return;
+	}
+
+	if (move == MOVE_UP) {
+		float newy = p->playery - speed;
+		if (is_in_bounds(p->playerx, newy)) {
+			p->playery = newy;
+			object o = check_if_player_collided_with_object(window, *p);
+			if (o.active) p->playery = o.position.y+o.size.y - get_player_size_in_tile() + pad_between_player_and_obj;
+		}
+	}
+
+	if (move == MOVE_DOWN) {
+		float newy = p->playery + speed;
+		if (is_in_bounds(p->playerx, newy)) {
+			p->playery = newy;
+			object o = check_if_player_collided_with_object(window, *p);
+			if (o.active) p->playery = o.position.y - get_player_size_in_tile() - pad_between_player_and_obj;
+		}
+	}
+
+	if (move == MOVE_LEFT) {
+		float newx = p->playerx - speed;
+		if (is_in_bounds(newx, p->playery)) {
+			p->playerx = newx;
+			object o = check_if_player_collided_with_object(window, *p);
+			if (o.active) p->playerx = o.position.x+o.size.x + pad_between_player_and_obj;
+		}
+	}
+
+	if (move == MOVE_RIGHT) {
+		float newx = p->playerx + speed;
+		if (is_in_bounds(newx, p->playery)) {
+			p->playerx = newx;
+			object o = check_if_player_collided_with_object(window, *p);
+			if (o.active) p->playerx = o.position.x-get_player_size_in_tile() - pad_between_player_and_obj;
+		}
+	}
+}
+
 player* get_player_by_id(u32 id) {
 	for (int i = 0; i < max_players; i++) {
 		if (!players[i].active) continue;
@@ -75,16 +123,32 @@ void take_player_input(platform_window* window) {
 	if (!p) return;
 
 	if (keyboard_is_key_down(KEY_W)) {
-		network_client_send(global_state.client, create_protocol_user_moved(MOVE_UP, my_id));
+		if (!global_state.server) {
+			network_message message = create_protocol_user_moved(MOVE_UP, my_id);
+			network_client_send(global_state.client, message);
+		}
+		move_user(window, my_id, MOVE_UP);
 	}
 	if (keyboard_is_key_down(KEY_S)) {
-		network_client_send(global_state.client, create_protocol_user_moved(MOVE_DOWN, my_id));
+		if (!global_state.server) {
+			network_message message = create_protocol_user_moved(MOVE_DOWN, my_id);
+			network_client_send(global_state.client, message);
+		}
+		move_user(window, my_id, MOVE_DOWN);
 	}
 	if (keyboard_is_key_down(KEY_A)) {
-		network_client_send(global_state.client, create_protocol_user_moved(MOVE_LEFT, my_id));
+		if (!global_state.server) {
+			network_message message = create_protocol_user_moved(MOVE_LEFT, my_id);
+			network_client_send(global_state.client, message);
+		}
+		move_user(window, my_id, MOVE_LEFT);
 	}
 	if (keyboard_is_key_down(KEY_D)) {
-		network_client_send(global_state.client, create_protocol_user_moved(MOVE_RIGHT, my_id));
+		if (!global_state.server) {
+			network_message message = create_protocol_user_moved(MOVE_RIGHT, my_id);
+			network_client_send(global_state.client, message);
+		}
+		move_user(window, my_id, MOVE_RIGHT);
 	}
 
 	// Send gun position

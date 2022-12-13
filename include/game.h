@@ -4,6 +4,7 @@
 #include <projectbase/project_base.h>
 
 #include "../include/protocol.h"
+#include "../include/players.h"
 #include "../include/game.h"
 
 typedef enum t_game_state {

@@ -73,53 +73,6 @@ static void rotate_user(platform_window* window, protocol_user_look *message) {
 	p->guny = message->guny;
 }
 
-static void move_user(platform_window* window, protocol_move *message) {
-	float speed = 0.1f;
-	float pad_between_player_and_obj = 0.01f;
-
-	player* p = get_player_by_id(message->id);
-	if (p == 0) {
-		log_info("Unknown user moved");
-		return;
-	}
-
-	if (message->move == MOVE_UP) {
-		float newy = p->playery - speed;
-		if (is_in_bounds(p->playerx, newy)) {
-			p->playery = newy;
-			object o = check_if_player_collided_with_object(window, *p);
-			if (o.active) p->playery = o.position.y+o.size.y - get_player_size_in_tile() + pad_between_player_and_obj;
-		}
-	}
-
-	if (message->move == MOVE_DOWN) {
-		float newy = p->playery + speed;
-		if (is_in_bounds(p->playerx, newy)) {
-			p->playery = newy;
-			object o = check_if_player_collided_with_object(window, *p);
-			if (o.active) p->playery = o.position.y - get_player_size_in_tile() - pad_between_player_and_obj;
-		}
-	}
-
-	if (message->move == MOVE_LEFT) {
-		float newx = p->playerx - speed;
-		if (is_in_bounds(newx, p->playery)) {
-			p->playerx = newx;
-			object o = check_if_player_collided_with_object(window, *p);
-			if (o.active) p->playerx = o.position.x+o.size.x + pad_between_player_and_obj;
-		}
-	}
-
-	if (message->move == MOVE_RIGHT) {
-		float newx = p->playerx + speed;
-		if (is_in_bounds(newx, p->playery)) {
-			p->playerx = newx;
-			object o = check_if_player_collided_with_object(window, *p);
-			if (o.active) p->playerx = o.position.x-get_player_size_in_tile() - pad_between_player_and_obj;
-		}
-	}
-}
-
 float update_timer = 0.0f;
 void update_server(platform_window* window) {
 	update_spawners();
@@ -138,7 +91,8 @@ void update_server(platform_window* window) {
 			} break;
 
 			case MESSAGE_USER_MOVED: {
-				move_user(window, (protocol_move*)msg->message);
+				protocol_move* move_msg = (protocol_move*)msg->message;
+				move_user(window,  move_msg->id, move_msg->move);
 			} break;
 
 			case MESSAGE_USER_LOOK: {
@@ -156,10 +110,9 @@ void update_server(platform_window* window) {
 		i--;
 	}
 
-	broadcast_to_clients(create_protocol_user_list());
-	
-	if (update_timer > 0.2f) {
-		//broadcast_to_clients(create_protocol_zombie_list());
+	if (update_timer > 0.0f) {
+		broadcast_to_clients(create_protocol_user_list());
+		broadcast_to_clients(create_protocol_zombie_list());
 		update_timer = 0.0f;
 	}
 
@@ -183,7 +136,11 @@ void update_client(platform_window* window) {
 
 		case MESSAGE_USER_LIST: {
 			protocol_user_list* msg_players = (protocol_user_list*)msg;
+			player* p = get_player_by_id(my_id);
+			player copy;
+			if (p) copy = *p;
 			memcpy(players, msg_players->players, sizeof(players));
+			if (p) *p = copy;
 		} break;
 		case MESSAGE_ZOMBIE_LIST: {
 			if (global_state.server) break; // zombies are simulated on server so dont overwrite data.
