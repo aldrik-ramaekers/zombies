@@ -1,32 +1,39 @@
 #include "../include/bullets.h"
 
-void shoot(platform_window* window, player p) {
-	map_info info = get_map_info(window);
-	float bullet_range = 100.0f;
+void shoot(platform_window* window, u32 id, float dirx, float diry) {
+	player* p = get_player_by_id(id);
+	if (!p) {
+		log_info("User with unknown id shot");
+	}
+	gun g = get_gun_by_type(p->guntype);
+	float time_between_bullets = 1.0f/g.shots_per_second;
 
-	float hh = get_height_of_tile_under_coords(window, p.playerx, p.playery);
+	if (p->sec_since_last_shot < time_between_bullets) {
+		return;
+	}
+	p->sec_since_last_shot = 0.0f;
 
-	float dirx = (_global_mouse.x - (window->width/2));
-	float diry = (_global_mouse.y - (window->height/2));
-	double length = sqrt(dirx * dirx + diry * diry);
-	dirx /= length;
-	diry /= length;
+	for (int i = 0; i < g.bullets_per_shot; i++)
+	{
+		map_info info = get_map_info(window);
+		float bullet_range = 100.0f;
 
-	#define SPRAY_BOUNDS (0.1f)
-	dirx += ((float)rand()/(float)(RAND_MAX/SPRAY_BOUNDS)-(SPRAY_BOUNDS/2));
-	diry += ((float)rand()/(float)(RAND_MAX/SPRAY_BOUNDS)-(SPRAY_BOUNDS/2));
+		float hh = get_height_of_tile_under_coords(window, p->playerx, p->playery);
+		dirx += ((float)rand()/(float)(RAND_MAX/g.bullet_spread)-(g.bullet_spread/2));
+		diry += ((float)rand()/(float)(RAND_MAX/g.bullet_spread)-(g.bullet_spread/2));
 
-	float bulletx = p.gunx;
-	float bullety = p.guny;
-	float bullet_end_point_x = bulletx+dirx*bullet_range;
-	float bullet_end_point_y = bullety+diry*bullet_range;
+		float bulletx = p->gunx;
+		float bullety = p->guny;
+		float bullet_end_point_x = bulletx+dirx*bullet_range;
+		float bullet_end_point_y = bullety+diry*bullet_range;
 
-	for (int i = 0; i < max_bullets; i++) {
-		bullet b = bullets[i];
-		if (b.active) continue;
+		for (int i = 0; i < max_bullets; i++) {
+			bullet b = bullets[i];
+			if (b.active) continue;
 
-		bullets[i] = (bullet){p.id, true, bulletx, bullety, hh + 0.5, bullet_end_point_x, bullet_end_point_y};
-		break;
+			bullets[i] = (bullet){p->id, true, bulletx, bullety, hh + 0.5, bullet_end_point_x, bullet_end_point_y};
+			break;
+		}
 	}
 }
 
@@ -173,6 +180,8 @@ void draw_bullets(platform_window* window) {
 		bullets[i].position.x = p->gunx;
 		bullets[i].position.y = p->guny;
 		bullets[i].position.z = p->gun_height;
+
+		printf("%d\n", i);
 		
 		if (check_if_bullet_collided_with_ground(&b, window)) {
 			bullets[i].endy = b.endy;
@@ -192,8 +201,6 @@ void draw_bullets(platform_window* window) {
 
 		bullets[i].alive_time += update_delta;
 		bullets[i].active = false;
-
-		if (!b.active) continue;
 
 		BULLET_RENDER_DEPTH(b.position.z);
 

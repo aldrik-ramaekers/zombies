@@ -28,6 +28,7 @@ void spawn_player(int id) {
 		players[i].guny = 0.0f;
 		players[i].gun_height = 0.0f;
 		players[i].id = id;
+		players[i].guntype = GUN_NOVA;
 		return;
 	}
 }
@@ -159,10 +160,34 @@ void take_player_input(platform_window* window) {
 		dirx /= length;
 		diry /= length;
 
-		p->gunx = p->playerx + (get_player_size_in_tile()/2) + dirx/2;
-		p->guny = p->playery + (get_player_size_in_tile()/2) + diry/2;
+		float gun_offset_x = (get_player_size_in_tile()/2) + dirx/2;
+		float gun_offset_y = (get_player_size_in_tile()/2) + diry/2;
+
+		p->gunx = p->playerx + gun_offset_x;
+		p->guny = p->playery + gun_offset_y;
 		
-		network_client_send(global_state.client, create_protocol_user_look(my_id, p->gunx, p->guny));
+		network_client_send(global_state.client, create_protocol_user_look(my_id, gun_offset_x, gun_offset_y));
+	}
+
+	// shoot
+	{
+		if (is_left_down()) {
+			float dirx = (_global_mouse.x - (window->width/2));
+			float diry = (_global_mouse.y - (window->height/2));
+			double length = sqrt(dirx * dirx + diry * diry);
+			dirx /= length;
+			diry /= length;
+
+			network_message message = create_protocol_user_shoot(my_id, dirx, diry);
+			network_client_send(global_state.client, message);
+		}
+	}
+}
+
+void update_players_server() {
+	for (int i = 0; i < max_players; i++) {
+		if (!players[i].active) continue;
+		players[i].sec_since_last_shot += update_delta;
 	}
 }
 
@@ -170,21 +195,6 @@ void draw_players_at_tile(platform_window* window, int x, int y) {
 	for (int i = 0; i < max_players; i++) {
 		if (!players[i].active) continue;
 		if ((int)players[i].playerx != x || (int)(players[i].playery+get_player_size_in_tile()) != y) continue;
-
-		players[i].sec_since_last_shot += update_delta;
-		float bullets_per_sec = 10;
-		float time_between_bullets = 1.0f/bullets_per_sec;
-		if (is_left_down()) {
-			if (players[i].sec_since_last_shot > time_between_bullets) {
-				int ix = get_my_player_index();
-				if (ix != -1) {
-					for (int i = 0; i < 3; i++) {
-						shoot(window, players[ix]);
-						players[i].sec_since_last_shot = 0.0f;
-					}
-				}
-			}
-		}
 
 		int size = get_tile_width(window) / 2;
 		map_info info = get_map_info(window);

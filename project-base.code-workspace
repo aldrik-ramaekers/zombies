@@ -62,7 +62,8 @@
 			"protocol.h": "c",
 			"queue": "cpp",
 			"streambuf": "c",
-			"game.h": "c"
+			"game.h": "c",
+			"bullets.h": "c"
 		}
 	}
 }

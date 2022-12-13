@@ -7,6 +7,7 @@
 #include "objects.h"
 #include "zombies.h"
 #include "math_helper.h"
+#include "guns.h"
 
 typedef struct t_player {
 	int id;
@@ -17,6 +18,7 @@ typedef struct t_player {
 	float gunx;
 	float guny;
 	float gun_height;
+	gun_type guntype;
 } player;
 
 #include "protocol.h"
@@ -32,5 +34,6 @@ void draw_bullets(platform_window* window);
 object check_if_player_collided_with_object(platform_window* window, player p);
 float get_player_size(platform_window* window);
 void move_user(platform_window* window, u32 id, protocol_move_type move);
+void update_players_server();
 
 #endif

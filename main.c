@@ -11,6 +11,7 @@
 #include "include/allocator.h"
 #include "include/game.h"
 #include "include/protocol.h"
+#include "include/guns.h"
 
 #include "src/map.c"
 #include "src/players.c"
@@ -22,6 +23,7 @@
 #include "src/list.c"
 #include "src/allocator.c"
 #include "src/game.c"
+#include "src/guns.c"
 #include "src/protocol.c"
 
 #define CONFIG_DIRECTORY "zombieshooter"

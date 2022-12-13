@@ -9,7 +9,7 @@
 			"request": "launch",
 			"name": "Launch(gdb)",
 			"program": "build/zombies.exe ",
-			"programArgs": "-ip 84.104.98.153 -port 27015",
+			"programArgs": "-ip 127.0.0.1 -port 27015",
 			"cwd": "${workspaceRoot}"
 		}
 	]

@@ -69,13 +69,14 @@ static void rotate_user(platform_window* window, protocol_user_look *message) {
 		return;
 	}
 
-	p->gunx = message->gunx;
-	p->guny = message->guny;
+	p->gunx = p->playerx + message->gunx;
+	p->guny = p->playery + message->guny;
 }
 
 float update_timer = 0.0f;
 void update_server(platform_window* window) {
 	update_spawners();
+	update_players_server();
 	update_zombies_server(window);
 
 	for (int i = 0; i < messages_received_on_server.length; i++) {
@@ -98,6 +99,12 @@ void update_server(platform_window* window) {
 			case MESSAGE_USER_LOOK: {
 				rotate_user(window, (protocol_user_look*)msg->message);
 			} break;
+
+			case MESSAGE_USER_SHOOT: {
+				protocol_user_shoot* shoot_msg = (protocol_user_shoot*)msg->message;
+				shoot(window, shoot_msg->id, shoot_msg->dirx, shoot_msg->diry);
+				printf("Player %d shot\n", shoot_msg->id);
+			} break;
 			
 			default:
 				log_info("Unhandled message received");
@@ -113,6 +120,7 @@ void update_server(platform_window* window) {
 	if (update_timer > 0.0f) {
 		broadcast_to_clients(create_protocol_user_list());
 		broadcast_to_clients(create_protocol_zombie_list());
+		broadcast_to_clients(create_protocol_bullets_list());
 		update_timer = 0.0f;
 	}
 
@@ -142,10 +150,16 @@ void update_client(platform_window* window) {
 			memcpy(players, msg_players->players, sizeof(players));
 			if (p) *p = copy;
 		} break;
+
 		case MESSAGE_ZOMBIE_LIST: {
 			if (global_state.server) break; // zombies are simulated on server so dont overwrite data.
 			protocol_zombie_list* msg_zombies = (protocol_zombie_list*)msg;
 			memcpy(zombies, msg_zombies->zombies, sizeof(zombies));	
+		} break;
+
+		case MESSAGE_BULLET_LIST: {
+			protocol_bullets_list* msg_bullets = (protocol_bullets_list*)msg;
+			memcpy(bullets, msg_bullets->bullets, sizeof(bullets));	
 		} break;
 		default:
 			log_info("Unhandled message received");
@@ -159,10 +173,10 @@ void update_client(platform_window* window) {
 }
 
 void update_game(platform_window* window) {
-	update_client(window);
 	if (global_state.server) {
 		update_server(window);
 	}
+	update_client(window);
 
 	if (global_state.network_state == CONNECTED) {
 		if (!global_state.server) {

@@ -28,12 +28,29 @@ network_message create_protocol_zombie_list() {
 	return network_create_message(network_buffer, sizeof(protocol_zombie_list), MAX_NETWORK_BUFFER_SIZE);
 }
 
+network_message create_protocol_bullets_list() {
+	protocol_bullets_list* buf = (protocol_bullets_list*)network_buffer;
+	buf->type = MESSAGE_BULLET_LIST;
+	memcpy(buf->bullets, bullets, sizeof(bullets));
+	return network_create_message(network_buffer, sizeof(protocol_bullets_list), MAX_NETWORK_BUFFER_SIZE);
+}
+
+
 network_message create_protocol_user_moved(protocol_move_type move, u32 id) {
 	protocol_move* buf = (protocol_move*)network_buffer;
 	buf->type = MESSAGE_USER_MOVED;
 	buf->move = move;
 	buf->id = id;
 	return network_create_message(network_buffer, sizeof(protocol_move), MAX_NETWORK_BUFFER_SIZE);
+}
+
+network_message create_protocol_user_shoot(u32 id, float dirx, float diry) {
+	protocol_user_shoot* buf = (protocol_user_shoot*)network_buffer;
+	buf->type = MESSAGE_USER_SHOOT;
+	buf->id = id;
+	buf->dirx = dirx;
+	buf->diry = diry;
+	return network_create_message(network_buffer, sizeof(protocol_user_shoot), MAX_NETWORK_BUFFER_SIZE);
 }
 
 network_message create_protocol_user_look(u32 id, float gunx, float guny) {
