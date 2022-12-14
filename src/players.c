@@ -17,7 +17,16 @@ float get_player_size(platform_window* window) {
 	int player_size = get_tile_width(window) * get_player_size_in_tile();
 }
 
-void spawn_player(int id) {
+int get_player_count() {
+	int count = 0;
+	for (int i = 0; i < max_players; i++) {
+		if (!players[i].active) continue;
+		count++;
+	}
+	return count;
+}
+
+void spawn_player(int id, network_client client) {
 	for (int i = 0; i < max_players; i++) {
 		if (players[i].active) continue;
 		players[i].active = true;
@@ -29,6 +38,7 @@ void spawn_player(int id) {
 		players[i].gun_height = 0.0f;
 		players[i].id = id;
 		players[i].guntype = GUN_MP5;
+		players[i].client = client;
 
 		gun g = get_gun_by_type(players[i].guntype);
 		players[i].total_ammo = g.max_ammunition;

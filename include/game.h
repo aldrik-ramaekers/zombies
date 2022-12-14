@@ -27,7 +27,7 @@ typedef struct t_game {
 	network_client *client;
 } game;
 
-game global_state;
+game global_state = {GAMESTATE_IDLE,DISCONNECTED,0,0};
 
 void init_game();
 

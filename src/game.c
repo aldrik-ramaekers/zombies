@@ -3,12 +3,20 @@
 
 u32 current_id = 0;
 
+static void server_on_client_disconnect(network_client c) {
+	for (int i = 0; i < max_players; i++) {
+		player p = players[i];
+		if (p.client.ConnectSocket == c.ConnectSocket) players[i].active = false;
+	}
+}
+
 void start_server(char* port) {
 	messages_received_on_server = array_create(sizeof(protocol_generic_message*));
 	array_reserve(&messages_received_on_server, 100);
 
 	global_state.server = networking_create_server();
 	global_state.server->on_message = server_on_message_received;
+	global_state.server->on_client_disconnect = server_on_client_disconnect;
 }
 
 void connect_to_server(char* ip, char* port) {
@@ -19,11 +27,19 @@ void connect_to_server(char* ip, char* port) {
 	global_state.client = network_connect_to_server(ip, port);
 	global_state.client->on_message = client_on_message_received;
 
-	if (global_state.client->is_connected) {
-		global_state.network_state = WAITING_FOR_ID;
+	if (global_state.server) {
+		my_id = current_id++;
+		spawn_player(my_id, (network_client){0, false, 0, "Host"});
+		global_state.network_state = CONNECTED;
+		printf("Server id: %d\n", my_id);
+	}
+	else {
+		if (global_state.client->is_connected) {
+			global_state.network_state = WAITING_FOR_ID;
 
-		network_message message = create_protocol_get_id_up();
-		network_client_send(global_state.client, message);
+			network_message message = create_protocol_get_id_up();
+			network_client_send(global_state.client, message);
+		}
 	}
 }
 
@@ -57,9 +73,10 @@ void destroy_game() {
 
 static void broadcast_to_clients(network_message message) {
 	if (!global_state.server || !global_state.server->is_open) return;
-	for (int i = 0; i < global_state.server->clients.length; i++) {
-		network_client* client = array_at(&global_state.server->clients, i);
-		network_client_send(client, message);
+	for (int i = 0; i < max_players; i++) {
+		player p = players[i];
+		if (!p.client.is_connected) continue;
+		if (p.active) network_client_send(&p.client, message);
 	}
 }
 
@@ -87,7 +104,8 @@ void update_server(platform_window* window) {
 		{
 			case MESSAGE_GET_ID_UPSTREAM: {
 				network_client_send(&msg->client, create_protocol_get_id_down(current_id));
-				spawn_player(current_id);
+				spawn_player(current_id, msg->client);
+
 				current_id++;
 				log_info("Player connected to server");
 			} break;
@@ -127,6 +145,22 @@ void update_server(platform_window* window) {
 	update_timer += update_delta;
 }
 
+static void apply_user_list(protocol_user_list* msg_players) {
+	player* p = get_player_by_id(my_id);
+	player copy;
+	if (p) copy = *p;
+	memcpy(players, msg_players->players, sizeof(players));
+
+	// These properties are simulated locally so dont overwrite.
+	if (p) {
+		p->playerx = copy.playerx;
+		p->playery = copy.playery;
+		p->gunx = copy.gunx;
+		p->guny = copy.guny;
+		p->gun_height = copy.gun_height;
+	}
+}
+
 void update_client(platform_window* window) {
 	for (int i = 0; i < messages_received_on_client.length; i++) {
 		protocol_generic_client_message* msg = *(protocol_generic_client_message**)array_at(&messages_received_on_client, i);
@@ -134,7 +168,6 @@ void update_client(platform_window* window) {
 		switch (msg->type)
 		{
 		case MESSAGE_GET_ID_DOWNSTREAM: {
-			if (global_state.network_state == CONNECTED) break;
 			protocol_get_id_downstream* msg_id = (protocol_get_id_downstream*)msg;
 			my_id = msg_id->id;
 			global_state.network_state = CONNECTED;
@@ -143,20 +176,9 @@ void update_client(platform_window* window) {
 		} break;
 
 		case MESSAGE_USER_LIST: {
+			if (global_state.server) break; // players are simulated on server so dont overwrite data.
 			protocol_user_list* msg_players = (protocol_user_list*)msg;
-			player* p = get_player_by_id(my_id);
-			player copy;
-			if (p) copy = *p;
-			memcpy(players, msg_players->players, sizeof(players));
-
-			// These properties are simulated locally so dont overwrite.
-			if (p) {
-				p->playerx = copy.playerx;
-				p->playery = copy.playery;
-				p->gunx = copy.gunx;
-				p->guny = copy.guny;
-				p->gun_height = copy.gun_height;
-			}
+			apply_user_list(msg_players);
 		} break;
 
 		case MESSAGE_ZOMBIE_LIST: {
@@ -182,10 +204,13 @@ void update_client(platform_window* window) {
 }
 
 void update_game(platform_window* window) {
-	update_client(window);
 	if (global_state.server) {
 		update_server(window);
 	}
+	else {
+		update_client(window);
+	}
+	
 
 	if (global_state.network_state == CONNECTED) {
 		if (!global_state.server) {
