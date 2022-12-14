@@ -13,7 +13,17 @@ void shoot(platform_window* window, u32 id, float dirx, float diry) {
 	}
 	p->sec_since_last_shot = 0.0f;
 
-	for (int i = 0; i < g.bullets_per_shot; i++)
+	int bullets_to_shoot = g.bullets_per_shot;
+	if (bullets_to_shoot > p->ammo_in_mag) bullets_to_shoot = p->ammo_in_mag;
+	p->ammo_in_mag -= bullets_to_shoot;
+	if (p->ammo_in_mag == 0) {
+		int amount_to_reload = g.magazine_size;
+		if (amount_to_reload > p->total_ammo) amount_to_reload = p->total_ammo;
+		p->total_ammo -= amount_to_reload;
+		p->ammo_in_mag = amount_to_reload;
+	}
+
+	for (int i = 0; i < bullets_to_shoot; i++)
 	{
 		map_info info = get_map_info(window);
 		float bullet_range = 100.0f;
@@ -180,8 +190,6 @@ void draw_bullets(platform_window* window) {
 		bullets[i].position.x = p->gunx;
 		bullets[i].position.y = p->guny;
 		bullets[i].position.z = p->gun_height;
-
-		printf("%d\n", i);
 		
 		if (check_if_bullet_collided_with_ground(&b, window)) {
 			bullets[i].endy = b.endy;
@@ -202,7 +210,8 @@ void draw_bullets(platform_window* window) {
 		bullets[i].alive_time += update_delta;
 		bullets[i].active = false;
 
-		BULLET_RENDER_DEPTH(b.position.z);
+		if ((int)bullets[i].position.y < (int)bullets[i].endy) { BULLET_RENDER_DEPTH((int)bullets[i].position.y); }
+		else { BULLET_RENDER_DEPTH((int)bullets[i].endy); }
 
 		float bullet_render_x = b.position.x*info.tile_width + (b.position.y*info.px_incline);
 		float bullet_render_y = b.position.y*info.tile_height - (b.position.z*info.px_raised_per_h);

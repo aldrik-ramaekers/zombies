@@ -63,7 +63,8 @@
 			"queue": "cpp",
 			"streambuf": "c",
 			"game.h": "c",
-			"bullets.h": "c"
+			"bullets.h": "c",
+			"guns.h": "c"
 		}
 	}
 }

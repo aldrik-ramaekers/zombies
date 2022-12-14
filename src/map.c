@@ -233,6 +233,8 @@ void draw_grid(platform_window* window) {
 
 		draw_objects_at_row(window, y);
 	}
+
+	draw_bullets(window);
 }
 
 inline map_info get_map_info(platform_window* window) {

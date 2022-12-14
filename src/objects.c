@@ -33,13 +33,10 @@ void draw_objects_at_row(platform_window* window, int row) {
 	for (int i = MAP_SIZE_X-1; i >= 0; i--) {
 		object o = get_object_at_tile(i, row);
 	
-		OBJECT_RENDER_DEPTH(o.h);
 		draw_players_at_tile(window, i, row);
 
+		OBJECT_RENDER_DEPTH((int)o.position.y);
 		draw_zombies_at_tile(window, i, row);
-
-		draw_bullets(window);
-		OBJECT_RENDER_DEPTH(o.h);
 		
 		if (!o.active) continue;
 		box box = get_box_of_object(window, o);

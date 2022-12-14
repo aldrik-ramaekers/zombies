@@ -12,6 +12,8 @@
 #include "include/game.h"
 #include "include/protocol.h"
 #include "include/guns.h"
+#include "include/overlay.h"
+#include "include/asset_defs.h"
 
 #include "src/map.c"
 #include "src/players.c"
@@ -25,17 +27,14 @@
 #include "src/game.c"
 #include "src/guns.c"
 #include "src/protocol.c"
+#include "src/overlay.c"
+#include "src/asset_defs.c"
 
 #define CONFIG_DIRECTORY "zombieshooter"
 
-font* fnt;
 void update_func(platform_window* window) {
 	renderer->render_clear(window, rgb(0,255,0));
 	update_game(window);
-
-	char id[50];
-	sprintf(id, "%d", my_id);
-	renderer->render_text(fnt, 0, 0, id, rgb(255,255,255));
 }
 
 
@@ -71,8 +70,6 @@ int main(int argc, char **argv)
 
 	init_game();
 	handle_args(argc, argv);
-
-	fnt = assets_load_font(mono_ttf, mono_ttf+mono_ttf_len, 24);
 
     while(platform_keep_running(window)) {
         platform_handle_events();

@@ -11,6 +11,7 @@ typedef enum t_gun_type {
 
 typedef struct t_gun {
 	gun_type type;
+	char* name;
 	int magazine_size;
 	int max_ammunition;
 	float bullet_spread;
@@ -19,9 +20,9 @@ typedef struct t_gun {
 } gun;
 
 gun guns[GUN_ALL] = {
-	{GUN_DESERTEAGLE, 8, 64, 0.0f, 1, 4.0f},
-	{GUN_MP5, 30, 120, 0.1f, 1, 10.0f},
-	{GUN_NOVA, 12, 80, 0.2f, 3, 1.2f},
+	{GUN_DESERTEAGLE, "Desert Eagle", 8, 64, 0.0f, 1, 4.0f},
+	{GUN_MP5, "MP5", 30, 120, 0.1f, 1, 10.0f},
+	{GUN_NOVA, "Nova", 12, 80, 0.2f, 3, 1.2f},
 };
 
 gun get_gun_by_type(gun_type type);

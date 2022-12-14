@@ -10,6 +10,7 @@
 #define MAP_RENDER_DEPTH renderer->set_render_depth(1);
 #define BULLET_RENDER_DEPTH(_h) renderer->set_render_depth(5 + ceil(_h));
 #define OBJECT_RENDER_DEPTH(_h) renderer->set_render_depth(5 + ceil(_h));
+#define OVERLAY_RENDER_DEPTH() renderer->set_render_depth(100);
 
 bool onSegment(vec2f p, vec2f q, vec2f r);
 int orientation(vec2f p, vec2f q, vec2f r);

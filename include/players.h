@@ -18,12 +18,16 @@ typedef struct t_player {
 	float gunx;
 	float guny;
 	float gun_height;
+	int total_ammo;
+	int ammo_in_mag;
 	gun_type guntype;
 } player;
 
 #include "protocol.h"
 
-u32 my_id = 1;
+u32 my_id = -1;
+
+camera _next_camera_pos;
 
 int max_players = 10;
 player players[10] = {0};

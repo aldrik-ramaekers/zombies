@@ -28,7 +28,11 @@ void spawn_player(int id) {
 		players[i].guny = 0.0f;
 		players[i].gun_height = 0.0f;
 		players[i].id = id;
-		players[i].guntype = GUN_NOVA;
+		players[i].guntype = GUN_MP5;
+
+		gun g = get_gun_by_type(players[i].guntype);
+		players[i].total_ammo = g.max_ammunition;
+		players[i].ammo_in_mag = g.magazine_size;
 		return;
 	}
 }
@@ -196,6 +200,8 @@ void draw_players_at_tile(platform_window* window, int x, int y) {
 		if (!players[i].active) continue;
 		if ((int)players[i].playerx != x || (int)(players[i].playery+get_player_size_in_tile()) != y) continue;
 
+		OBJECT_RENDER_DEPTH((int)(players[i].playery+get_player_size_in_tile()));
+
 		int size = get_tile_width(window) / 2;
 		map_info info = get_map_info(window);
 		float height = get_height_of_tile_under_coords(window, players[i].playerx, players[i].playery);
@@ -211,8 +217,8 @@ void draw_players_at_tile(platform_window* window, int x, int y) {
 		renderer->render_rectangle(gun_render_x, gun_render_y, size/4, size/4, rgb(20,255,20));
 
 		if (players[i].id == my_id) {
-			_global_camera.x = -(window->width / 2) + player_render_x;
-			_global_camera.y = -(window->height / 2) + player_render_y;
+			_next_camera_pos.x = -(window->width / 2) + player_render_x;
+			_next_camera_pos.y = -(window->height / 2) + player_render_y;
 		}
 	}
 }

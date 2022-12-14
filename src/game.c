@@ -46,6 +46,7 @@ void init_game() {
 	global_state.state = IDLE;
 	global_state.network_state = DISCONNECTED;
 	
+	load_assets();
 	load_map();
 }
 
@@ -103,7 +104,6 @@ void update_server(platform_window* window) {
 			case MESSAGE_USER_SHOOT: {
 				protocol_user_shoot* shoot_msg = (protocol_user_shoot*)msg->message;
 				shoot(window, shoot_msg->id, shoot_msg->dirx, shoot_msg->diry);
-				printf("Player %d shot\n", shoot_msg->id);
 			} break;
 			
 			default:
@@ -148,7 +148,15 @@ void update_client(platform_window* window) {
 			player copy;
 			if (p) copy = *p;
 			memcpy(players, msg_players->players, sizeof(players));
-			if (p) *p = copy;
+
+			// These properties are simulated locally so dont overwrite.
+			if (p) {
+				p->playerx = copy.playerx;
+				p->playery = copy.playery;
+				p->gunx = copy.gunx;
+				p->guny = copy.guny;
+				p->gun_height = copy.gun_height;
+			}
 		} break;
 
 		case MESSAGE_ZOMBIE_LIST: {
@@ -158,6 +166,7 @@ void update_client(platform_window* window) {
 		} break;
 
 		case MESSAGE_BULLET_LIST: {
+			if (global_state.server) break; // bullets are simulated on server so dont overwrite data.
 			protocol_bullets_list* msg_bullets = (protocol_bullets_list*)msg;
 			memcpy(bullets, msg_bullets->bullets, sizeof(bullets));	
 		} break;
@@ -173,10 +182,10 @@ void update_client(platform_window* window) {
 }
 
 void update_game(platform_window* window) {
+	update_client(window);
 	if (global_state.server) {
 		update_server(window);
 	}
-	update_client(window);
 
 	if (global_state.network_state == CONNECTED) {
 		if (!global_state.server) {
@@ -186,5 +195,9 @@ void update_game(platform_window* window) {
 
 		draw_grid(window);
 		draw_spawners(window);
+		draw_overlay(window);
+
+		_global_camera.x = (int)_next_camera_pos.x;
+		_global_camera.y = (int)_next_camera_pos.y;
 	}
 }
