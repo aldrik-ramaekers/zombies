@@ -113,6 +113,8 @@ static void set_ping_for_player(protocol_generic_message* msg) {
 
 float update_timer = 0.0f;
 void update_server(platform_window* window) {
+	clear_bullets();
+	
 	for (int i = 0; i < messages_received_on_server.length; i++) {
 		protocol_generic_message* msg = *(protocol_generic_message**)array_at(&messages_received_on_server, i);
 		set_ping_for_player(msg);
@@ -157,15 +159,10 @@ void update_server(platform_window* window) {
 	update_players_server();
 	update_zombies_server(window);
 
-	if (update_timer > 0.0f) {
-		broadcast_to_clients(create_protocol_user_list());
-		broadcast_to_clients(create_protocol_zombie_list());
-		broadcast_to_clients(create_protocol_bullets_list());
-		broadcast_to_clients(create_protocol_drop_list());
-		update_timer = 0.0f;
-	}
-
-	update_timer += update_delta;
+	broadcast_to_clients(create_protocol_user_list());
+	broadcast_to_clients(create_protocol_zombie_list());
+	broadcast_to_clients(create_protocol_bullets_list());
+	broadcast_to_clients(create_protocol_drop_list());
 }
 
 static void apply_user_list(protocol_user_list* msg_players) {
@@ -184,7 +181,20 @@ static void apply_user_list(protocol_user_list* msg_players) {
 	}
 }
 
+static void load_bullets_into_existing_list(protocol_bullets_list* msg_bullets) {
+	for (int i = 0; i < max_bullets; i++) {
+		if (bullets[i].active) continue;
+		for (int x = 0; x < max_bullets; x++) {
+			if (!msg_bullets->bullets[x].active) continue;
+			bullets[i] = msg_bullets->bullets[x];
+			msg_bullets->bullets[x].active = false;
+		}
+	}
+}
+
 void update_client(platform_window* window) {
+	clear_bullets();
+
 	for (int i = 0; i < messages_received_on_client.length; i++) {
 		protocol_generic_client_message* msg = *(protocol_generic_client_message**)array_at(&messages_received_on_client, i);
 
@@ -194,7 +204,7 @@ void update_client(platform_window* window) {
 			protocol_get_id_downstream* msg_id = (protocol_get_id_downstream*)msg;
 			player_id = msg_id->id;
 			global_state.network_state = CONNECTED;
-			log_infox("Id received: %d", player_id);
+			log_infox("Id received: %u", player_id);
 		} break;
 
 		case MESSAGE_USER_LIST: {
@@ -212,7 +222,7 @@ void update_client(platform_window* window) {
 		case MESSAGE_BULLET_LIST: {
 			if (global_state.server) break; // bullets are simulated on server so dont overwrite data.
 			protocol_bullets_list* msg_bullets = (protocol_bullets_list*)msg;
-			memcpy(bullets, msg_bullets->bullets, sizeof(bullets));	
+			load_bullets_into_existing_list(msg_bullets);
 		} break;
 
 		case MESSAGE_DROP_LIST: {

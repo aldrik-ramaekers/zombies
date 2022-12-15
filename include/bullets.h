@@ -20,6 +20,7 @@ typedef struct t_bullet {
 bullet bullets[500] = {0};
 int max_bullets = 500;
 
+void clear_bullets();
 void shoot(platform_window* window, u32 id, float dirx, float diry);
 void draw_bullets(platform_window* window);
 

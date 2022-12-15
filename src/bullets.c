@@ -180,6 +180,12 @@ static bool check_if_bullet_collided_with_ground(bullet *b, platform_window* win
 	return false;
 }
 
+void clear_bullets() {
+	for (int i = 0; i < max_bullets; i++) {
+		bullets[i].active = false;
+	}
+}
+
 void update_bullets(platform_window* window) {
 	for (int i = 0; i < max_bullets; i++) {
 		bullet b = bullets[i];
@@ -229,7 +235,5 @@ void draw_bullets(platform_window* window) {
 		float bullet_render_y_end = b.endy*info.tile_height - (b.position.z*info.px_raised_per_h);
 
 		renderer->render_line(bullet_render_x, bullet_render_y, bullet_render_x_end, bullet_render_y_end, 5, rgb(255, 51, 51));
-
-		bullets[i].active = false;
 	}
 }
