@@ -24,7 +24,7 @@ static player get_closest_player_to_tile(int x, int y) {
 }
 
 void spawn_zombie(int x, int y) {
-	for (int i = 0; i < max_zombies; i++) {
+	for (int i = 0; i < MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (o.alive) continue;
 
@@ -46,7 +46,7 @@ void spawn_zombie(int x, int y) {
 }
 
 void update_spawners() {
-	for (int x = 0; x < 1; x++) {
+	for (int x = 0; x < MAX_SPAWNERS; x++) {
 		spawner spawner = spawner_tiles[x];
 		spawner_tiles[x].sec_since_last_spawn += update_delta;
 		if (spawner_tiles[x].sec_since_last_spawn >= 2.0f) {
@@ -59,7 +59,7 @@ void update_spawners() {
 void draw_spawners(platform_window* window) {
 	map_info info = get_map_info(window);
 
-	for (int x = 0; x < 1; x++) {
+	for (int x = 0; x < MAX_SPAWNERS; x++) {
 		spawner spawner = spawner_tiles[x];
 		int render_x = (info.tile_width * spawner.position.x) + (info.px_incline * spawner.position.y);
 		int render_y = info.tile_height * spawner.position.y;
@@ -138,7 +138,7 @@ static bool is_within_next_tile(zombie o) {
 
 void update_zombies_client(platform_window* window) {
 	float speed = 0.05f;
-	for (int i = 0; i < max_zombies; i++) {
+	for (int i = 0; i < MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
 		if (o.next2tiles[0].x == -1 || o.next2tiles[0].y == -1) continue; // ran out of stored path.
@@ -160,7 +160,7 @@ void update_zombies_client(platform_window* window) {
 void update_zombies_server(platform_window* window) {
 	float speed = 0.05f;
 
-	for (int i = 0; i < max_zombies; i++) {
+	for (int i = 0; i < MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
 
@@ -208,11 +208,10 @@ void update_zombies_server(platform_window* window) {
 void draw_zombies(platform_window* window) {
 	map_info info = get_map_info(window);
 
-	for (int i = 0; i < max_zombies; i++) {
+	for (int i = 0; i < MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
 
-		//if ((int)o.position.x != x || (int)ceil(o.position.y) != y) continue;
 		OBJECT_RENDER_DEPTH((int)o.position.y);
 
 		box box = get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, o.position.z}, o.size);
@@ -221,7 +220,7 @@ void draw_zombies(platform_window* window) {
 		render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, rgb(200,200,0));
 		render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgb(200,200,0));
 
-		if (global_state.server) draw_path_of_zombie(window, o);
+		//if (global_state.server) draw_path_of_zombie(window, o);
 	}
 }
 

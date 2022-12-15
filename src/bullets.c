@@ -112,7 +112,7 @@ bool check_if_bullet_collided_with_zombie(bullet b, platform_window* window, boo
 	float dist_of_closest_intersect = __FLT_MAX__;
 	int index_of_closest_zombie = -1;
 	
-	for (int i = 0; i < max_zombies; i++) {
+	for (int i = 0; i < MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
 
@@ -203,7 +203,6 @@ void update_bullets(platform_window* window) {
 		}
 		
 		if (check_if_bullet_collided_with_zombie(b, window, true)) {
-			bullets[i].active = false;
 			p->kills++;
 		}
 
@@ -229,7 +228,7 @@ void draw_bullets(platform_window* window) {
 		float bullet_render_x_end = b.endx*info.tile_width + (b.endy*info.px_incline);
 		float bullet_render_y_end = b.endy*info.tile_height - (b.position.z*info.px_raised_per_h);
 
-		renderer->render_line(bullet_render_x, bullet_render_y, bullet_render_x_end, bullet_render_y_end, 2, rgb(0,255,100));
+		renderer->render_line(bullet_render_x, bullet_render_y, bullet_render_x_end, bullet_render_y_end, 5, rgb(255, 51, 51));
 
 		bullets[i].active = false;
 	}

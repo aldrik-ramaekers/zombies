@@ -161,6 +161,7 @@ void update_server(platform_window* window) {
 		broadcast_to_clients(create_protocol_user_list());
 		broadcast_to_clients(create_protocol_zombie_list());
 		broadcast_to_clients(create_protocol_bullets_list());
+		broadcast_to_clients(create_protocol_drop_list());
 		update_timer = 0.0f;
 	}
 
@@ -205,13 +206,19 @@ void update_client(platform_window* window) {
 		case MESSAGE_ZOMBIE_LIST: {
 			if (global_state.server) break; // zombies are simulated on server so dont overwrite data.
 			protocol_zombie_list* msg_zombies = (protocol_zombie_list*)msg;
-			memcpy(zombies, msg_zombies->zombies, sizeof(zombies));	
+			memcpy(zombies, msg_zombies->zombies, sizeof(zombies));
 		} break;
 
 		case MESSAGE_BULLET_LIST: {
 			if (global_state.server) break; // bullets are simulated on server so dont overwrite data.
 			protocol_bullets_list* msg_bullets = (protocol_bullets_list*)msg;
 			memcpy(bullets, msg_bullets->bullets, sizeof(bullets));	
+		} break;
+
+		case MESSAGE_DROP_LIST: {
+			if (global_state.server) break; // drops are simulated on server so dont overwrite data.
+			protocol_drop_list* msg_drops = (protocol_drop_list*)msg;
+			memcpy(drops, msg_drops->drops, sizeof(drops));	
 		} break;
 		default:
 			log_info("Unhandled message received");

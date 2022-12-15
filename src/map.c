@@ -193,25 +193,25 @@ void draw_grid(platform_window* window) {
 			int highest_point_bottomleft = tile.bottomleft;
 			bottomleft = (vec2f){render_x + xdiff_between_bottom_and_top, info.tile_height * y + info.tile_height - highest_point_bottomleft*info.px_raised_per_h};
 
-			int r = 220;
+			color c = rgb(128, 64, 0);
 			if (highest_point_topleft > highest_point_bottomleft || highest_point_topright > highest_point_bottomright ||
 				highest_point_topleft > highest_point_bottomright || highest_point_topright > highest_point_bottomleft ||
-				highest_point_topright > highest_point_topleft || highest_point_bottomright > highest_point_bottomleft) r = 180;
+				highest_point_topright > highest_point_topleft || highest_point_bottomright > highest_point_bottomleft) c = rgb(108, 64, 0);
 			if (highest_point_topleft < highest_point_bottomleft || highest_point_topright < highest_point_bottomright ||
-				highest_point_topleft > highest_point_topright) r = 240;
+				highest_point_topleft > highest_point_topright) c = rgb(148, 64, 0);
 
 			renderer->render_quad(
 				topleft.x, topleft.y, 
 				bottomleft.x, bottomleft.y, 
 				bottomright.x, bottomright.y, 
 				topright.x, topright.y, 
-				rgb(r,0,0));
+				c);
 
 			if (highest_point_topleft != highest_point_bottomright && highest_point_bottomleft == highest_point_topright) {
 				if (highest_point_bottomleft < highest_point_topleft || highest_point_bottomleft < highest_point_bottomright) {
 					renderer->render_tri(topleft.x, topleft.y, 
 						bottomleft.x, bottomleft.y, 
-						bottomright.x, bottomright.y, rgb(180,0,0));
+						bottomright.x, bottomright.y, rgb(108, 64, 0));
 				}
 				renderer->render_line(topleft.x, topleft.y, bottomright.x, bottomright.y, 1, rgb(0,0,255)); // diag
 			}

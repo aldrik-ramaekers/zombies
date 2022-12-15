@@ -24,14 +24,16 @@ typedef struct t_spawner {
 	float sec_since_last_spawn;
 } spawner;
 
+#define MAX_SPAWNERS (3)
 // data data that is stored on disk
-spawner spawner_tiles[2] = {
+spawner spawner_tiles[MAX_SPAWNERS] = {
 	{15, 5, 999},
 	{3, 8, 999},
+	{11, 18, 999},
 };
 
-zombie zombies[20] = {0};
-int max_zombies = 20;
+#define MAX_ZOMBIES (50)
+zombie zombies[MAX_ZOMBIES] = {0};
 
 void draw_spawners(platform_window* window);
 void draw_zombies(platform_window* window);

@@ -75,13 +75,13 @@ void draw_drops(platform_window* window) {
 }
 
 void spawn_drop(vec3f pos) {
-	static int drop_percentage = 100;
+	static int drop_percentage = 15;
 	int val = rand() % (100 + 1);
 	if (val > drop_percentage) {
 		drop_percentage += 2;
 		return;
 	}
-	drop_percentage = 100;
+	drop_percentage = 15;
 
 	for (int i = 0; i < MAX_DROPS; i++) {
 		drop b = drops[i];

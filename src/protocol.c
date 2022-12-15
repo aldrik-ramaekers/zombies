@@ -41,6 +41,15 @@ network_message create_protocol_bullets_list()
 	return network_create_message(network_buffer, sizeof(protocol_bullets_list), MAX_NETWORK_BUFFER_SIZE);
 }
 
+network_message create_protocol_drop_list()
+{
+	protocol_drop_list *buf = (protocol_drop_list *)network_buffer;
+	buf->type = MESSAGE_DROP_LIST;
+	memcpy(buf->drops, drops, sizeof(drops));
+	return network_create_message(network_buffer, sizeof(protocol_drop_list), MAX_NETWORK_BUFFER_SIZE);
+}
+
+
 network_message create_protocol_user_moved(protocol_move_type move, u32 id)
 {
 	protocol_move *buf = (protocol_move *)network_buffer;

@@ -13,6 +13,7 @@ typedef enum t_network_message_type
 	MESSAGE_ZOMBIE_LIST,
 	MESSAGE_USER_SHOOT,
 	MESSAGE_BULLET_LIST,
+	MESSAGE_DROP_LIST,
 } network_message_type;
 
 typedef struct t_protocol_generic_client_message
@@ -45,11 +46,19 @@ typedef struct t_protocol_user_list
 	player players[10];
 } protocol_user_list;
 
+#include "zombies.h"
 typedef struct t_protocol_zombie_list
 {
 	network_message_type type;
-	zombie zombies[20];
+	zombie zombies[MAX_ZOMBIES];
 } protocol_zombie_list;
+
+#include "drops.h"
+typedef struct t_protocol_drop_list
+{
+	network_message_type type;
+	drop drops[MAX_DROPS];
+} protocol_drop_list;
 
 typedef enum t_protocol_move_type
 {
@@ -100,6 +109,7 @@ network_message create_protocol_user_look(u32 id, float gunx, float guny);
 network_message create_protocol_user_shoot(u32 id, float dirx, float diry);
 network_message create_protocol_zombie_list();
 network_message create_protocol_bullets_list();
+network_message create_protocol_drop_list();
 
 array messages_received_on_server;
 array messages_received_on_client;
