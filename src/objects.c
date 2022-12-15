@@ -18,11 +18,11 @@ void render_quad_with_outline(vec2f tl, vec2f tr, vec2f bl, vec2f br, color c) {
 	renderer->render_line(bl.x, bl.y, br.x, br.y, 1, rgb(0,0,255)); // bottom
 }
 
-object get_object_at_tile(int x, int y) {
+object get_object_at_tile(float x, float y) {
 	for (int i = 0; i < max_objects; i++) {
 		object o = objects[i];
-		if (!o.active) continue;
-		if (o.position.x == x && o.position.y == y) return o;
+		if (!o.active) continue;	
+		if (x >= o.position.x && x < o.position.x + o.size.x && y >= o.position.y && y < o.position.y + o.size.y) return o;
 	}
 	return (object){0};
 }

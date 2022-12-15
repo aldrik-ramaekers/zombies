@@ -18,7 +18,7 @@ void start_server(char* port) {
 }
 
 static u32 get_session_id() {
-	u32 time = platform_get_time(TIME_NS, TIME_FULL);
+	u64 time = platform_get_time(TIME_NS, TIME_FULL);
 	return (((time * 2654435789U) + time) * 2654435789U) + platform_get_processid();
 	
 }
@@ -249,10 +249,9 @@ void update_game(platform_window* window) {
 		update_client(window);
 	}
 	
-
 	if (global_state.network_state == CONNECTED) {
 		if (!global_state.server) {
-			update_zombies_client(window);
+			update_zombies_client(window); // move to update_client?
 		}
 		take_player_input(window);
 

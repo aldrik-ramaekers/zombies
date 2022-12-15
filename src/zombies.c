@@ -40,7 +40,7 @@ void spawn_zombie(int x, int y) {
 		
 		player closest_player = get_closest_player_to_tile(x, y);
 
-		make_pathfinding_request((vec2f){x,y}, (vec2f){closest_player.playerx, closest_player.playery}, &zombies[i].path, &zombies[i].request);
+		make_pathfinding_request((vec2f){x,y}, (vec2f){closest_player.playerx, closest_player.playery}, &zombies[i].next_path, &zombies[i].request);
 		break;
 	}
 }
@@ -157,6 +157,21 @@ void update_zombies_client(platform_window* window) {
 	}
 }
 
+static vec2f get_random_point_around_player(player p, zombie o) {
+	 // Convert from degrees to radians via multiplication by PI/180     
+
+	try_again:;
+	float radius = 0.8f, angleInDegrees = (rand() % 360);
+	vec2f origin = (vec2f){o.position.x, o.position.y}; 
+	float x = (float)(radius * cos(angleInDegrees * M_PI / 180.0f)) + p.playerx;
+	float y = (float)(radius * sin(angleInDegrees * M_PI / 180.0f)) + p.playery;
+
+	object obj = get_object_at_tile(x, y);
+	if (obj.active) goto try_again;
+	
+	return (vec2f){x, y};
+}
+
 void update_zombies_server(platform_window* window) {
 	float speed = 0.05f;
 
@@ -167,9 +182,9 @@ void update_zombies_server(platform_window* window) {
 		zombies[i].time_since_last_path += update_delta;
 		if (zombies[i].time_since_last_path > 0.05f) {
 			player closest_player = get_closest_player_to_tile((int)o.position.x, (int)o.position.y);
-			make_pathfinding_request((vec2f){o.position.x,o.position.y}, 
-				(vec2f){closest_player.playerx, closest_player.playery + get_player_size_in_tile()}, 
-				&zombies[i].next_path, &zombies[i].request);
+			vec2f target_tile = (vec2f){closest_player.playerx, closest_player.playery+(get_player_size_in_tile()/2)};
+
+			make_pathfinding_request((vec2f){o.position.x,o.position.y}, target_tile, &zombies[i].next_path, &zombies[i].request);
 			zombies[i].time_since_last_path = 0;
 		}
 		else {
@@ -177,8 +192,12 @@ void update_zombies_server(platform_window* window) {
 			{
 				if (zombies[i].request.to_fill->length) {
 					array_destroy(&zombies[i].path);
-					zombies[i].path = array_copy(&zombies[i].next_path);
-					array_clear(&zombies[i].next_path);
+					zombies[i].path = array_copy(zombies[i].request.to_fill);
+					
+					player closest_player = get_closest_player_to_tile((int)o.position.x, (int)o.position.y);
+					vec2f final_pos = get_random_point_around_player(closest_player, zombies[i]);
+					array_push_at(&zombies[i].path, (u8*)&final_pos, 0);
+					array_clear(zombies[i].request.to_fill);
 				}
 			}
 			mutex_unlock(&zombies[i].request.mutex);

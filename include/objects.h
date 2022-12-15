@@ -31,6 +31,7 @@ typedef struct t_box {
 int max_objects = 150;
 object objects[150];
 
+object get_object_at_tile(float x, float y);
 void create_objects();
 void draw_objects_at_row(platform_window* window, int row);
 box get_box_of_object(platform_window* window, object o);
