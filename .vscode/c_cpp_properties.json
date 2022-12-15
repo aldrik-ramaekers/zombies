@@ -4,7 +4,8 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:\\mingw\\mingw64\\x86_64-w64-mingw32\\include"
+                "C:\\mingw\\mingw64\\x86_64-w64-mingw32\\include",
+				"C:\\Users\\aldri\\Desktop\\Vault\\Projects\\project-base\\src"
             ],
             "defines": [
                 "_DEBUG",

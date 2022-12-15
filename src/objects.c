@@ -4,13 +4,13 @@ box get_box_of_object(platform_window* window, object o) {
 	return get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, o.h}, o.size);
 }
 
-void render_quad_with_outline(vec2f tl, vec2f tr, vec2f bl, vec2f br) {
+void render_quad_with_outline(vec2f tl, vec2f tr, vec2f bl, vec2f br, color c) {
 	renderer->render_quad(
 			tl.x, tl.y, 
 			bl.x, bl.y, 
 			br.x, br.y, 
 			tr.x, tr.y, 
-			rgb(200,200,0));
+			c);
 
 	renderer->render_line(tl.x, tl.y, tr.x, tr.y, 1, rgb(0,0,255)); // top
 	renderer->render_line(tl.x, tl.y, bl.x, bl.y, 1, rgb(0,0,255)); // left
@@ -32,18 +32,15 @@ void draw_objects_at_row(platform_window* window, int row) {
 
 	for (int i = MAP_SIZE_X-1; i >= 0; i--) {
 		object o = get_object_at_tile(i, row);
-	
-		draw_players_at_tile(window, i, row);
 
 		OBJECT_RENDER_DEPTH((int)o.position.y);
-		draw_zombies_at_tile(window, i, row);
 		
 		if (!o.active) continue;
 		box box = get_box_of_object(window, o);
-		render_quad_with_outline(box.tl_b, box.tr_b, box.bl_b, box.br_b);
-		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u);
-		render_quad_with_outline(box.tl_u, box.tl_b, box.bl_u, box.bl_b);
-		render_quad_with_outline(box.bl_u, box.br_u, box.bl_b, box.br_b);
+		render_quad_with_outline(box.tl_b, box.tr_b, box.bl_b, box.br_b, rgb(200,200,0));
+		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgb(200,200,0));
+		render_quad_with_outline(box.tl_u, box.tl_b, box.bl_u, box.bl_b, rgb(200,200,0));
+		render_quad_with_outline(box.bl_u, box.br_u, box.bl_b, box.br_b, rgb(200,200,0));
 	}
 }
 

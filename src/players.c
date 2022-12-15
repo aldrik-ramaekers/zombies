@@ -38,6 +38,7 @@ void spawn_player(int id, network_client client) {
 		players[i].gun_height = 0.0f;
 		players[i].id = id;
 		players[i].guntype = GUN_MP5;
+		players[i].height = 0.0f;
 		players[i].client = client;
 
 		gun g = get_gun_by_type(players[i].guntype);
@@ -63,7 +64,7 @@ void move_user(platform_window* window, u32 id, protocol_move_type move) {
 		if (is_in_bounds(p->playerx, newy)) {
 			p->playery = newy;
 			object o = check_if_player_collided_with_object(window, *p);
-			if (o.active) p->playery = o.position.y+o.size.y - get_player_size_in_tile() + pad_between_player_and_obj;
+			if (o.active) p->playery = o.position.y+o.size.y + pad_between_player_and_obj;
 		}
 	}
 
@@ -103,6 +104,17 @@ player* get_player_by_id(u32 id) {
 	return 0;
 }
 
+bool check_if_player_collided_with_box(player p, box o) {
+	float player_size = get_player_size_in_tile();
+
+	box pbox = get_box_of_square((vec3f){p.playerx, p.playery, p.height}, (vec3f){player_size,player_size,0.8f});
+
+	// [x1, y1, x2, y2]
+	bool b1 = min(pbox.br_u.x, o.br_b.x) > max(pbox.tl_u.x, o.tl_u.x);
+	bool b2 = min(pbox.br_u.y, o.br_b.y) > max(pbox.tl_u.y, o.tl_u.y);
+	return b1 && b2;
+}
+
 object check_if_player_collided_with_object(platform_window* window, player p) {
 	map_info info = get_map_info(window);
 	float player_size = get_player_size(window);
@@ -111,13 +123,7 @@ object check_if_player_collided_with_object(platform_window* window, player p) {
 		object o = objects[i];
 		if (!o.active) continue;
 
-		box box = get_box_of_object(window, o);
-		float x_to_check = p.playerx;
-		float player_size_in_tile_px = player_size / (float)info.tile_width;
-		float y_to_check = p.playery + player_size_in_tile_px;
-
-		if (x_to_check+player_size_in_tile_px >= o.position.x && x_to_check <= o.position.x+o.size.x
-		 && y_to_check >= o.position.y && y_to_check <= o.position.y+o.size.y) {
+		if (check_if_player_collided_with_box(p, get_box_of_square((vec3f){o.position.x, o.position.y, o.h}, o.size))) {
 			return o;
 		}
 	}
@@ -205,20 +211,28 @@ void update_players_server() {
 	}
 }
 
-void draw_players_at_tile(platform_window* window, int x, int y) {
+void draw_players(platform_window* window) {
+	float size = get_player_size_in_tile();
 	for (int i = 0; i < max_players; i++) {
 		if (!players[i].active) continue;
-		if ((int)players[i].playerx != x || (int)(players[i].playery+get_player_size_in_tile()) != y) continue;
 
-		OBJECT_RENDER_DEPTH((int)(players[i].playery+get_player_size_in_tile()));
+		OBJECT_RENDER_DEPTH((int)(players[i].playery));
+
+		float height = get_height_of_tile_under_coords(window, players[i].playerx, players[i].playery);
+		players[i].height = height;
+
+		box box = get_render_box_of_square(window, (vec3f){players[i].playerx, players[i].playery, height}, (vec3f){size,size,0.8f});
+		render_quad_with_outline(box.tl_b, box.tr_b, box.bl_b, box.br_b, rgb(200,150,120));
+		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgb(200,150,120));
+		render_quad_with_outline(box.tl_u, box.tl_b, box.bl_u, box.bl_b, rgb(200,150,120));
+		render_quad_with_outline(box.bl_u, box.br_u, box.bl_b, box.br_b, rgb(200,150,120));
 
 		int size = get_tile_width(window) / 2;
 		map_info info = get_map_info(window);
-		float height = get_height_of_tile_under_coords(window, players[i].playerx, players[i].playery);
+
 
 		float player_render_x = players[i].playerx*info.tile_width + (players[i].playery*info.px_incline);
 		float player_render_y = players[i].playery*info.tile_height - (height*info.px_raised_per_h);
-		renderer->render_rectangle(player_render_x, player_render_y, size, size, rgb(200,150,120));
 
 		players[i].gun_height = height+0.5;
 		float gun_render_x = players[i].gunx*info.tile_width + (players[i].guny*info.px_incline);

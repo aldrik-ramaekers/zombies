@@ -96,8 +96,7 @@ vec2f get_intersection_point(vec2f A, vec2f B, vec2f C, vec2f D) {
     }
 }
 
-box get_box_of_square(platform_window* window, vec3f position, vec3f size) {
-	map_info info = get_map_info(window);
+box get_box_of_square(vec3f position, vec3f size) {
 	vec2f rendertl = (vec2f){position.x, position.y};
 	vec2f rendertr = (vec2f){position.x + size.x, position.y};
 	vec2f renderbr = (vec2f){position.x + size.x, position.y + size.y};

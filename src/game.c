@@ -91,14 +91,30 @@ static void rotate_user(platform_window* window, protocol_user_look *message) {
 	p->guny = p->playery + message->guny;
 }
 
+static void set_ping_for_player(protocol_generic_message* msg) {
+	u64 diff = platform_get_time(TIME_MS, TIME_PROCESS) - msg->send_timestamp;
+
+	for (int i = 0; i < max_players; i++) {
+		player p = players[i];
+		if (!p.client.is_connected) continue;
+		if (!p.active) continue;
+		if (p.client.ConnectSocket == msg->client.ConnectSocket) {
+			players[i].ping = diff;
+			return;
+		}
+	}
+}
+
 float update_timer = 0.0f;
 void update_server(platform_window* window) {
 	update_spawners();
+	update_drops();
 	update_players_server();
 	update_zombies_server(window);
 
 	for (int i = 0; i < messages_received_on_server.length; i++) {
 		protocol_generic_message* msg = *(protocol_generic_message**)array_at(&messages_received_on_server, i);
+		set_ping_for_player(msg);
 
 		switch (msg->message->type)
 		{
@@ -219,6 +235,10 @@ void update_game(platform_window* window) {
 		take_player_input(window);
 
 		draw_grid(window);
+		draw_drops(window);
+		draw_bullets(window);
+		draw_zombies(window);
+		draw_players(window);
 		draw_spawners(window);
 		draw_overlay(window);
 

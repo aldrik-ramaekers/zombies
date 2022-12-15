@@ -79,7 +79,7 @@ bool check_if_bullet_collided_with_object(bullet* b, platform_window* window) {
 		object o = objects[i];
 		if (!o.active) continue;
 		if (b->position.z <= o.h + o.size.z && b->position.z >= o.h) {
-			box obj_box = get_box_of_square(window, (vec3f){o.position.x, o.position.y, o.h}, o.size);
+			box obj_box = get_box_of_square((vec3f){o.position.x, o.position.y, o.h}, o.size);
 			vec2f intersect_point;
 			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.bl_b, obj_box.br_b, &intersect_point)) {
 				result = true;
@@ -121,7 +121,7 @@ bool check_if_bullet_collided_with_zombie(bullet b, platform_window* window, boo
 
 		if (b.position.z <= o.position.z + o.size.z && b.position.z >= o.position.z) {
 			vec2f intersect_point;
-			box obj_box = get_box_of_square(window, (vec3f){o.position.x, o.position.y, o.position.z}, o.size);
+			box obj_box = get_box_of_square((vec3f){o.position.x, o.position.y, o.position.z}, o.size);
 			bool this_zombie_collided = false;
 			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.bl_b, obj_box.br_b, &intersect_point)) {
 				this_zombie_collided = true;
@@ -147,6 +147,7 @@ bool check_if_bullet_collided_with_zombie(bullet b, platform_window* window, boo
 	}
 
 	if (kill_if_collided && result) {
+		spawn_drop(zombies[index_of_closest_zombie].position);
 		zombies[index_of_closest_zombie].alive = false;
 		return result;
 	}
@@ -187,6 +188,7 @@ void draw_bullets(platform_window* window) {
 		bullet b = bullets[i];
 		if (!b.active) continue;
 		player *p = get_player_by_id(b.player_id);
+		if (!p) continue; // Bullet from inactive player?
 		bullets[i].position.x = p->gunx;
 		bullets[i].position.y = p->guny;
 		bullets[i].position.z = p->gun_height;
@@ -205,6 +207,7 @@ void draw_bullets(platform_window* window) {
 		
 		if (check_if_bullet_collided_with_zombie(b, window, true)) {
 			bullets[i].active = false;
+			p->kills++;
 		}
 
 		bullets[i].alive_time += update_delta;

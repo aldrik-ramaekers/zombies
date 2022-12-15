@@ -34,7 +34,7 @@ zombie zombies[20] = {0};
 int max_zombies = 20;
 
 void draw_spawners(platform_window* window);
-void draw_zombies_at_tile(platform_window* window, int x, int y);
+void draw_zombies(platform_window* window);
 void spawn_zombie(int x, int y);
 
 #endif
