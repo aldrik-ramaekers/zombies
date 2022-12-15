@@ -6,7 +6,7 @@
 #define EDGE_PADDING 10
 
 static void draw_gun_info(platform_window* window) {
-	player *p = get_player_by_id(my_id);
+	player *p = get_player_by_id(player_id);
 	if (!p) return;
 
 	gun g = get_gun_by_type(p->guntype);

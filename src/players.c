@@ -26,7 +26,7 @@ int get_player_count() {
 	return count;
 }
 
-void spawn_player(int id, network_client client) {
+void spawn_player(u32 id, network_client client) {
 	for (int i = 0; i < max_players; i++) {
 		if (players[i].active) continue;
 		players[i].active = true;
@@ -110,8 +110,8 @@ bool check_if_player_collided_with_box(player p, box o) {
 	box pbox = get_box_of_square((vec3f){p.playerx, p.playery, p.height}, (vec3f){player_size,player_size,0.8f});
 
 	// [x1, y1, x2, y2]
-	bool b1 = min(pbox.br_u.x, o.br_b.x) > max(pbox.tl_u.x, o.tl_u.x);
-	bool b2 = min(pbox.br_u.y, o.br_b.y) > max(pbox.tl_u.y, o.tl_u.y);
+	bool b1 = min(pbox.br_u.x, o.br_d.x) > max(pbox.tl_u.x, o.tl_u.x);
+	bool b2 = min(pbox.br_u.y, o.br_d.y) > max(pbox.tl_u.y, o.tl_u.y);
 	return b1 && b2;
 }
 
@@ -134,42 +134,42 @@ object check_if_player_collided_with_object(platform_window* window, player p) {
 int get_my_player_index() {
 	for (int i = 0; i < max_players; i++) {
 		if (!players[i].active) continue;
-		if (players[i].id == my_id) return i;
+		if (players[i].id == player_id) return i;
 	}
 	return -1;
 }
 
 void take_player_input(platform_window* window) {
-	player* p = get_player_by_id(my_id);
+	player* p = get_player_by_id(player_id);
 	if (!p) return;
 
 	if (keyboard_is_key_down(KEY_W)) {
 		if (!global_state.server) {
-			network_message message = create_protocol_user_moved(MOVE_UP, my_id);
+			network_message message = create_protocol_user_moved(MOVE_UP, player_id);
 			network_client_send(global_state.client, message);
 		}
-		move_user(window, my_id, MOVE_UP);
+		move_user(window, player_id, MOVE_UP);
 	}
 	if (keyboard_is_key_down(KEY_S)) {
 		if (!global_state.server) {
-			network_message message = create_protocol_user_moved(MOVE_DOWN, my_id);
+			network_message message = create_protocol_user_moved(MOVE_DOWN, player_id);
 			network_client_send(global_state.client, message);
 		}
-		move_user(window, my_id, MOVE_DOWN);
+		move_user(window, player_id, MOVE_DOWN);
 	}
 	if (keyboard_is_key_down(KEY_A)) {
 		if (!global_state.server) {
-			network_message message = create_protocol_user_moved(MOVE_LEFT, my_id);
+			network_message message = create_protocol_user_moved(MOVE_LEFT, player_id);
 			network_client_send(global_state.client, message);
 		}
-		move_user(window, my_id, MOVE_LEFT);
+		move_user(window, player_id, MOVE_LEFT);
 	}
 	if (keyboard_is_key_down(KEY_D)) {
 		if (!global_state.server) {
-			network_message message = create_protocol_user_moved(MOVE_RIGHT, my_id);
+			network_message message = create_protocol_user_moved(MOVE_RIGHT, player_id);
 			network_client_send(global_state.client, message);
 		}
-		move_user(window, my_id, MOVE_RIGHT);
+		move_user(window, player_id, MOVE_RIGHT);
 	}
 
 	// Send gun position
@@ -186,7 +186,7 @@ void take_player_input(platform_window* window) {
 		p->gunx = p->playerx + gun_offset_x;
 		p->guny = p->playery + gun_offset_y;
 		
-		network_client_send(global_state.client, create_protocol_user_look(my_id, gun_offset_x, gun_offset_y));
+		network_client_send(global_state.client, create_protocol_user_look(player_id, gun_offset_x, gun_offset_y));
 	}
 
 	// shoot
@@ -198,7 +198,7 @@ void take_player_input(platform_window* window) {
 			dirx /= length;
 			diry /= length;
 
-			network_message message = create_protocol_user_shoot(my_id, dirx, diry);
+			network_message message = create_protocol_user_shoot(player_id, dirx, diry);
 			network_client_send(global_state.client, message);
 		}
 	}
@@ -216,16 +216,16 @@ void draw_players(platform_window* window) {
 	for (int i = 0; i < max_players; i++) {
 		if (!players[i].active) continue;
 
-		OBJECT_RENDER_DEPTH((int)(players[i].playery));
+		OBJECT_RENDER_DEPTH((int)(players[i].playery+size));
 
 		float height = get_height_of_tile_under_coords(window, players[i].playerx, players[i].playery);
 		players[i].height = height;
 
 		box box = get_render_box_of_square(window, (vec3f){players[i].playerx, players[i].playery, height}, (vec3f){size,size,0.8f});
-		render_quad_with_outline(box.tl_b, box.tr_b, box.bl_b, box.br_b, rgb(200,150,120));
+		render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgb(200,150,120));
 		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgb(200,150,120));
-		render_quad_with_outline(box.tl_u, box.tl_b, box.bl_u, box.bl_b, rgb(200,150,120));
-		render_quad_with_outline(box.bl_u, box.br_u, box.bl_b, box.br_b, rgb(200,150,120));
+		render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, rgb(200,150,120));
+		render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgb(200,150,120));
 
 		int size = get_tile_width(window) / 2;
 		map_info info = get_map_info(window);
@@ -240,7 +240,7 @@ void draw_players(platform_window* window) {
 		
 		renderer->render_rectangle(gun_render_x, gun_render_y, size/4, size/4, rgb(20,255,20));
 
-		if (players[i].id == my_id) {
+		if (players[i].id == player_id) {
 			_next_camera_pos.x = -(window->width / 2) + player_render_x;
 			_next_camera_pos.y = -(window->height / 2) + player_render_y;
 		}

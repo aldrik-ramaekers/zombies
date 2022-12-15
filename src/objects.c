@@ -37,10 +37,10 @@ void draw_objects_at_row(platform_window* window, int row) {
 		
 		if (!o.active) continue;
 		box box = get_box_of_object(window, o);
-		render_quad_with_outline(box.tl_b, box.tr_b, box.bl_b, box.br_b, rgb(200,200,0));
+		render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgb(200,200,0));
 		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgb(200,200,0));
-		render_quad_with_outline(box.tl_u, box.tl_b, box.bl_u, box.bl_b, rgb(200,200,0));
-		render_quad_with_outline(box.bl_u, box.br_u, box.bl_b, box.br_b, rgb(200,200,0));
+		render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, rgb(200,200,0));
+		render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgb(200,200,0));
 	}
 }
 

@@ -64,7 +64,8 @@
 			"streambuf": "c",
 			"game.h": "c",
 			"bullets.h": "c",
-			"guns.h": "c"
+			"guns.h": "c",
+			"iphlpapi.h": "c"
 		}
 	}
 }

@@ -10,7 +10,7 @@
 #include "guns.h"
 
 typedef struct t_player {
-	int id;
+	u32 id;
 	bool active;
 	float sec_since_last_shot;
 	float playerx;
@@ -29,7 +29,7 @@ typedef struct t_player {
 
 #include "protocol.h"
 
-u32 my_id = -1;
+u32 player_id = -1;
 
 camera _next_camera_pos;
 
@@ -44,6 +44,6 @@ object check_if_player_collided_with_object(platform_window* window, player p);
 float get_player_size(platform_window* window);
 void move_user(platform_window* window, u32 id, protocol_move_type move);
 void update_players_server();
-void spawn_player(int id, network_client client);
+void spawn_player(u32 id, network_client client);
 
 #endif

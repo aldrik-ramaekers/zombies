@@ -1,10 +1,11 @@
 #include "../include/protocol.h"
 #include "../include/players.h"
 
-network_message create_protocol_get_id_up()
+network_message create_protocol_get_id_up(u32 id)
 {
 	protocol_get_id_upstream *buf = (protocol_get_id_upstream *)network_buffer;
 	buf->type = MESSAGE_GET_ID_UPSTREAM;
+	buf->id = id;
 	return network_create_message(network_buffer, sizeof(protocol_get_id_upstream), MAX_NETWORK_BUFFER_SIZE);
 }
 

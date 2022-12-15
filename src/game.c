@@ -1,8 +1,6 @@
 #include "../include/game.h"
 #include "../include/pathfinding.h"
 
-u32 current_id = 0;
-
 static void server_on_client_disconnect(network_client c) {
 	for (int i = 0; i < max_players; i++) {
 		player p = players[i];
@@ -19,7 +17,14 @@ void start_server(char* port) {
 	global_state.server->on_client_disconnect = server_on_client_disconnect;
 }
 
+static u32 get_session_id() {
+	u32 time = platform_get_time(TIME_NS, TIME_FULL);
+	return (((time * 2654435789U) + time) * 2654435789U) + platform_get_processid();
+	
+}
+
 void connect_to_server(char* ip, char* port) {
+	player_id = get_session_id();
 	messages_received_on_client = array_create(sizeof(protocol_generic_message*));
 	array_reserve(&messages_received_on_client, 100);
 
@@ -27,17 +32,18 @@ void connect_to_server(char* ip, char* port) {
 	global_state.client = network_connect_to_server(ip, port);
 	global_state.client->on_message = client_on_message_received;
 
+	log_infox("Session id: %u", player_id);
+
 	if (global_state.server) {
-		my_id = current_id++;
-		spawn_player(my_id, (network_client){0, false, 0, "Host"});
+		player_id = player_id;
+		spawn_player(player_id, (network_client){0, false, 0, "Host"});
 		global_state.network_state = CONNECTED;
-		printf("Server id: %d\n", my_id);
 	}
 	else {
 		if (global_state.client->is_connected) {
 			global_state.network_state = WAITING_FOR_ID;
 
-			network_message message = create_protocol_get_id_up();
+			network_message message = create_protocol_get_id_up(player_id);
 			network_client_send(global_state.client, message);
 		}
 	}
@@ -107,11 +113,6 @@ static void set_ping_for_player(protocol_generic_message* msg) {
 
 float update_timer = 0.0f;
 void update_server(platform_window* window) {
-	update_spawners();
-	update_drops();
-	update_players_server();
-	update_zombies_server(window);
-
 	for (int i = 0; i < messages_received_on_server.length; i++) {
 		protocol_generic_message* msg = *(protocol_generic_message**)array_at(&messages_received_on_server, i);
 		set_ping_for_player(msg);
@@ -119,10 +120,9 @@ void update_server(platform_window* window) {
 		switch (msg->message->type)
 		{
 			case MESSAGE_GET_ID_UPSTREAM: {
-				network_client_send(&msg->client, create_protocol_get_id_down(current_id));
-				spawn_player(current_id, msg->client);
-
-				current_id++;
+				protocol_get_id_upstream* m = (protocol_get_id_upstream*)msg->message;
+				network_client_send(&msg->client, create_protocol_get_id_down(m->id));
+				spawn_player(m->id, msg->client);
 				log_info("Player connected to server");
 			} break;
 
@@ -151,6 +151,12 @@ void update_server(platform_window* window) {
 		i--;
 	}
 
+	update_spawners();
+	update_drops();
+	update_bullets(window);
+	update_players_server();
+	update_zombies_server(window);
+
 	if (update_timer > 0.0f) {
 		broadcast_to_clients(create_protocol_user_list());
 		broadcast_to_clients(create_protocol_zombie_list());
@@ -162,7 +168,7 @@ void update_server(platform_window* window) {
 }
 
 static void apply_user_list(protocol_user_list* msg_players) {
-	player* p = get_player_by_id(my_id);
+	player* p = get_player_by_id(player_id);
 	player copy;
 	if (p) copy = *p;
 	memcpy(players, msg_players->players, sizeof(players));
@@ -185,10 +191,9 @@ void update_client(platform_window* window) {
 		{
 		case MESSAGE_GET_ID_DOWNSTREAM: {
 			protocol_get_id_downstream* msg_id = (protocol_get_id_downstream*)msg;
-			my_id = msg_id->id;
+			player_id = msg_id->id;
 			global_state.network_state = CONNECTED;
-			printf("Received id: %d\n", my_id);
-			log_info("Id received");
+			log_infox("Id received: %d", player_id);
 		} break;
 
 		case MESSAGE_USER_LIST: {

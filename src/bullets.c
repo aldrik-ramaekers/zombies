@@ -81,16 +81,16 @@ bool check_if_bullet_collided_with_object(bullet* b, platform_window* window) {
 		if (b->position.z <= o.h + o.size.z && b->position.z >= o.h) {
 			box obj_box = get_box_of_square((vec3f){o.position.x, o.position.y, o.h}, o.size);
 			vec2f intersect_point;
-			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.bl_b, obj_box.br_b, &intersect_point)) {
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.bl_d, obj_box.br_d, &intersect_point)) {
 				result = true;
 			}
-			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_b, obj_box.tr_b, &intersect_point)) {
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_d, obj_box.tr_d, &intersect_point)) {
 				result = true;
 			}
-			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_b, obj_box.bl_b, &intersect_point)) {
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_d, obj_box.bl_d, &intersect_point)) {
 				result = true;
 			}
-			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tr_b, obj_box.br_b, &intersect_point)) {
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tr_d, obj_box.br_d, &intersect_point)) {
 				result = true;
 			}
 
@@ -123,19 +123,19 @@ bool check_if_bullet_collided_with_zombie(bullet b, platform_window* window, boo
 			vec2f intersect_point;
 			box obj_box = get_box_of_square((vec3f){o.position.x, o.position.y, o.position.z}, o.size);
 			bool this_zombie_collided = false;
-			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.bl_b, obj_box.br_b, &intersect_point)) {
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.bl_d, obj_box.br_d, &intersect_point)) {
 				this_zombie_collided = true;
 				index_of_closest_zombie = i;
 			}
-			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_b, obj_box.tr_b, &intersect_point)) {
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_d, obj_box.tr_d, &intersect_point)) {
 				this_zombie_collided = true;
 				index_of_closest_zombie = i;
 			}
-			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_b, obj_box.bl_b, &intersect_point)) {
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_d, obj_box.bl_d, &intersect_point)) {
 				this_zombie_collided = true;
 				index_of_closest_zombie = i;
 			}
-			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tr_b, obj_box.br_b, &intersect_point)) {
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tr_d, obj_box.br_d, &intersect_point)) {
 				this_zombie_collided = true;
 				index_of_closest_zombie = i;
 			}
@@ -178,12 +178,9 @@ static bool check_if_bullet_collided_with_ground(bullet *b, platform_window* win
 		}
 	}
 	return false;
-} 
+}
 
-void draw_bullets(platform_window* window) {
-	float size = get_bullet_size(window);
-	map_info info = get_map_info(window);
-
+void update_bullets(platform_window* window) {
 	for (int i = 0; i < max_bullets; i++) {
 		bullet b = bullets[i];
 		if (!b.active) continue;
@@ -211,7 +208,17 @@ void draw_bullets(platform_window* window) {
 		}
 
 		bullets[i].alive_time += update_delta;
-		bullets[i].active = false;
+		//bullets[i].active = false;
+	}
+}
+
+void draw_bullets(platform_window* window) {
+	float size = get_bullet_size(window);
+	map_info info = get_map_info(window);
+
+	for (int i = 0; i < max_bullets; i++) {
+		bullet b = bullets[i];
+		if (!b.active) continue;
 
 		if ((int)bullets[i].position.y < (int)bullets[i].endy) { BULLET_RENDER_DEPTH((int)bullets[i].position.y); }
 		else { BULLET_RENDER_DEPTH((int)bullets[i].endy); }
@@ -223,5 +230,7 @@ void draw_bullets(platform_window* window) {
 		float bullet_render_y_end = b.endy*info.tile_height - (b.position.z*info.px_raised_per_h);
 
 		renderer->render_line(bullet_render_x, bullet_render_y, bullet_render_x_end, bullet_render_y_end, 2, rgb(0,255,100));
+
+		bullets[i].active = false;
 	}
 }

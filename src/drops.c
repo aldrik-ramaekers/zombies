@@ -1,5 +1,6 @@
 #include "../include/drops.h"
 #include "../include/objects.h"
+#include "../include/asset_defs.h"
 
 void handle_drop_pickup(player* p, drop* d) {
 	if (!d->active) return;
@@ -46,21 +47,42 @@ void draw_drops(platform_window* window) {
 		b.position.y += 0.2f;
 		b.position.x -= 0.07f;
 		box shadow_box = get_render_box_of_square(window, b.position, b.size);
-		render_quad_with_outline(shadow_box.tl_b, shadow_box.tr_b, shadow_box.bl_b, shadow_box.br_b, rgba(0,0,0,120));
+		render_quad_with_outline(shadow_box.tl_d, shadow_box.tr_d, shadow_box.bl_d, shadow_box.br_d, rgba(0,0,0,120));
 		render_quad_with_outline(shadow_box.tl_u, shadow_box.tr_u, shadow_box.bl_u, shadow_box.br_u, rgba(0,0,0,120));
-		render_quad_with_outline(shadow_box.tl_u, shadow_box.tl_b, shadow_box.bl_u, shadow_box.bl_b, rgba(0,0,0,120));
-		render_quad_with_outline(shadow_box.bl_u, shadow_box.br_u, shadow_box.bl_b, shadow_box.br_b, rgba(0,0,0,120));
+		render_quad_with_outline(shadow_box.tl_u, shadow_box.tl_d, shadow_box.bl_u, shadow_box.bl_d, rgba(0,0,0,120));
+		render_quad_with_outline(shadow_box.bl_u, shadow_box.br_u, shadow_box.bl_d, shadow_box.br_d, rgba(0,0,0,120));
 
 		b = drops[i];
 		box full_box = get_render_box_of_square(window, b.position, b.size);
-		render_quad_with_outline(full_box.tl_b, full_box.tr_b, full_box.bl_b, full_box.br_b, rgb(218,112,214));
+		render_quad_with_outline(full_box.tl_d, full_box.tr_d, full_box.bl_d, full_box.br_d, rgb(218,112,214));
 		render_quad_with_outline(full_box.tl_u, full_box.tr_u, full_box.bl_u, full_box.br_u, rgb(218,112,214));
-		render_quad_with_outline(full_box.tl_u, full_box.tl_b, full_box.bl_u, full_box.bl_b, rgb(218,112,214));
-		render_quad_with_outline(full_box.bl_u, full_box.br_u, full_box.bl_b, full_box.br_b, rgb(218,112,214));
+		render_quad_with_outline(full_box.tl_u, full_box.tl_d, full_box.bl_u, full_box.bl_d, rgb(218,112,214));
+		render_quad_with_outline(full_box.bl_u, full_box.br_u, full_box.bl_d, full_box.br_d, rgb(218,112,214));
+
+		int drop_h = full_box.br_d.y - full_box.tr_d.y;
+
+		int icon_size = full_box.tr_d.x - full_box.tl_d.x;
+		int icon_x = full_box.tl_u.x;
+		int icon_y = full_box.tl_u.y - icon_size + (drop_h/2);
+		switch(b.type) {
+			case DROP_AMMO: {
+				renderer->render_image(img_icon_bullets, icon_x, icon_y, icon_size, icon_size);
+			} break;
+
+			default: break;
+		}
 	}
 }
 
 void spawn_drop(vec3f pos) {
+	static int drop_percentage = 100;
+	int val = rand() % (100 + 1);
+	if (val > drop_percentage) {
+		drop_percentage += 2;
+		return;
+	}
+	drop_percentage = 100;
+
 	for (int i = 0; i < MAX_DROPS; i++) {
 		drop b = drops[i];
 		if (b.active) continue;
@@ -72,7 +94,7 @@ void spawn_drop(vec3f pos) {
 		new_drop.size = (vec3f){0.3f, 0.3f, 0.4f};
 		new_drop.start_h = pos.z;
 		new_drop.type = DROP_AMMO;
-		new_drop.data.ammo_count = 10;
+		new_drop.data.ammo_count = 20;
 
 		drops[i] = new_drop;
 		break;

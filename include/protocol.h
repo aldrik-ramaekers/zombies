@@ -30,6 +30,7 @@ typedef struct t_protocol_generic_message
 typedef struct t_protocol_get_id_upstream
 {
 	network_message_type type;
+	u32 id;
 } protocol_get_id_upstream;
 
 typedef struct t_protocol_get_id_downstream
@@ -91,7 +92,7 @@ typedef struct t_protocol_user_shoot
 
 #define MAX_NETWORK_BUFFER_SIZE 50000
 u8 network_buffer[50000];
-network_message create_protocol_get_id_up();
+network_message create_protocol_get_id_up(u32 id);
 network_message create_protocol_get_id_down(u32 id);
 network_message create_protocol_user_list();
 network_message create_protocol_user_moved(protocol_move_type move, u32 id);

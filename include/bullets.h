@@ -9,7 +9,7 @@
 #include "guns.h"
 
 typedef struct t_bullet {
-	int player_id;
+	u32 player_id;
 	bool active;
 	vec3f position;
 	float endx;

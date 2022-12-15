@@ -141,8 +141,8 @@ float get_height_of_tile_under_coords(platform_window* window, float tocheckx, f
 }
 
 inline int get_tile_width(platform_window* window) {
-	int tile_width = window->height / 14;
-	if (window->width > window->height) tile_width = window->width / 14;
+	int tile_width = window->height / 30;
+	if (window->width > window->height) tile_width = window->width / 30;
 	return tile_width;
 }
 

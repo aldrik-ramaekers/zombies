@@ -216,10 +216,10 @@ void draw_zombies(platform_window* window) {
 		OBJECT_RENDER_DEPTH((int)o.position.y);
 
 		box box = get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, o.position.z}, o.size);
-		render_quad_with_outline(box.tl_b, box.tr_b, box.bl_b, box.br_b, rgb(200,200,0));
+		render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgb(200,200,0));
 		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgb(200,200,0));
-		render_quad_with_outline(box.tl_u, box.tl_b, box.bl_u, box.bl_b, rgb(200,200,0));
-		render_quad_with_outline(box.bl_u, box.br_u, box.bl_b, box.br_b, rgb(200,200,0));
+		render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, rgb(200,200,0));
+		render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgb(200,200,0));
 
 		if (global_state.server) draw_path_of_zombie(window, o);
 	}

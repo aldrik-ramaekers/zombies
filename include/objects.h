@@ -17,10 +17,10 @@ typedef struct t_object {
 } object;
 
 typedef struct t_box {
-	vec2f tl_b;
-	vec2f tr_b;
-	vec2f bl_b;
-	vec2f br_b;
+	vec2f tl_d;
+	vec2f tr_d;
+	vec2f bl_d;
+	vec2f br_d;
 
 	vec2f tl_u;
 	vec2f tr_u;
