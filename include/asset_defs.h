@@ -8,6 +8,8 @@ font* fnt_20;
 
 image* img_icon_bullets;
 
+image* img_icon_nova;
+
 void load_assets();
 
 #endif

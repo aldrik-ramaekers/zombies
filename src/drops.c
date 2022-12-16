@@ -15,7 +15,6 @@ void handle_drop_pickup(player* p, drop* d) {
 
 void update_drops() {
 	#define MAX_HEIGHT_DIFF (0.3f)
-	#define FREQUENCY (0.15)
 
 	for (int i = 0; i < MAX_DROPS; i++) {
 		drop b = drops[i];

@@ -155,6 +155,7 @@ void update_server(platform_window* window) {
 
 	update_spawners();
 	update_drops();
+	update_wallitems();
 	update_bullets(window);
 	update_players_server();
 	update_zombies_server(window);
@@ -256,6 +257,7 @@ void update_game(platform_window* window) {
 		take_player_input(window);
 
 		draw_grid(window);
+		draw_wallitems(window);
 		draw_drops(window);
 		draw_bullets(window);
 		draw_zombies(window);

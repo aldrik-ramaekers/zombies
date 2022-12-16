@@ -65,7 +65,8 @@
 			"game.h": "c",
 			"bullets.h": "c",
 			"guns.h": "c",
-			"iphlpapi.h": "c"
+			"iphlpapi.h": "c",
+			"asset_defs.h": "c"
 		}
 	}
 }

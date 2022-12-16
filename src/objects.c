@@ -1,4 +1,5 @@
 #include "../include/objects.h"
+#include "../include/wall_item.h"
 
 box get_box_of_object(platform_window* window, object o) {
 	return get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, o.h}, o.size);
@@ -79,4 +80,6 @@ void create_objects() {
 	create_box(14, 10, 0);
 	create_box(13, 10, 0);
 	create_box(11, 10, 0);
+
+	create_wallitem((vec3f){14, 1, 0}, WALLITEM_GUN, (wall_item_data){.gun = GUN_NOVA});
 }

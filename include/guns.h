@@ -25,6 +25,7 @@ gun guns[GUN_ALL] = {
 	{GUN_NOVA, "Nova", 12, 80, 0.2f, 3, 1.2f},
 };
 
+image* get_image_of_gun(gun_type type);
 gun get_gun_by_type(gun_type type);
 
 #endif

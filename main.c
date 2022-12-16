@@ -15,6 +15,7 @@
 #include "include/overlay.h"
 #include "include/asset_defs.h"
 #include "include/drops.h"
+#include "include/wall_item.h"
 
 #include "src/map.c"
 #include "src/players.c"
@@ -31,6 +32,7 @@
 #include "src/overlay.c"
 #include "src/asset_defs.c"
 #include "src/drops.c"
+#include "src/wall_item.c"
 
 #define CONFIG_DIRECTORY "zombieshooter"
 

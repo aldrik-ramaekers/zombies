@@ -180,8 +180,8 @@ void take_player_input(platform_window* window) {
 		dirx /= length;
 		diry /= length;
 
-		float gun_offset_x = (get_player_size_in_tile()/2) + dirx/2;
-		float gun_offset_y = (get_player_size_in_tile()/2) + diry/2;
+		float gun_offset_x = (get_player_size_in_tile()/2) + dirx;
+		float gun_offset_y = (get_player_size_in_tile()/2) + diry;
 
 		p->gunx = p->playerx + gun_offset_x;
 		p->guny = p->playery + gun_offset_y;

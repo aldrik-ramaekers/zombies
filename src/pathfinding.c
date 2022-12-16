@@ -87,7 +87,7 @@ bool find_path_to(vec2f start_pos, vec2f end_pos, array *to_fill, pathfinding_re
 			}
 			
 			if (to_fill) {
-				array_remove_at(to_fill, to_fill->length-1);
+				if (to_fill->length > 1) array_remove_at(to_fill, to_fill->length-1);
 				//printf("PATHFINDING TOOK: %fms\n", (platform_get_time(TIME_PROCESS, TIME_MS)-timestamp)/1000.0f);
 			}
 			mutex_unlock(&request->mutex);
