@@ -2,7 +2,7 @@
 #include "../include/pathfinding.h"
 
 static void server_on_client_disconnect(network_client c) {
-	for (int i = 0; i < max_players; i++) {
+	for (int i = 0; i < MAX_PLAYERS; i++) {
 		player p = players[i];
 		if (p.client.ConnectSocket == c.ConnectSocket) players[i].active = false;
 	}
@@ -20,7 +20,7 @@ void start_server(char* port) {
 }
 
 static u32 get_session_id() {
-	u64 time = platform_get_time(TIME_NS, TIME_FULL);
+	u64 time = platform_get_time(TIME_FULL, TIME_NS);
 	return (((time * 2654435789U) + time) * 2654435789U) + platform_get_processid();
 	
 }
@@ -48,7 +48,7 @@ void connect_to_server(char* ip, char* port) {
 			global_state.network_state = WAITING_FOR_ID;
 
 			network_message message = create_protocol_get_id_up(player_id);
-			network_client_send(global_state.client, message);
+			add_message_to_outgoing_queuex(message, *global_state.client);
 		}
 	}
 }
@@ -92,7 +92,7 @@ static void broadcast_to_clients(network_message message) {
 
 	send_queue_entry entry = {0};
 	entry.message = message;
-	for (int i = 0; i < max_players; i++) {
+	for (int i = 0; i < MAX_PLAYERS; i++) {
 		player p = players[i];
 		if (!p.client.is_connected) continue;
 		if (!p.active) continue;
@@ -113,9 +113,9 @@ static void rotate_user(platform_window* window, protocol_user_look *message) {
 }
 
 static void set_ping_for_player(protocol_generic_message* msg) {
-	u64 diff = platform_get_time(TIME_MS, TIME_PROCESS) - msg->send_timestamp;
+	u64 diff = platform_get_time(TIME_FULL, TIME_MILI_S) - msg->send_timestamp;
 
-	for (int i = 0; i < max_players; i++) {
+	for (int i = 0; i < MAX_PLAYERS; i++) {
 		player p = players[i];
 		if (!p.client.is_connected) continue;
 		if (!p.active) continue;
@@ -128,7 +128,7 @@ static void set_ping_for_player(protocol_generic_message* msg) {
 
 float update_timer = 0.0f;
 void update_server(platform_window* window) {
-	server_update_time = platform_get_time(TIME_NS, TIME_FULL);
+	logic_update_time = platform_get_time(TIME_FULL, TIME_NS);
 
 	mutex_lock(&messages_received_on_server.mutex);
 
@@ -140,7 +140,7 @@ void update_server(platform_window* window) {
 		{
 			case MESSAGE_GET_ID_UPSTREAM: {
 				protocol_get_id_upstream* m = (protocol_get_id_upstream*)msg->message;
-				network_client_send(&msg->client, create_protocol_get_id_down(m->id));
+				add_message_to_outgoing_queuex(create_protocol_get_id_down(m->id), msg->client);
 				spawn_player(m->id, msg->client);
 				log_info("Player connected to server");
 			} break;
@@ -188,9 +188,9 @@ void update_server(platform_window* window) {
 
 	update_timer += update_delta;
 
-	server_update_time = platform_get_time(TIME_NS, TIME_FULL) - server_update_time;
-	if ((server_update_time/1000000.0f) > 5.0f) {
-		log_infox("Server update took %.2fms", (server_update_time/1000000.0f));
+	logic_update_time = platform_get_time(TIME_FULL, TIME_NS) - logic_update_time;
+	if ((logic_update_time/1000000.0f) > 5.0f) {
+		log_infox("Server update took %.2fms", (logic_update_time/1000000.0f));
 	}
 }
 
@@ -223,6 +223,7 @@ static void load_bullets_into_existing_list(protocol_bullets_list* msg_bullets) 
 }
 
 void update_client(platform_window* window) {
+	logic_update_time = platform_get_time(TIME_FULL, TIME_NS);
 	mutex_lock(&messages_received_on_client.mutex);
 
 	for (int i = 0; i < messages_received_on_client.length; i++) {
@@ -271,6 +272,7 @@ void update_client(platform_window* window) {
 
 	allocator_clear(&client_incomming_allocator);
 	mutex_unlock(&messages_received_on_client.mutex);
+	logic_update_time = platform_get_time(TIME_FULL, TIME_NS) - logic_update_time;
 }
 
 void update_game(platform_window* window) {

@@ -107,6 +107,13 @@ void client_on_message_received(u8 *buffer, u32 length)
 	mutex_unlock(&messages_received_on_client.mutex);
 }
 
+void add_message_to_outgoing_queuex(network_message message, network_client c) {
+	send_queue_entry entry;
+	entry.message = message;
+	memset(entry.recipients, 0, sizeof(entry.recipients));
+	entry.recipients[0] = c;
+	add_message_to_outgoing_queue(entry);
+}
 
 void add_message_to_outgoing_queue(send_queue_entry entry) {
 	for (int i = 0; i < OUTGOING_QUEUE_SIZE; i++)

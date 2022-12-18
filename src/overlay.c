@@ -51,7 +51,7 @@ static void draw_leaderboard(platform_window* window) {
 		renderer->render_rectangle(x, y, actual_width, height_total, rgba(0,0,0,120));
 
 		draw_leaderboard_entry(x, y, actual_width, height_per_row, "Player", "Kills", "Deaths", "Ping");
-		for (int i = 0; i < max_players; i++) {
+		for (int i = 0; i < MAX_PLAYERS; i++) {
 			if (!players[i].active) continue;
 
 			char kills[30]; snprintf(kills, 30, "%d", players[i].kills);
@@ -65,12 +65,18 @@ static void draw_leaderboard(platform_window* window) {
 void draw_debug_stats(platform_window* window) {
 	float fps = 1.0f / update_delta;
 	float usage = (update_delta / (1.0f / 60.0f) * 100);
+	int count = 0;
+	for (int i = 0; i < OUTGOING_QUEUE_SIZE; i++)
+	{
+		if (!messages_to_send_queue[i].active) continue;
+		count++;
+	}
 
 	char fps_text[50];
 	snprintf(fps_text, 50, "FPS: %d, MS: %.4f, USAGE: %.0f%%", (int)fps, update_delta*1000.0f, usage);
 
 	char update_text[50];
-	snprintf(update_text, 50, "server: %.2fms", server_update_time/1000000.0f);
+	snprintf(update_text, 50, "update: %.2fms, queue: %d", logic_update_time/1000000.0f, count);
 
 	renderer->render_text(fnt_20, _global_camera.x, _global_camera.y + fnt_20->px_h*0, fps_text, rgb(0,0,0));
 	renderer->render_text(fnt_20, _global_camera.x, _global_camera.y + fnt_20->px_h*1, update_text, rgb(0,0,0));

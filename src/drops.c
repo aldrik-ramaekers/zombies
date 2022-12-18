@@ -23,7 +23,7 @@ void update_drops() {
 		drops[i].time_active += update_delta;
 		drops[i].position.z = MAX_HEIGHT_DIFF * sin (2 * M_PI * 0.5f * (drops[i].time_active) + 0) + b.start_h;
 
-		for (int x = 0; x < max_players; x++) {
+		for (int x = 0; x < MAX_PLAYERS; x++) {
 			player *p = &players[x];
 			if (!p->active) continue;
 

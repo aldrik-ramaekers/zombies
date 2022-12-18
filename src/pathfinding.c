@@ -17,7 +17,7 @@ bool can_walk_at(float x, float y)
 
 bool find_path_to(vec2f start_pos, vec2f end_pos, array *to_fill, pathfinding_request* request)
 {
-	uint64_t timestamp = platform_get_time(TIME_PROCESS, TIME_MS);
+	uint64_t timestamp = platform_get_time(TIME_FULL, TIME_US);
 	allocator al = create_allocator(500000);
 
 	struct path_node {
@@ -88,7 +88,7 @@ bool find_path_to(vec2f start_pos, vec2f end_pos, array *to_fill, pathfinding_re
 			
 			if (to_fill) {
 				if (to_fill->length > 1) array_remove_at(to_fill, to_fill->length-1);
-				//printf("PATHFINDING TOOK: %fms\n", (platform_get_time(TIME_PROCESS, TIME_MS)-timestamp)/1000.0f);
+				//printf("PATHFINDING TOOK: %.2fms\n", (platform_get_time(TIME_FULL, TIME_US)-timestamp)/1000.0f);
 			}
 			mutex_unlock(&request->mutex);
 
@@ -300,7 +300,7 @@ void make_pathfinding_request(vec2f start, vec2f end, array *to_fill, pathfindin
 		if (request == ereq) {
 			ereq->start = start;
 			ereq->end = end;
-			ereq->timestamp = platform_get_time(TIME_PROCESS, TIME_MS);
+			ereq->timestamp = platform_get_time(TIME_FULL, TIME_MILI_S);
 			mutex_unlock(&global_pathfinding_queue.mutex);
 			return;
 		}

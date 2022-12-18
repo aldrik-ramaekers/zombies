@@ -9,6 +9,8 @@
 #include "math_helper.h"
 #include "guns.h"
 
+#define MAX_PLAYERS 10
+
 typedef struct t_player {
 	u32 id;
 	bool active;
@@ -33,8 +35,7 @@ u32 player_id = -1;
 
 camera _next_camera_pos;
 
-int max_players = 10;
-player players[10] = {0};
+player players[MAX_PLAYERS] = {0};
 
 int get_player_count();
 player* get_player_by_id(u32 id);

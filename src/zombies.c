@@ -4,7 +4,7 @@ static player get_closest_player_to_tile(int x, int y) {
 	float best_length = 99999;
 	int best_index = -1;
 
-	for (int i = 0; i < max_players; i++) {
+	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
 		float dirx = (players[i].playerx - x);
 		float diry = (players[i].playery - y);

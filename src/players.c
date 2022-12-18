@@ -19,7 +19,7 @@ float get_player_size(platform_window* window) {
 
 int get_player_count() {
 	int count = 0;
-	for (int i = 0; i < max_players; i++) {
+	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
 		count++;
 	}
@@ -27,7 +27,7 @@ int get_player_count() {
 }
 
 void spawn_player(u32 id, network_client client) {
-	for (int i = 0; i < max_players; i++) {
+	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (players[i].active) continue;
 		players[i].active = true;
 		players[i].sec_since_last_shot = 10.0f;
@@ -97,7 +97,7 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 }
 
 player* get_player_by_id(u32 id) {
-	for (int i = 0; i < max_players; i++) {
+	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
 		if (players[i].id == id) return &players[i];
 	}
@@ -132,7 +132,7 @@ object check_if_player_collided_with_object(platform_window* window, player p) {
 }
 
 int get_my_player_index() {
-	for (int i = 0; i < max_players; i++) {
+	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
 		if (players[i].id == player_id) return i;
 	}
@@ -146,28 +146,28 @@ void take_player_input(platform_window* window) {
 	if (keyboard_is_key_down(KEY_W)) {
 		if (!global_state.server) {
 			network_message message = create_protocol_user_moved(MOVE_UP, player_id);
-			network_client_send(global_state.client, message);
+			add_message_to_outgoing_queuex(message, *global_state.client);
 		}
 		move_user(window, player_id, MOVE_UP, update_delta);
 	}
 	if (keyboard_is_key_down(KEY_S)) {
 		if (!global_state.server) {
 			network_message message = create_protocol_user_moved(MOVE_DOWN, player_id);
-			network_client_send(global_state.client, message);
+			add_message_to_outgoing_queuex(message, *global_state.client);
 		}
 		move_user(window, player_id, MOVE_DOWN, update_delta);
 	}
 	if (keyboard_is_key_down(KEY_A)) {
 		if (!global_state.server) {
 			network_message message = create_protocol_user_moved(MOVE_LEFT, player_id);
-			network_client_send(global_state.client, message);
+			add_message_to_outgoing_queuex(message, *global_state.client);
 		}
 		move_user(window, player_id, MOVE_LEFT, update_delta);
 	}
 	if (keyboard_is_key_down(KEY_D)) {
 		if (!global_state.server) {
 			network_message message = create_protocol_user_moved(MOVE_RIGHT, player_id);
-			network_client_send(global_state.client, message);
+			add_message_to_outgoing_queuex(message, *global_state.client);
 		}
 		move_user(window, player_id, MOVE_RIGHT, update_delta);
 	}
@@ -186,7 +186,7 @@ void take_player_input(platform_window* window) {
 		p->gunx = p->playerx + gun_offset_x;
 		p->guny = p->playery + gun_offset_y;
 		
-		network_client_send(global_state.client, create_protocol_user_look(player_id, gun_offset_x, gun_offset_y));
+		add_message_to_outgoing_queuex(create_protocol_user_look(player_id, gun_offset_x, gun_offset_y), *global_state.client);
 	}
 
 	// shoot
@@ -199,13 +199,13 @@ void take_player_input(platform_window* window) {
 			diry /= length;
 
 			network_message message = create_protocol_user_shoot(player_id, dirx, diry);
-			network_client_send(global_state.client, message);
+			add_message_to_outgoing_queuex(message, *global_state.client);
 		}
 	}
 }
 
 void update_players_server() {
-	for (int i = 0; i < max_players; i++) {
+	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
 		players[i].sec_since_last_shot += update_delta;
 	}
@@ -213,7 +213,7 @@ void update_players_server() {
 
 void draw_players(platform_window* window) {
 	float size = get_player_size_in_tile();
-	for (int i = 0; i < max_players; i++) {
+	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
 
 		OBJECT_RENDER_DEPTH((int)(players[i].playery+size));

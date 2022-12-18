@@ -4,6 +4,7 @@
 #include <projectbase/project_base.h>
 
 #include "list.h"
+#include "players.h"
 
 typedef enum t_network_message_type
 {
@@ -45,7 +46,7 @@ typedef struct t_protocol_get_id_downstream
 typedef struct t_protocol_user_list
 {
 	network_message_type type;
-	player players[10];
+	player players[MAX_PLAYERS];
 } protocol_user_list;
 
 #include "zombies.h"
@@ -104,7 +105,7 @@ typedef struct t_protocol_user_shoot
 
 typedef struct t_send_queue_entry {
 	bool active;
-	network_client recipients[10];
+	network_client recipients[MAX_PLAYERS];
 	network_message message;
 } send_queue_entry;
 
@@ -132,6 +133,7 @@ array messages_received_on_client;
 mutex messages_to_send_queue_mutex;
 send_queue_entry messages_to_send_queue[OUTGOING_QUEUE_SIZE] = {0};
 
+void add_message_to_outgoing_queuex(network_message message, network_client c);
 void add_message_to_outgoing_queue(send_queue_entry entry);
 void* network_send_thread(void* args);
 
