@@ -3,6 +3,8 @@
 
 #include <projectbase/project_base.h>
 
+#include "list.h"
+
 typedef enum t_network_message_type
 {
 	MESSAGE_GET_ID_UPSTREAM,
@@ -100,8 +102,19 @@ typedef struct t_protocol_user_shoot
 	float diry;
 } protocol_user_shoot;
 
-#define MAX_NETWORK_BUFFER_SIZE 50000
-u8 network_buffer[50000];
+typedef struct t_send_queue_entry {
+	bool active;
+	network_client recipients[10];
+	network_message message;
+} send_queue_entry;
+
+#define MAX_NETWORK_BUFFER_SIZE 5000000
+u8 network_buffer[MAX_NETWORK_BUFFER_SIZE];
+
+allocator server_incomming_allocator;
+allocator client_incomming_allocator;
+allocator outgoing_allocator;
+
 network_message create_protocol_get_id_up(u32 id);
 network_message create_protocol_get_id_down(u32 id);
 network_message create_protocol_user_list();
@@ -114,6 +127,13 @@ network_message create_protocol_drop_list();
 
 array messages_received_on_server;
 array messages_received_on_client;
+
+#define OUTGOING_QUEUE_SIZE 100
+mutex messages_to_send_queue_mutex;
+send_queue_entry messages_to_send_queue[OUTGOING_QUEUE_SIZE] = {0};
+
+void add_message_to_outgoing_queue(send_queue_entry entry);
+void* network_send_thread(void* args);
 
 void server_on_message_received(u8 *buffer, u32 length, u64 timestamp, network_client client);
 void client_on_message_received(u8 *buffer, u32 length);

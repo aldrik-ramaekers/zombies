@@ -9,6 +9,8 @@ static void server_on_client_disconnect(network_client c) {
 }
 
 void start_server(char* port) {
+	server_incomming_allocator = create_allocator(MAX_NETWORK_BUFFER_SIZE);
+
 	messages_received_on_server = array_create(sizeof(protocol_generic_message*));
 	array_reserve(&messages_received_on_server, 100);
 
@@ -24,6 +26,8 @@ static u32 get_session_id() {
 }
 
 void connect_to_server(char* ip, char* port) {
+	client_incomming_allocator = create_allocator(MAX_NETWORK_BUFFER_SIZE);
+
 	player_id = get_session_id();
 	messages_received_on_client = array_create(sizeof(protocol_generic_message*));
 	array_reserve(&messages_received_on_client, 100);
@@ -52,6 +56,12 @@ void connect_to_server(char* ip, char* port) {
 void load_map() {
 	global_state.state = GAMESTATE_LOADING_MAP;
 
+	outgoing_allocator = create_allocator(MAX_NETWORK_BUFFER_SIZE);
+	messages_to_send_queue_mutex = mutex_create();
+
+	thread send_thread = thread_start(network_send_thread, 0);
+	thread_detach(&send_thread);
+
 	load_map_from_data();
 	create_objects();
 
@@ -79,11 +89,16 @@ void destroy_game() {
 
 static void broadcast_to_clients(network_message message) {
 	if (!global_state.server || !global_state.server->is_open) return;
+
+	send_queue_entry entry = {0};
+	entry.message = message;
 	for (int i = 0; i < max_players; i++) {
 		player p = players[i];
 		if (!p.client.is_connected) continue;
-		if (p.active) network_client_send(&p.client, message);
+		if (!p.active) continue;
+		entry.recipients[i] = p.client;
 	}
+	add_message_to_outgoing_queue(entry);
 }
 
 static void rotate_user(platform_window* window, protocol_user_look *message) {
@@ -115,6 +130,8 @@ float update_timer = 0.0f;
 void update_server(platform_window* window) {
 	server_update_time = platform_get_time(TIME_NS, TIME_FULL);
 
+	mutex_lock(&messages_received_on_server.mutex);
+
 	for (int i = 0; i < messages_received_on_server.length; i++) {
 		protocol_generic_message* msg = *(protocol_generic_message**)array_at(&messages_received_on_server, i);
 		set_ping_for_player(msg);
@@ -128,7 +145,6 @@ void update_server(platform_window* window) {
 				log_info("Player connected to server");
 			} break;
 
-		/*
 			case MESSAGE_USER_MOVED: {
 				protocol_move* move_msg = (protocol_move*)msg->message;
 				move_user(window,  move_msg->id, move_msg->move, move_msg->delta);
@@ -142,18 +158,18 @@ void update_server(platform_window* window) {
 				protocol_user_shoot* shoot_msg = (protocol_user_shoot*)msg->message;
 				shoot(window, shoot_msg->id, shoot_msg->dirx, shoot_msg->diry);
 			} break;
-		*/
 			
 			default:
 				log_info("Unhandled message received");
 				break;
 		}
 
-		mem_free(msg->message);
-		mem_free(msg);
 		array_remove_at(&messages_received_on_server, i);
 		i--;
 	}
+	
+	allocator_clear(&server_incomming_allocator);
+	mutex_unlock(&messages_received_on_server.mutex);
 
 	update_spawners();
 	update_drops();
@@ -162,10 +178,15 @@ void update_server(platform_window* window) {
 	update_players_server();
 	update_zombies_server(window);
 
-	broadcast_to_clients(create_protocol_user_list());
-	broadcast_to_clients(create_protocol_zombie_list());
-	broadcast_to_clients(create_protocol_bullets_list());
-	broadcast_to_clients(create_protocol_drop_list());
+	if (update_timer >= (1/60.0f)) { // send at 60 ticks
+		broadcast_to_clients(create_protocol_user_list());
+		broadcast_to_clients(create_protocol_zombie_list());
+		broadcast_to_clients(create_protocol_bullets_list());
+		broadcast_to_clients(create_protocol_drop_list());
+		update_timer = 0.0f;
+	}
+
+	update_timer += update_delta;
 
 	server_update_time = platform_get_time(TIME_NS, TIME_FULL) - server_update_time;
 	if ((server_update_time/1000000.0f) > 5.0f) {
@@ -202,6 +223,8 @@ static void load_bullets_into_existing_list(protocol_bullets_list* msg_bullets) 
 }
 
 void update_client(platform_window* window) {
+	mutex_lock(&messages_received_on_client.mutex);
+
 	for (int i = 0; i < messages_received_on_client.length; i++) {
 		protocol_generic_client_message* msg = *(protocol_generic_client_message**)array_at(&messages_received_on_client, i);
 
@@ -242,10 +265,12 @@ void update_client(platform_window* window) {
 			break;
 		}
 
-		mem_free(msg);
 		array_remove_at(&messages_received_on_client, i);
 		i--;
 	}
+
+	allocator_clear(&client_incomming_allocator);
+	mutex_unlock(&messages_received_on_client.mutex);
 }
 
 void update_game(platform_window* window) {

@@ -226,6 +226,13 @@ void draw_bullets(platform_window* window) {
 		bullet b = bullets[i];
 		if (!b.active) continue;
 
+		if (b.player_id == player_id) {
+			player *p = get_player_by_id(b.player_id);
+			b.position.x = p->gunx;
+			b.position.y = p->guny;
+			b.position.z = p->gun_height;
+		}
+
 		if ((int)bullets[i].position.y < (int)bullets[i].endy) { BULLET_RENDER_DEPTH((int)bullets[i].position.y); }
 		else { BULLET_RENDER_DEPTH((int)bullets[i].endy); }
 

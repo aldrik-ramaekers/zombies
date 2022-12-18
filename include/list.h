@@ -17,6 +17,7 @@ typedef struct t_list
 	list_item *start;
 	u32 count;
 	u16 size;
+	mutex mutex;
 	allocator* al;
 } list;
 
