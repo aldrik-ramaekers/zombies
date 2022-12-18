@@ -5,6 +5,16 @@ box get_box_of_object(platform_window* window, object o) {
 	return get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, o.h}, o.size);
 }
 
+void render_box_with_outline(box box, color c) {
+	render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, c); // down
+	render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, c); // up
+
+	render_quad_with_outline(box.tr_u, box.tr_d, box.br_u, box.br_d, c); // right
+	render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, c); // left
+	render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, c); // bottom
+
+}
+
 void render_quad_with_outline(vec2f tl, vec2f tr, vec2f bl, vec2f br, color c) {
 	renderer->render_quad(
 			tl.x, tl.y, 

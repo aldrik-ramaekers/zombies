@@ -62,8 +62,19 @@ static void draw_leaderboard(platform_window* window) {
 	}
 }
 
+void draw_debug_stats(platform_window* window) {
+	float fps = 1.0f / update_delta;
+	float usage = (update_delta / (1.0f / 60.0f) * 100);
+
+	char fps_text[50];
+	snprintf(fps_text, 50, "FPS: %d, MS: %.4f, USAGE: %.2f", (int)fps, update_delta*1000.0f, usage);
+
+	renderer->render_text(fnt_20, _global_camera.x, _global_camera.y, fps_text, rgb(0,0,0));
+}
+
 void draw_overlay(platform_window* window) {
 	OVERLAY_RENDER_DEPTH();
 	draw_gun_info(window);
 	draw_leaderboard(window);
+	draw_debug_stats(window);
 }

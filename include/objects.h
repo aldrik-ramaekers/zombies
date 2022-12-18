@@ -36,5 +36,6 @@ void create_objects();
 void draw_objects_at_row(platform_window* window, int row);
 box get_box_of_object(platform_window* window, object o);
 void render_quad_with_outline(vec2f tl, vec2f tr, vec2f bl, vec2f br, color c);
+void render_box_with_outline(box box, color c);
 
 #endif

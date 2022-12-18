@@ -173,7 +173,7 @@ static vec2f get_random_point_around_player(player p, zombie o) {
 }
 
 void update_zombies_server(platform_window* window) {
-	float speed = 0.05f;
+	float speed = 4.0f * update_delta;
 
 	for (int i = 0; i < MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];

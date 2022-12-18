@@ -73,8 +73,8 @@ void init_game() {
 }
 
 void destroy_game() {
-	if (global_state.server) networking_destroy_server(global_state.server);
 	if (global_state.client) network_client_close(global_state.client);
+	if (global_state.server) networking_destroy_server(global_state.server);
 }
 
 static void broadcast_to_clients(network_message message) {
@@ -113,8 +113,6 @@ static void set_ping_for_player(protocol_generic_message* msg) {
 
 float update_timer = 0.0f;
 void update_server(platform_window* window) {
-	clear_bullets();
-	
 	for (int i = 0; i < messages_received_on_server.length; i++) {
 		protocol_generic_message* msg = *(protocol_generic_message**)array_at(&messages_received_on_server, i);
 		set_ping_for_player(msg);
@@ -188,14 +186,13 @@ static void load_bullets_into_existing_list(protocol_bullets_list* msg_bullets) 
 		for (int x = 0; x < max_bullets; x++) {
 			if (!msg_bullets->bullets[x].active) continue;
 			bullets[i] = msg_bullets->bullets[x];
+			bullets[i].alive_time = 0.0f;
 			msg_bullets->bullets[x].active = false;
 		}
 	}
 }
 
 void update_client(platform_window* window) {
-	clear_bullets();
-
 	for (int i = 0; i < messages_received_on_client.length; i++) {
 		protocol_generic_client_message* msg = *(protocol_generic_client_message**)array_at(&messages_received_on_client, i);
 
@@ -243,6 +240,8 @@ void update_client(platform_window* window) {
 }
 
 void update_game(platform_window* window) {
+	clear_bullets();
+
 	if (global_state.server) {
 		update_server(window);
 	}

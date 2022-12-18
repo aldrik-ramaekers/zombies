@@ -105,6 +105,23 @@ box get_box_of_square(vec3f position, vec3f size) {
 	return (box){rendertl, rendertr, renderbl, renderbr, rendertl, rendertr, renderbl, renderbr};
 }
 
+box get_render_box_of_square_without_incline(platform_window* window, vec3f position, vec3f size) {
+	map_info info = get_map_info(window);
+	float render_x = (info.tile_width * position.x);
+	vec2f rendertl = (vec2f){render_x, info.tile_width * position.y - position.z*info.px_raised_per_h};
+	vec2f rendertr = (vec2f){render_x + info.tile_width*size.x, info.tile_height * position.y - position.z*info.px_raised_per_h};
+	vec2f renderbr = (vec2f){render_x + info.tile_width*size.x, info.tile_height * position.y + info.tile_height*size.y - position.z*info.px_raised_per_h};
+	vec2f renderbl = (vec2f){render_x, info.tile_height * position.y + info.tile_height*size.y - position.z*info.px_raised_per_h};
+
+	position.z += size.z;
+	vec2f rendertl2 = (vec2f){render_x, info.tile_width * position.y - position.z*info.px_raised_per_h};
+	vec2f rendertr2 = (vec2f){render_x + info.tile_width*size.x, info.tile_height * position.y - position.z*info.px_raised_per_h};
+	vec2f renderbr2 = (vec2f){render_x + info.tile_width*size.x, info.tile_height * position.y + info.tile_height*size.y - position.z*info.px_raised_per_h};
+	vec2f renderbl2 = (vec2f){render_x, info.tile_height * position.y + info.tile_height*size.y - position.z*info.px_raised_per_h};
+
+	return (box){rendertl, rendertr, renderbl, renderbr, rendertl2, rendertr2, renderbl2, renderbr2};
+}
+
 box get_render_box_of_square(platform_window* window, vec3f position, vec3f size) {
 	map_info info = get_map_info(window);
 	float render_x = (info.tile_width * position.x) + (info.px_incline * position.y);

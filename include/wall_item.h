@@ -3,6 +3,7 @@
 
 #include <projectbase/project_base.h>
 
+#include "objects.h"
 #include "guns.h"
 
 typedef enum t_wall_item_type {

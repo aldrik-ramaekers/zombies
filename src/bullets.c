@@ -182,7 +182,9 @@ static bool check_if_bullet_collided_with_ground(bullet *b, platform_window* win
 
 void clear_bullets() {
 	for (int i = 0; i < max_bullets; i++) {
-		bullets[i].active = false;
+		if (bullets[i].alive_time >= 0.05f) {
+			bullets[i].active = false;
+		}
 	}
 }
 
@@ -213,7 +215,6 @@ void update_bullets(platform_window* window) {
 		}
 
 		bullets[i].alive_time += update_delta;
-		//bullets[i].active = false;
 	}
 }
 

@@ -50,7 +50,7 @@ void spawn_player(u32 id, network_client client) {
 
 
 void move_user(platform_window* window, u32 id, protocol_move_type move) {
-	float speed = 0.1f;
+	float speed = 5.5f * update_delta;
 	float pad_between_player_and_obj = 0.01f;
 
 	player* p = get_player_by_id(id);
