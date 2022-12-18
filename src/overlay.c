@@ -67,9 +67,13 @@ void draw_debug_stats(platform_window* window) {
 	float usage = (update_delta / (1.0f / 60.0f) * 100);
 
 	char fps_text[50];
-	snprintf(fps_text, 50, "FPS: %d, MS: %.4f, USAGE: %.2f", (int)fps, update_delta*1000.0f, usage);
+	snprintf(fps_text, 50, "FPS: %d, MS: %.4f, USAGE: %.0f%%", (int)fps, update_delta*1000.0f, usage);
 
-	renderer->render_text(fnt_20, _global_camera.x, _global_camera.y, fps_text, rgb(0,0,0));
+	char update_text[50];
+	snprintf(update_text, 50, "server: %.2fms", server_update_time/1000000.0f);
+
+	renderer->render_text(fnt_20, _global_camera.x, _global_camera.y + fnt_20->px_h*0, fps_text, rgb(0,0,0));
+	renderer->render_text(fnt_20, _global_camera.x, _global_camera.y + fnt_20->px_h*1, update_text, rgb(0,0,0));
 }
 
 void draw_overlay(platform_window* window) {

@@ -113,6 +113,8 @@ static void set_ping_for_player(protocol_generic_message* msg) {
 
 float update_timer = 0.0f;
 void update_server(platform_window* window) {
+	server_update_time = platform_get_time(TIME_NS, TIME_FULL);
+
 	for (int i = 0; i < messages_received_on_server.length; i++) {
 		protocol_generic_message* msg = *(protocol_generic_message**)array_at(&messages_received_on_server, i);
 		set_ping_for_player(msg);
@@ -126,9 +128,10 @@ void update_server(platform_window* window) {
 				log_info("Player connected to server");
 			} break;
 
+		/*
 			case MESSAGE_USER_MOVED: {
 				protocol_move* move_msg = (protocol_move*)msg->message;
-				move_user(window,  move_msg->id, move_msg->move);
+				move_user(window,  move_msg->id, move_msg->move, move_msg->delta);
 			} break;
 
 			case MESSAGE_USER_LOOK: {
@@ -139,6 +142,7 @@ void update_server(platform_window* window) {
 				protocol_user_shoot* shoot_msg = (protocol_user_shoot*)msg->message;
 				shoot(window, shoot_msg->id, shoot_msg->dirx, shoot_msg->diry);
 			} break;
+		*/
 			
 			default:
 				log_info("Unhandled message received");
@@ -162,6 +166,11 @@ void update_server(platform_window* window) {
 	broadcast_to_clients(create_protocol_zombie_list());
 	broadcast_to_clients(create_protocol_bullets_list());
 	broadcast_to_clients(create_protocol_drop_list());
+
+	server_update_time = platform_get_time(TIME_NS, TIME_FULL) - server_update_time;
+	if ((server_update_time/1000000.0f) > 5.0f) {
+		log_infox("Server update took %.2fms", (server_update_time/1000000.0f));
+	}
 }
 
 static void apply_user_list(protocol_user_list* msg_players) {
@@ -186,7 +195,7 @@ static void load_bullets_into_existing_list(protocol_bullets_list* msg_bullets) 
 		for (int x = 0; x < max_bullets; x++) {
 			if (!msg_bullets->bullets[x].active) continue;
 			bullets[i] = msg_bullets->bullets[x];
-			bullets[i].alive_time = 0.0f;
+			//bullets[i].alive_time = 0.0f;
 			msg_bullets->bullets[x].active = false;
 		}
 	}

@@ -25,6 +25,8 @@ typedef struct t_drop {
 
 #define MAX_DROPS 50
 drop drops[MAX_DROPS] = {0};
+#define DROP_MAX_DURATION (4.0f)
+#define DROP_FADE_TIME (2.0f)
 
 void update_drops();
 void draw_drops(platform_window* window);

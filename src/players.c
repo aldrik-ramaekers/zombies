@@ -49,8 +49,8 @@ void spawn_player(u32 id, network_client client) {
 }
 
 
-void move_user(platform_window* window, u32 id, protocol_move_type move) {
-	float speed = 5.5f * update_delta;
+void move_user(platform_window* window, u32 id, protocol_move_type move, float delta) {
+	float speed = 5.5f * delta;
 	float pad_between_player_and_obj = 0.01f;
 
 	player* p = get_player_by_id(id);
@@ -148,28 +148,28 @@ void take_player_input(platform_window* window) {
 			network_message message = create_protocol_user_moved(MOVE_UP, player_id);
 			network_client_send(global_state.client, message);
 		}
-		move_user(window, player_id, MOVE_UP);
+		move_user(window, player_id, MOVE_UP, update_delta);
 	}
 	if (keyboard_is_key_down(KEY_S)) {
 		if (!global_state.server) {
 			network_message message = create_protocol_user_moved(MOVE_DOWN, player_id);
 			network_client_send(global_state.client, message);
 		}
-		move_user(window, player_id, MOVE_DOWN);
+		move_user(window, player_id, MOVE_DOWN, update_delta);
 	}
 	if (keyboard_is_key_down(KEY_A)) {
 		if (!global_state.server) {
 			network_message message = create_protocol_user_moved(MOVE_LEFT, player_id);
 			network_client_send(global_state.client, message);
 		}
-		move_user(window, player_id, MOVE_LEFT);
+		move_user(window, player_id, MOVE_LEFT, update_delta);
 	}
 	if (keyboard_is_key_down(KEY_D)) {
 		if (!global_state.server) {
 			network_message message = create_protocol_user_moved(MOVE_RIGHT, player_id);
 			network_client_send(global_state.client, message);
 		}
-		move_user(window, player_id, MOVE_RIGHT);
+		move_user(window, player_id, MOVE_RIGHT, update_delta);
 	}
 
 	// Send gun position

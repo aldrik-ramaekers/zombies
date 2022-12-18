@@ -182,6 +182,8 @@ static bool check_if_bullet_collided_with_ground(bullet *b, platform_window* win
 
 void clear_bullets() {
 	for (int i = 0; i < max_bullets; i++) {
+		if (!bullets[i].active) continue;
+		bullets[i].alive_time += update_delta;
 		if (bullets[i].alive_time >= 0.05f) {
 			bullets[i].active = false;
 		}
@@ -213,8 +215,6 @@ void update_bullets(platform_window* window) {
 		if (check_if_bullet_collided_with_zombie(b, window, true)) {
 			p->kills++;
 		}
-
-		bullets[i].alive_time += update_delta;
 	}
 }
 

@@ -73,6 +73,7 @@ typedef struct t_protocol_move
 	network_message_type type;
 	protocol_move_type move;
 	u32 id;
+	float delta;
 } protocol_move;
 
 typedef struct t_protocol_user_look

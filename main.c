@@ -69,7 +69,7 @@ int main(int argc, char **argv)
     platform_init(argc, argv, CONFIG_DIRECTORY);
 
 	settings_set_number("USE_GPU", 1);
-    platform_window *window = platform_open_window_ex("Zombies!", 1920, 1080, 1920, 1080, 500, 500, FLAGS_MINIMIZE, update_func, 0, 0, 0, 0);
+    platform_window *window = platform_open_window_ex("Zombies!", 800, 600, 1920, 1080, 500, 500, FLAGS_MINIMIZE, update_func, 0, 0, 0, 0);
 	platform_toggle_vsync(window, false);
 	//platform_toggle_fullscreen(window, true);
 

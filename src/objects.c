@@ -23,10 +23,10 @@ void render_quad_with_outline(vec2f tl, vec2f tr, vec2f bl, vec2f br, color c) {
 			tr.x, tr.y, 
 			c);
 
-	renderer->render_line(tl.x, tl.y, tr.x, tr.y, 1, rgb(0,0,255)); // top
-	renderer->render_line(tl.x, tl.y, bl.x, bl.y, 1, rgb(0,0,255)); // left
-	renderer->render_line(tr.x, tr.y, br.x, br.y, 1, rgb(0,0,255)); // right
-	renderer->render_line(bl.x, bl.y, br.x, br.y, 1, rgb(0,0,255)); // bottom
+	renderer->render_line(tl.x, tl.y, tr.x, tr.y, 1, rgba(0,0,255, c.a)); // top
+	renderer->render_line(tl.x, tl.y, bl.x, bl.y, 1, rgba(0,0,255, c.a)); // left
+	renderer->render_line(tr.x, tr.y, br.x, br.y, 1, rgba(0,0,255, c.a)); // right
+	renderer->render_line(bl.x, bl.y, br.x, br.y, 1, rgba(0,0,255, c.a)); // bottom
 }
 
 object get_object_at_tile(float x, float y) {

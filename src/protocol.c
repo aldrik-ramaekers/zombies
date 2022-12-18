@@ -56,6 +56,7 @@ network_message create_protocol_user_moved(protocol_move_type move, u32 id)
 	buf->type = MESSAGE_USER_MOVED;
 	buf->move = move;
 	buf->id = id;
+	buf->delta = update_delta;
 	return network_create_message(network_buffer, sizeof(protocol_move), MAX_NETWORK_BUFFER_SIZE);
 }
 

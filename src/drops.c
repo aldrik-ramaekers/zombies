@@ -31,6 +31,10 @@ void update_drops() {
 				handle_drop_pickup(p, &drops[i]);
 			}
 		}
+
+		if (b.time_active >= DROP_MAX_DURATION) {
+			drops[i].active = false;
+		}
 	}
 }
 
@@ -40,23 +44,22 @@ void draw_drops(platform_window* window) {
 		if (!b.active) continue;
 
 		DROP_RENDER_DEPTH((int)(b.position.y));
+		
+		int alpha = 255;
+		if (b.time_active >= DROP_MAX_DURATION - DROP_FADE_TIME) {
+			alpha = 255 - ((b.time_active - (DROP_MAX_DURATION - DROP_FADE_TIME)) / DROP_FADE_TIME)*255;
+		}
 
 		b.position.z = b.start_h;
 		b.size.z = 0.0f;
 		b.position.y += 0.2f;
 		b.position.x -= 0.07f;
 		box shadow_box = get_render_box_of_square(window, b.position, b.size);
-		render_quad_with_outline(shadow_box.tl_d, shadow_box.tr_d, shadow_box.bl_d, shadow_box.br_d, rgba(0,0,0,120));
-		render_quad_with_outline(shadow_box.tl_u, shadow_box.tr_u, shadow_box.bl_u, shadow_box.br_u, rgba(0,0,0,120));
-		render_quad_with_outline(shadow_box.tl_u, shadow_box.tl_d, shadow_box.bl_u, shadow_box.bl_d, rgba(0,0,0,120));
-		render_quad_with_outline(shadow_box.bl_u, shadow_box.br_u, shadow_box.bl_d, shadow_box.br_d, rgba(0,0,0,120));
+		render_box_with_outline(shadow_box, rgba(0,0,0,alpha * (120.0f/255.0f)));
 
 		b = drops[i];
 		box full_box = get_render_box_of_square(window, b.position, b.size);
-		render_quad_with_outline(full_box.tl_d, full_box.tr_d, full_box.bl_d, full_box.br_d, rgb(218,112,214));
-		render_quad_with_outline(full_box.tl_u, full_box.tr_u, full_box.bl_u, full_box.br_u, rgb(218,112,214));
-		render_quad_with_outline(full_box.tl_u, full_box.tl_d, full_box.bl_u, full_box.bl_d, rgb(218,112,214));
-		render_quad_with_outline(full_box.bl_u, full_box.br_u, full_box.bl_d, full_box.br_d, rgb(218,112,214));
+		render_box_with_outline(full_box, rgba(218,112,214, alpha));
 
 		int drop_h = full_box.br_d.y - full_box.tr_d.y;
 
@@ -65,7 +68,7 @@ void draw_drops(platform_window* window) {
 		int icon_y = full_box.tl_u.y - icon_size + (drop_h/2);
 		switch(b.type) {
 			case DROP_AMMO: {
-				renderer->render_image(img_icon_bullets, icon_x, icon_y, icon_size, icon_size);
+				renderer->render_image_tint(img_icon_bullets, icon_x, icon_y, icon_size, icon_size, rgba(255,255,255, alpha));
 			} break;
 
 			default: break;
