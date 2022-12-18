@@ -282,6 +282,8 @@ void* pathfinding_thread(void *args)
 		{
 			mutex_unlock(&global_pathfinding_queue.mutex);
 		}
+
+		thread_sleep(1000);
 	}
 	
 	return 0;

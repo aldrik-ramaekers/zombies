@@ -171,17 +171,28 @@ void update_server(platform_window* window) {
 	}
 
 	u64 handle_messages = platform_get_time(TIME_FULL, TIME_NS);
+	u64 broadcast_stamp = 0;
+	u64 broadcast_players = 0;
+	u64 broadcast_zombies = 0;
 	
 	allocator_clear(&server_incomming_allocator);
 	mutex_unlock(&messages_received_on_server.mutex);
 
+	update_bullets_server(window);
 	if (update_timer >= SERVER_TICK_RATE) { // send at 60 ticks
 		update_spawners_server();
 		update_drops_server();
 		update_wallitems_server();
-		update_bullets_server(window);
+
+		broadcast_players = platform_get_time(TIME_FULL, TIME_NS);
 		update_players_server();
+		broadcast_players = platform_get_time(TIME_FULL, TIME_NS) - broadcast_players;
+
+		broadcast_zombies = platform_get_time(TIME_FULL, TIME_NS);
 		update_zombies_server(window);
+		broadcast_zombies = platform_get_time(TIME_FULL, TIME_NS) - broadcast_zombies;
+
+		broadcast_stamp = platform_get_time(TIME_FULL, TIME_NS);
 
 		broadcast_to_clients(create_protocol_user_list());
 		broadcast_to_clients(create_protocol_zombie_list());
@@ -196,9 +207,11 @@ void update_server(platform_window* window) {
 	handle_messages = handle_messages  - logic_update_time;
 	logic_update_time = platform_get_time(TIME_FULL, TIME_NS) - logic_update_time;
 	u64 server_tick = platform_get_time(TIME_FULL, TIME_NS) - handle_messages2;
-	if ((logic_update_time/1000000.0f) > 5.0f) {
-		log_infox("Server update took %.2fms: messages: %.2fms, tick: %.2fms", 
-			(logic_update_time/1000000.0f), (handle_messages/1000000.0f), (server_tick/1000000.0f));
+	broadcast_stamp = platform_get_time(TIME_FULL, TIME_NS) - broadcast_stamp;
+	if ((logic_update_time/1000000.0f) > 1.0f) {
+		log_infox("Server update took %.2fms:\n\tmessages: %.2fms\n\ttick: %.2fms\n\t\tbroadcast: %.2fms\n\t\tplayers: %.2fms\n\t\tzombies: %.2fms\n",
+			(logic_update_time/1000000.0f), (handle_messages/1000000.0f), (server_tick/1000000.0f), 
+			(broadcast_stamp/1000000.0f), (broadcast_players/1000000.0f), (broadcast_zombies/1000000.0f));
 	}
 }
 
