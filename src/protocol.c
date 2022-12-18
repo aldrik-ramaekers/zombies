@@ -120,12 +120,14 @@ void add_message_to_outgoing_queue(send_queue_entry entry) {
 
 	bool can_overwrite = type != MESSAGE_USER_SHOOT && type != MESSAGE_USER_MOVED && type != MESSAGE_USER_LOOK;
 
+	//mutex_lock(&messages_to_send_queue_mutex);
 	for (int i = 0; i < OUTGOING_QUEUE_SIZE; i++)
 	{
 		if (messages_to_send_queue[i].active) {
 			network_message_type type_existing = *(network_message_type*)(messages_to_send_queue[i].message.data+12);
 			if (type == type_existing && can_overwrite) {
 				messages_to_send_queue[i] = entry;
+				//mutex_unlock(&messages_to_send_queue_mutex);
 				return;
 			}
 			else {
@@ -134,8 +136,10 @@ void add_message_to_outgoing_queue(send_queue_entry entry) {
 		}
 		messages_to_send_queue[i] = entry;
 		messages_to_send_queue[i].active = true;
+		//mutex_unlock(&messages_to_send_queue_mutex);
 		return;
 	}
+	//mutex_unlock(&messages_to_send_queue_mutex);
 	log_info("Outgoing network queue is full");
 }
 

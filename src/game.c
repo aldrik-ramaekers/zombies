@@ -169,6 +169,8 @@ void update_server(platform_window* window) {
 		array_remove_at(&messages_received_on_server, i);
 		i--;
 	}
+
+	u64 handle_messages = platform_get_time(TIME_FULL, TIME_NS);
 	
 	allocator_clear(&server_incomming_allocator);
 	mutex_unlock(&messages_received_on_server.mutex);
@@ -190,9 +192,13 @@ void update_server(platform_window* window) {
 
 	update_timer += update_delta;
 
+	u64 handle_messages2 = handle_messages;
+	handle_messages = handle_messages  - logic_update_time;
 	logic_update_time = platform_get_time(TIME_FULL, TIME_NS) - logic_update_time;
+	u64 server_tick = platform_get_time(TIME_FULL, TIME_NS) - handle_messages2;
 	if ((logic_update_time/1000000.0f) > 5.0f) {
-		log_infox("Server update took %.2fms", (logic_update_time/1000000.0f));
+		log_infox("Server update took %.2fms: messages: %.2fms, tick: %.2fms", 
+			(logic_update_time/1000000.0f), (handle_messages/1000000.0f), (server_tick/1000000.0f));
 	}
 }
 
@@ -275,6 +281,8 @@ void update_client(platform_window* window) {
 	allocator_clear(&client_incomming_allocator);
 	mutex_unlock(&messages_received_on_client.mutex);
 	logic_update_time = platform_get_time(TIME_FULL, TIME_NS) - logic_update_time;
+
+	update_zombies_client(window);
 }
 
 void update_game(platform_window* window) {
@@ -288,9 +296,6 @@ void update_game(platform_window* window) {
 	}
 	
 	if (global_state.network_state == CONNECTED) {
-		if (!global_state.server) {
-			update_zombies_client(window); // move to update_client?
-		}
 		take_player_input(window);
 
 		draw_grid(window);
