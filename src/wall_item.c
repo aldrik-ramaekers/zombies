@@ -46,14 +46,14 @@ void create_wallitem(vec3f position, wall_item_type type, wall_item_data data) {
 	}
 }
 
-void update_wallitems() {
+void update_wallitems_server() {
 	#define MAX_HEIGHT_DIFF_FOR_WALLITEM (0.1f)
 
 	for (int i = 0; i < MAX_WALLITEMS; i++) {
 		wall_item item = wallitems[i];
 		if (!item.active) continue;
 
-		wallitems[i].time_active += update_delta;
+		wallitems[i].time_active += SERVER_TICK_RATE;
 		wallitems[i].position.z = MAX_HEIGHT_DIFF_FOR_WALLITEM * sin (2 * M_PI * 0.5f * (wallitems[i].time_active) + 0) + item.start_h;
 	}
 }

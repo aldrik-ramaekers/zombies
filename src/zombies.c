@@ -45,10 +45,10 @@ void spawn_zombie(int x, int y) {
 	}
 }
 
-void update_spawners() {
+void update_spawners_server() {
 	for (int x = 0; x < MAX_SPAWNERS; x++) {
 		spawner spawner = spawner_tiles[x];
-		spawner_tiles[x].sec_since_last_spawn += update_delta;
+		spawner_tiles[x].sec_since_last_spawn += SERVER_TICK_RATE;
 		if (spawner_tiles[x].sec_since_last_spawn >= 2.0f) {
 			spawn_zombie(spawner.position.x, spawner.position.y);
 			spawner_tiles[x].sec_since_last_spawn = 0;
@@ -137,7 +137,7 @@ static bool is_within_next_tile(zombie o) {
 }
 
 void update_zombies_client(platform_window* window) {
-	float speed = 0.05f;
+	float speed = 4.0f * update_delta;
 	for (int i = 0; i < MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
@@ -173,13 +173,13 @@ static vec2f get_random_point_around_player(player p, zombie o) {
 }
 
 void update_zombies_server(platform_window* window) {
-	float speed = 4.0f * update_delta;
+	float speed = 4.0f * SERVER_TICK_RATE;
 
 	for (int i = 0; i < MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
 
-		zombies[i].time_since_last_path += update_delta;
+		zombies[i].time_since_last_path += SERVER_TICK_RATE;
 		if (zombies[i].time_since_last_path > 0.05f) {
 			player closest_player = get_closest_player_to_tile((int)o.position.x, (int)o.position.y);
 			vec2f target_tile = (vec2f){closest_player.playerx, closest_player.playery+(get_player_size_in_tile()/2)};
@@ -217,6 +217,7 @@ void update_zombies_server(platform_window* window) {
 		zombies[i].next2tiles[1] = (vec2f){-1,-1};
 		if (o.path.length > 0) {
 			zombies[i].next2tiles[0] = *(vec2f*)array_at(&o.path, o.path.length-1);
+			zombies[i].next2tiles[1] = zombies[i].next2tiles[0];
 			if (o.path.length > 1) {
 				zombies[i].next2tiles[1] = *(vec2f*)array_at(&o.path, o.path.length-2);
 			}

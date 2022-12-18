@@ -27,7 +27,7 @@ typedef struct t_wall_item {
 #define MAX_WALLITEMS (20)
 wall_item wallitems[MAX_WALLITEMS] = {0};
 
-void update_wallitems();
+void update_wallitems_server();
 void draw_wallitems(platform_window* window);
 void create_wallitem(vec3f position, wall_item_type item, wall_item_data data);
 

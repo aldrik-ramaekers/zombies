@@ -207,7 +207,7 @@ void take_player_input(platform_window* window) {
 void update_players_server() {
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
-		players[i].sec_since_last_shot += update_delta;
+		players[i].sec_since_last_shot += SERVER_TICK_RATE;
 	}
 }
 

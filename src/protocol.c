@@ -116,9 +116,22 @@ void add_message_to_outgoing_queuex(network_message message, network_client c) {
 }
 
 void add_message_to_outgoing_queue(send_queue_entry entry) {
+	network_message_type type = *(network_message_type*)(entry.message.data+12);
+
+	bool can_overwrite = type != MESSAGE_USER_SHOOT && type != MESSAGE_USER_MOVED && type != MESSAGE_USER_LOOK;
+
 	for (int i = 0; i < OUTGOING_QUEUE_SIZE; i++)
 	{
-		if (messages_to_send_queue[i].active) continue;
+		if (messages_to_send_queue[i].active) {
+			network_message_type type_existing = *(network_message_type*)(messages_to_send_queue[i].message.data+12);
+			if (type == type_existing && can_overwrite) {
+				messages_to_send_queue[i] = entry;
+				return;
+			}
+			else {
+				continue;
+			}
+		}
 		messages_to_send_queue[i] = entry;
 		messages_to_send_queue[i].active = true;
 		return;
@@ -130,8 +143,11 @@ void* network_send_thread(void* args) {
 	while (1) {
 		for (int i = 0; i < OUTGOING_QUEUE_SIZE; i++)
 		{
-			if (!messages_to_send_queue[i].active) continue;
 			mutex_lock(&messages_to_send_queue_mutex);
+			if (!messages_to_send_queue[i].active) {
+				mutex_unlock(&messages_to_send_queue_mutex);
+				continue;
+			}
 			send_queue_entry message = messages_to_send_queue[i];
 			messages_to_send_queue[i].active = false;
 			mutex_unlock(&messages_to_send_queue_mutex);
@@ -142,7 +158,8 @@ void* network_send_thread(void* args) {
 					network_client_send(&c, message.message);
 				}
 			}
-			mem_free(message.message.data);			
+			mem_free(message.message.data);	
+			thread_sleep(1000);		
 		}
 	}	
 }

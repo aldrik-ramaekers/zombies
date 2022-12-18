@@ -28,7 +28,7 @@ drop drops[MAX_DROPS] = {0};
 #define DROP_MAX_DURATION (4.0f)
 #define DROP_FADE_TIME (2.0f)
 
-void update_drops();
+void update_drops_server();
 void draw_drops(platform_window* window);
 void spawn_drop(vec3f pos);
 

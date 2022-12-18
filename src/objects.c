@@ -78,7 +78,7 @@ void create_objects() {
 
 	for (int i = MAP_SIZE_Y-1; i >= 0; i--) {
 		create_box(0, i, 0);
-		create_box(MAP_SIZE_Y-1, i, 0);
+		create_box(MAP_SIZE_X-1, i, 0);
 	}
 
 	create_box(16, 8, 0);

@@ -7,6 +7,8 @@
 #include "../include/players.h"
 #include "../include/game.h"
 
+#define SERVER_TICK_RATE (1.0f/60.0f)
+
 typedef enum t_game_state {
 	GAMESTATE_IDLE,
 	GAMESTATE_LOADING_MAP,

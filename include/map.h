@@ -22,7 +22,7 @@ typedef struct t_tile {
 	vec2f br;
 } tile;
 
-#define MAP_SIZE_X 20
+#define MAP_SIZE_X 40
 #define MAP_SIZE_Y 20
 
 tile map_loaded[MAP_SIZE_Y][MAP_SIZE_X];

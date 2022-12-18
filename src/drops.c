@@ -13,14 +13,14 @@ void handle_drop_pickup(player* p, drop* d) {
 	d->active = false;
 }
 
-void update_drops() {
+void update_drops_server() {
 	#define MAX_HEIGHT_DIFF (0.3f)
 
 	for (int i = 0; i < MAX_DROPS; i++) {
 		drop b = drops[i];
 		if (!b.active) continue;
 
-		drops[i].time_active += update_delta;
+		drops[i].time_active += SERVER_TICK_RATE;
 		drops[i].position.z = MAX_HEIGHT_DIFF * sin (2 * M_PI * 0.5f * (drops[i].time_active) + 0) + b.start_h;
 
 		for (int x = 0; x < MAX_PLAYERS; x++) {
@@ -49,6 +49,7 @@ void draw_drops(platform_window* window) {
 		if (b.time_active >= DROP_MAX_DURATION - DROP_FADE_TIME) {
 			alpha = 255 - ((b.time_active - (DROP_MAX_DURATION - DROP_FADE_TIME)) / DROP_FADE_TIME)*255;
 		}
+		if (alpha < 0) alpha = 0;
 
 		b.position.z = b.start_h;
 		b.size.z = 0.0f;

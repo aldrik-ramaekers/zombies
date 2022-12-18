@@ -190,7 +190,7 @@ void clear_bullets() {
 	}
 }
 
-void update_bullets(platform_window* window) {
+void update_bullets_server(platform_window* window) {
 	for (int i = 0; i < max_bullets; i++) {
 		bullet b = bullets[i];
 		if (!b.active) continue;

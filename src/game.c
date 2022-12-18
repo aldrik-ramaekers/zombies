@@ -59,8 +59,10 @@ void load_map() {
 	outgoing_allocator = create_allocator(MAX_NETWORK_BUFFER_SIZE);
 	messages_to_send_queue_mutex = mutex_create();
 
-	thread send_thread = thread_start(network_send_thread, 0);
-	thread_detach(&send_thread);
+	for (int i = 0; i < 3; i++) {
+		thread send_thread = thread_start(network_send_thread, 0);
+		thread_detach(&send_thread);
+	}
 
 	load_map_from_data();
 	create_objects();
@@ -171,14 +173,14 @@ void update_server(platform_window* window) {
 	allocator_clear(&server_incomming_allocator);
 	mutex_unlock(&messages_received_on_server.mutex);
 
-	update_spawners();
-	update_drops();
-	update_wallitems();
-	update_bullets(window);
-	update_players_server();
-	update_zombies_server(window);
+	if (update_timer >= SERVER_TICK_RATE) { // send at 60 ticks
+		update_spawners_server();
+		update_drops_server();
+		update_wallitems_server();
+		update_bullets_server(window);
+		update_players_server();
+		update_zombies_server(window);
 
-	if (update_timer >= (1/60.0f)) { // send at 60 ticks
 		broadcast_to_clients(create_protocol_user_list());
 		broadcast_to_clients(create_protocol_zombie_list());
 		broadcast_to_clients(create_protocol_bullets_list());
