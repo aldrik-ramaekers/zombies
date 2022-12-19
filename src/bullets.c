@@ -156,9 +156,19 @@ bool check_if_bullet_collided_with_zombie(bullet* b, platform_window* window, pl
 		zombies[index_of_closest_zombie].health -= b->damage;
 		b->damage = 0;
 
-		int chunk_count = rand() % 4 + 1;
-		for (int c = 0; c < chunk_count; c++) spawn_zombie_chunk(get_center_of_square(zombies[index_of_closest_zombie].position, zombies[index_of_closest_zombie].size));
+		// Random chunks when zombie is hit.
+		if (rand() % 5 == 0) {
+			spawn_zombie_chunk(get_center_of_square(zombies[index_of_closest_zombie].position, zombies[index_of_closest_zombie].size));
+		}
+
 		if (zombies[index_of_closest_zombie].health <= 0) {
+			vec3f center = get_center_of_square(zombies[index_of_closest_zombie].position, zombies[index_of_closest_zombie].size);
+			spawn_zombie_splatter(center);
+
+			// Random chunks when zombie dies.
+			int chunk_count = rand() % 4 + 1;
+			for (int c = 0; c < chunk_count; c++) spawn_zombie_chunk(center);
+
 			zombies[index_of_closest_zombie].alive = false;
 			spawn_drop(zombies[index_of_closest_zombie].position);
 			p->kills++;

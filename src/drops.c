@@ -55,12 +55,15 @@ void draw_drops(platform_window* window) {
 		b.size.z = 0.0f;
 		b.position.y += 0.2f;
 		b.position.x -= 0.07f;
+		b.size.x -= 0.1f;
 		box shadow_box = get_render_box_of_square(window, b.position, b.size);
 		render_box_with_outline(shadow_box, rgba(0,0,0,alpha * (120.0f/255.0f)));
 
 		b = drops[i];
 		box full_box = get_render_box_of_square(window, b.position, b.size);
-		render_box_with_outline(full_box, rgba(218,112,214, alpha));
+		//render_box_with_outline(full_box, rgba(218,112,214, alpha));
+		renderer->render_image_tint(img_drop, full_box.tl_u.x, full_box.tl_u.y, 
+			full_box.tr_u.x - full_box.tl_d.x, full_box.br_d.y - full_box.tr_u.y, rgba(218,112,214, alpha));
 
 		int drop_h = full_box.br_d.y - full_box.tr_d.y;
 
@@ -94,7 +97,7 @@ void spawn_drop(vec3f pos) {
 		new_drop.active = true;
 		new_drop.time_active = 0.0f;
 		new_drop.position = pos;
-		new_drop.size = (vec3f){0.3f, 0.3f, 0.4f};
+		new_drop.size = (vec3f){0.5f, 0.5f, 0.4f};
 		new_drop.start_h = pos.z;
 		new_drop.type = DROP_AMMO;
 		new_drop.data.ammo_count = 20;

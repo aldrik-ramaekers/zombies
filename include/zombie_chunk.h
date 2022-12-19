@@ -14,6 +14,7 @@ typedef struct t_zombie_chunk {
 	vec2f direction;
 	image* img;
 	float rotation;
+	float rotation_speed;
 } zombie_chunk;
 
 #define MAX_ZOMBIE_CHUNKS (50)
@@ -25,6 +26,7 @@ zombie_chunk zombie_chunks[MAX_ZOMBIE_CHUNKS] = {0};
 
 void draw_zombie_chunks(platform_window* window);
 void spawn_zombie_chunk(vec3f center);
+void spawn_zombie_splatter(vec3f center);
 void update_zombie_chunks();
 
 #endif

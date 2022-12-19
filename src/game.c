@@ -315,13 +315,13 @@ void update_game(platform_window* window) {
 
 		draw_grid(window);
 		draw_wallitems(window);
+		draw_zombie_chunks(window);
 		draw_drops(window);
 		draw_bullets(window);
 		draw_zombies(window);
 		draw_players(window);
 		draw_spawners(window);
 		draw_overlay(window);
-		draw_zombie_chunks(window);
 
 		_global_camera.x = (int)_next_camera_pos.x;
 		_global_camera.y = (int)_next_camera_pos.y;

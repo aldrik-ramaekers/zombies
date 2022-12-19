@@ -19,6 +19,23 @@ static image* get_chunk_image() {
 	return available_zombie_chunks[rand() % AVAILABLE_ZOMBIE_CHUNK_COUNT];
 }
 
+void spawn_zombie_splatter(vec3f center) {
+	for (int i = 0; i < MAX_ZOMBIE_CHUNKS; i++)
+	{
+		if (zombie_chunks[i].active) continue;
+
+		float height = get_height_of_tile_under_coords(center.x, center.y);
+		center.z = height;
+		vec2f dir = (vec2f){0,0};
+		
+		zombie_chunk chunk = {.active = true, .start_position = center, .direction = dir, 
+			.position = center, .duration = 0.0f, .target_position = center,
+			.img = img_zombie_chunk_blood, .rotation = (float)rand()/(float)(RAND_MAX), .rotation_speed = 0.0f};
+		zombie_chunks[i] = chunk;
+		return;
+	}
+}
+
 void spawn_zombie_chunk(vec3f center) {
 	for (int i = 0; i < MAX_ZOMBIE_CHUNKS; i++)
 	{
@@ -30,7 +47,7 @@ void spawn_zombie_chunk(vec3f center) {
 		
 		zombie_chunk chunk = {.active = true, .start_position = center, .direction = dir, 
 			.position = center, .duration = 0.0f, .target_position = (vec3f){target.x, target.y, height},
-			.img = get_chunk_image(), .rotation = (float)rand()/(float)(RAND_MAX)};
+			.img = get_chunk_image(), .rotation = (float)rand()/(float)(RAND_MAX), .rotation_speed = dir.x < 0.0f ? update_delta : -update_delta};
 		zombie_chunks[i] = chunk;
 		return;
 	}
@@ -50,7 +67,8 @@ void update_zombie_chunks() {
 			continue;
 		}
 
-		zombie_chunks[i].rotation += zombie_chunks[i].direction.x < 0.0f ? update_delta : -update_delta;
+		
+		zombie_chunks[i].rotation += zombie_chunks[i].rotation_speed;
 
 		float x = zombie_chunks[i].start_position.x + ((zombie_chunks[i].start_position.x - zombie_chunks[i].target_position.x) / CHUNK_DURATION_OF_DROP) * zombie_chunks[i].duration;
 		float y = zombie_chunks[i].start_position.y + ((zombie_chunks[i].start_position.y - zombie_chunks[i].target_position.y) / CHUNK_DURATION_OF_DROP) * zombie_chunks[i].duration;

@@ -7,6 +7,9 @@ void load_assets() {
 	img_icon_bullets = assets_load_image_from_file("data/imgs/bullets.png");
 	img_icon_nova = assets_load_image_from_file("data/imgs/nova.png");
 
+	img_drop = assets_load_image_from_file("data/imgs/drop.png");
+
 	img_zombie_chunk_hand = assets_load_image_from_file("data/imgs/zombie_chunk_hand.png");
 	img_zombie_chunk_foot = assets_load_image_from_file("data/imgs/zombie_chunk_foot.png");
+	img_zombie_chunk_blood = assets_load_image_from_file("data/imgs/zombie_chunk_blood.png");
 }
