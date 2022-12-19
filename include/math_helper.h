@@ -20,5 +20,6 @@ bool lines_intersect(vec2f p1, vec2f q1, vec2f p2, vec2f q2);
 vec2f get_intersection_point(vec2f A, vec2f B, vec2f C, vec2f D);
 box get_render_box_of_square(platform_window* window, vec3f position, vec3f size);
 box get_box_of_square(vec3f position, vec3f size);
+vec3f get_center_of_square(vec3f position, vec3f size);
 
 #endif

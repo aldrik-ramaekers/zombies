@@ -143,7 +143,7 @@ void update_zombies_client(platform_window* window) {
 		if (!o.alive) continue;
 		if (o.next2tiles[0].x == -1 || o.next2tiles[0].y == -1) continue; // ran out of stored path.
 
-		float height = get_height_of_tile_under_coords(window, zombies[i].position.x, zombies[i].position.y);
+		float height = get_height_of_tile_under_coords(zombies[i].position.x, zombies[i].position.y);
 
 		vec2f dir = get_direction_to_tile(o, o.next2tiles[0]);
 		zombies[i].position.x += dir.x*speed;
@@ -208,7 +208,7 @@ void update_zombies_server(platform_window* window) {
 		}
 
 		vec2f dir = get_direction_to_next_tile(o);
-		float height = get_height_of_tile_under_coords(window, zombies[i].position.x, zombies[i].position.y);
+		float height = get_height_of_tile_under_coords(zombies[i].position.x, zombies[i].position.y);
 		zombies[i].position.x += dir.x*speed;
 		zombies[i].position.y += dir.y*speed;
 		zombies[i].position.z = height;

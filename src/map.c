@@ -107,12 +107,12 @@ void load_map_from_data() {
 	}
 }
 
-tile get_tile_under_coords(platform_window* window, float x, float y) {
+tile get_tile_under_coords(float x, float y) {
 	return map_loaded[(int)(y)][(int)(x)];
 }
 
-float get_height_of_tile_under_coords(platform_window* window, float tocheckx, float tochecky) {
-	tile tile_under_coords = get_tile_under_coords(window, tocheckx, tochecky);
+float get_height_of_tile_under_coords(float tocheckx, float tochecky) {
+	tile tile_under_coords = get_tile_under_coords(tocheckx, tochecky);
 
 	int ty = (int)(tochecky);
 	int tx = (int)(tocheckx);

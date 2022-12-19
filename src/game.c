@@ -208,7 +208,7 @@ void update_server(platform_window* window) {
 	logic_update_time = platform_get_time(TIME_FULL, TIME_NS) - logic_update_time;
 	u64 server_tick = platform_get_time(TIME_FULL, TIME_NS) - handle_messages2;
 	broadcast_stamp = platform_get_time(TIME_FULL, TIME_NS) - broadcast_stamp;
-	if ((logic_update_time/1000000.0f) > 1.0f) {
+	if ((logic_update_time/1000000.0f) > 10.0f) {
 		log_infox("Server update took %.2fms:\n\tmessages: %.2fms\n\ttick: %.2fms\n\t\tbroadcast: %.2fms\n\t\tplayers: %.2fms\n\t\tzombies: %.2fms\n",
 			(logic_update_time/1000000.0f), (handle_messages/1000000.0f), (server_tick/1000000.0f), 
 			(broadcast_stamp/1000000.0f), (broadcast_players/1000000.0f), (broadcast_zombies/1000000.0f));
@@ -307,6 +307,8 @@ void update_game(platform_window* window) {
 	else {
 		update_client(window);
 	}
+
+	update_zombie_chunks();
 	
 	if (global_state.network_state == CONNECTED) {
 		take_player_input(window);
@@ -319,6 +321,7 @@ void update_game(platform_window* window) {
 		draw_players(window);
 		draw_spawners(window);
 		draw_overlay(window);
+		draw_zombie_chunks(window);
 
 		_global_camera.x = (int)_next_camera_pos.x;
 		_global_camera.y = (int)_next_camera_pos.y;

@@ -218,7 +218,7 @@ void draw_players(platform_window* window) {
 
 		OBJECT_RENDER_DEPTH((int)(players[i].playery+size));
 
-		float height = get_height_of_tile_under_coords(window, players[i].playerx, players[i].playery);
+		float height = get_height_of_tile_under_coords(players[i].playerx, players[i].playery);
 		players[i].height = height;
 
 		box box = get_render_box_of_square(window, (vec3f){players[i].playerx, players[i].playery, height}, (vec3f){size,size,0.8f});

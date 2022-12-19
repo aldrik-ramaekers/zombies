@@ -15,6 +15,7 @@ typedef struct t_bullet {
 	float endx;
 	float endy;
 	float alive_time;
+	int damage;
 } bullet;
 
 bullet bullets[500] = {0};

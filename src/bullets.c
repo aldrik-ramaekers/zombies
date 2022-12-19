@@ -28,7 +28,7 @@ void shoot(platform_window* window, u32 id, float dirx, float diry) {
 		map_info info = get_map_info(window);
 		float bullet_range = 100.0f;
 
-		float hh = get_height_of_tile_under_coords(window, p->playerx, p->playery);
+		float hh = get_height_of_tile_under_coords(p->playerx, p->playery);
 		dirx += ((float)rand()/(float)(RAND_MAX/g.bullet_spread)-(g.bullet_spread/2));
 		diry += ((float)rand()/(float)(RAND_MAX/g.bullet_spread)-(g.bullet_spread/2));
 
@@ -41,7 +41,7 @@ void shoot(platform_window* window, u32 id, float dirx, float diry) {
 			bullet b = bullets[i];
 			if (b.active) continue;
 
-			bullets[i] = (bullet){p->id, true, bulletx, bullety, hh + 0.5, bullet_end_point_x, bullet_end_point_y};
+			bullets[i] = (bullet){p->id, true, bulletx, bullety, hh + 0.5,.endx = bullet_end_point_x,.endy = bullet_end_point_y, .damage = g.damage};
 			break;
 		}
 	}
@@ -104,22 +104,25 @@ bool check_if_bullet_collided_with_object(bullet* b, platform_window* window) {
 	return result;
 }
 
-bool check_if_bullet_collided_with_zombie(bullet b, platform_window* window, bool kill_if_collided) {
+bool check_if_bullet_collided_with_zombie(bullet* b, platform_window* window, player *p) {
+	if (b->damage == 0) return false;
+	
 	map_info info = get_map_info(window);
 	float size = get_bullet_size_in_tile(window);
 
 	bool result = false;
 	float dist_of_closest_intersect = __FLT_MAX__;
 	int index_of_closest_zombie = -1;
+	vec2f intersect_point_of_closest_zombie;
 	
 	for (int i = 0; i < MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
 
-		vec2f bstart = (vec2f){b.position.x, b.position.y};
-		vec2f bend = (vec2f){b.endx, b.endy};
+		vec2f bstart = (vec2f){b->position.x, b->position.y};
+		vec2f bend = (vec2f){b->endx, b->endy};
 
-		if (b.position.z <= o.position.z + o.size.z && b.position.z >= o.position.z) {
+		if (b->position.z <= o.position.z + o.size.z && b->position.z >= o.position.z) {
 			vec2f intersect_point;
 			box obj_box = get_box_of_square((vec3f){o.position.x, o.position.y, o.position.z}, o.size);
 			bool this_zombie_collided = false;
@@ -142,14 +145,24 @@ bool check_if_bullet_collided_with_zombie(bullet b, platform_window* window, boo
 
 			if (this_zombie_collided) {
 				result = true;
+				intersect_point_of_closest_zombie = intersect_point;
 			}
 		}
 	}
 
-	if (kill_if_collided && result) {
-		spawn_drop(zombies[index_of_closest_zombie].position);
-		zombies[index_of_closest_zombie].alive = false;
-		return result;
+	if (result) {
+		b->endy = intersect_point_of_closest_zombie.y;
+		b->endx = intersect_point_of_closest_zombie.x;
+		zombies[index_of_closest_zombie].health -= b->damage;
+		b->damage = 0;
+
+		int chunk_count = rand() % 4 + 1;
+		for (int c = 0; c < chunk_count; c++) spawn_zombie_chunk(get_center_of_square(zombies[index_of_closest_zombie].position, zombies[index_of_closest_zombie].size));
+		if (zombies[index_of_closest_zombie].health <= 0) {
+			zombies[index_of_closest_zombie].alive = false;
+			spawn_drop(zombies[index_of_closest_zombie].position);
+			p->kills++;
+		}
 	}
 
 	return result;
@@ -168,9 +181,9 @@ static bool check_if_bullet_collided_with_ground(bullet *b, platform_window* win
 		float xtocheck = b->position.x + (dirx*i/4);
 		float ytocheck = b->position.y + (diry*i/4);
 		if (!is_in_bounds(xtocheck, ytocheck)) break;
-		tile tile = get_tile_under_coords(window, xtocheck, ytocheck);
+		tile tile = get_tile_under_coords(xtocheck, ytocheck);
 
-		float h = get_height_of_tile_under_coords(window, xtocheck, ytocheck);
+		float h = get_height_of_tile_under_coords(xtocheck, ytocheck);
 		if (b->position.z <= h) {
 			b->endx = xtocheck;
 			b->endy = ytocheck;
@@ -212,8 +225,11 @@ void update_bullets_server(platform_window* window) {
 			b = bullets[i];
 		}
 		
-		if (check_if_bullet_collided_with_zombie(b, window, true)) {
-			p->kills++;
+		if (check_if_bullet_collided_with_zombie(&b, window, p)) {
+			bullets[i].endy = b.endy;
+			bullets[i].endx = b.endx;
+			bullets[i].damage = b.damage;
+			b = bullets[i];
 		}
 	}
 }

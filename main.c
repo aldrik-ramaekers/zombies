@@ -16,6 +16,7 @@
 #include "include/asset_defs.h"
 #include "include/drops.h"
 #include "include/wall_item.h"
+#include "include/zombie_chunk.h"
 
 #include "src/map.c"
 #include "src/players.c"
@@ -33,6 +34,7 @@
 #include "src/asset_defs.c"
 #include "src/drops.c"
 #include "src/wall_item.c"
+#include "src/zombie_chunk.c"
 
 #define CONFIG_DIRECTORY "zombieshooter"
 

@@ -37,6 +37,9 @@ bool pos2(float p1, float p2) {
 	return (p1 >= 0.0f && p2 >= 0.0f) || abs(p1-p2) < 1.0f;
 }
 
+vec3f get_center_of_square(vec3f position, vec3f size) {
+	return (vec3f){position.x + size.x/2, position.y + size.y/2, position.z + size.z/2};
+}
 
 bool lines_intersect(vec2f p1, vec2f q1, vec2f p2, vec2f q2)
 {
