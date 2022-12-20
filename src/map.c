@@ -193,29 +193,36 @@ void draw_grid(platform_window* window) {
 			int highest_point_bottomleft = tile.bottomleft;
 			bottomleft = (vec2f){render_x + xdiff_between_bottom_and_top, info.tile_height * y + info.tile_height - highest_point_bottomleft*info.px_raised_per_h};
 
-			color c = rgb(128, 64, 0);
+			color c = rgb(205,205,205);
 			if (highest_point_topleft > highest_point_bottomleft || highest_point_topright > highest_point_bottomright ||
 				highest_point_topleft > highest_point_bottomright || highest_point_topright > highest_point_bottomleft ||
-				highest_point_topright > highest_point_topleft || highest_point_bottomright > highest_point_bottomleft) c = rgb(108, 64, 0);
+				highest_point_topright > highest_point_topleft || highest_point_bottomright > highest_point_bottomleft) c = rgb(165,165,165);
 			if (highest_point_topleft < highest_point_bottomleft || highest_point_topright < highest_point_bottomright ||
-				highest_point_topleft > highest_point_topright) c = rgb(148, 64, 0);
+				highest_point_topleft > highest_point_topright) c = rgb(255,255,255);
 
+			renderer->render_image_quad_tint(img_tile_cobblestone, 
+				topleft.x, topleft.y, 
+				bottomleft.x, bottomleft.y, 
+				bottomright.x, bottomright.y, 
+				topright.x, topright.y, c);
+
+			/*
 			renderer->render_quad(
 				topleft.x, topleft.y, 
 				bottomleft.x, bottomleft.y, 
 				bottomright.x, bottomright.y, 
 				topright.x, topright.y, 
-				c);
+				c);*/
 
 			if (highest_point_topleft != highest_point_bottomright && highest_point_bottomleft == highest_point_topright) {
 				if (highest_point_bottomleft < highest_point_topleft || highest_point_bottomleft < highest_point_bottomright) {
 					renderer->render_tri(topleft.x, topleft.y, 
 						bottomleft.x, bottomleft.y, 
-						bottomright.x, bottomright.y, rgb(108, 64, 0));
+						bottomright.x, bottomright.y, rgba(0,0,0,80));
 				}
-				renderer->render_line(topleft.x, topleft.y, bottomright.x, bottomright.y, 1, rgb(0,0,255)); // diag
+				//renderer->render_line(topleft.x, topleft.y, bottomright.x, bottomright.y, 1, rgb(0,0,255)); // diag
 			}
-
+/*
 			if (highest_point_bottomleft != highest_point_topright && highest_point_topleft == highest_point_bottomright) {
 				renderer->render_line(topright.x, topright.y, bottomleft.x, bottomleft.y, 1, rgb(0,0,255)); // diag
 			}
@@ -224,7 +231,7 @@ void draw_grid(platform_window* window) {
 			renderer->render_line(topleft.x, topleft.y, bottomleft.x, bottomleft.y, 1, rgb(0,0,255)); // left
 			renderer->render_line(topright.x, topright.y, bottomright.x, bottomright.y, 1, rgb(0,0,255)); // right
 			renderer->render_line(bottomleft.x, bottomleft.y, bottomright.x, bottomright.y, 1, rgb(0,0,255)); // bottom
-
+*/
 			map_loaded[y][x].tl = topleft;
 			map_loaded[y][x].tr = topright;
 			map_loaded[y][x].bl = bottomleft;

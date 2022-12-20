@@ -48,10 +48,13 @@ void draw_objects_at_row(platform_window* window, int row) {
 		
 		if (!o.active) continue;
 		box box = get_box_of_object(window, o);
+		renderer->render_image(img_drop, box.tl_u.x, box.tl_u.y, 
+			box.br_d.x - box.tl_d.x, box.br_d.y - box.tr_u.y);
+			/*
 		render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgb(200,200,0));
 		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgb(200,200,0));
 		render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, rgb(200,200,0));
-		render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgb(200,200,0));
+		render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgb(200,200,0));*/
 	}
 }
 
@@ -90,6 +93,10 @@ void create_objects() {
 	create_box(14, 10, 0);
 	create_box(13, 10, 0);
 	create_box(11, 10, 0);
+
+	create_spawner((vec2){15, 5});
+	create_spawner((vec2){3, 8});
+	create_spawner((vec2){11, 18});
 
 	create_wallitem((vec3f){14, 1, 0}, WALLITEM_GUN, (wall_item_data){.gun = GUN_NOVA});
 }

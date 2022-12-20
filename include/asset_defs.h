@@ -10,10 +10,14 @@ image* img_icon_bullets;
 image* img_icon_nova;
 
 image* img_drop;
+image* img_spawner;
 
 image* img_zombie_chunk_hand;
 image* img_zombie_chunk_foot;
 image* img_zombie_chunk_blood;
+
+image* img_tile_cobblestone;
+
 
 void load_assets();
 

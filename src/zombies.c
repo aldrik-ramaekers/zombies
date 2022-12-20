@@ -23,6 +23,21 @@ static player get_closest_player_to_tile(int x, int y) {
 	}
 }
 
+void create_spawner(vec2 position) {
+	spawner s;
+	s.active = true;
+	s.position = position;
+	s.sec_since_last_spawn = 999.0f;
+	s.sprite = create_sprite(img_spawner, 14, 64, 64, 0.3f);
+
+	for (int i = 0; i < MAX_SPAWNERS; i++) {
+		spawner o = spawner_tiles[i];
+		if (o.active) continue;
+		spawner_tiles[i] = s;
+		return;
+	}
+}
+
 void spawn_zombie(int x, int y) {
 	for (int i = 0; i < MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
@@ -48,6 +63,7 @@ void spawn_zombie(int x, int y) {
 void update_spawners_server() {
 	for (int x = 0; x < MAX_SPAWNERS; x++) {
 		spawner spawner = spawner_tiles[x];
+		if (!spawner.active) continue;
 		spawner_tiles[x].sec_since_last_spawn += SERVER_TICK_RATE;
 		if (spawner_tiles[x].sec_since_last_spawn >= 2.0f) {
 			spawn_zombie(spawner.position.x, spawner.position.y);
@@ -61,10 +77,19 @@ void draw_spawners(platform_window* window) {
 
 	for (int x = 0; x < MAX_SPAWNERS; x++) {
 		spawner spawner = spawner_tiles[x];
+		if (!spawner.active) continue;
 		int render_x = (info.tile_width * spawner.position.x) + (info.px_incline * spawner.position.y);
 		int render_y = info.tile_height * spawner.position.y;
 
 		tile tile = map_loaded[spawner.position.y][spawner.position.x];
+
+		renderer->render_image_quad(spawner.sprite.image, 
+			tile.tl.x, tile.tl.y,
+			tile.bl.x, tile.bl.y, 
+			tile.br.x, tile.br.y, 
+			tile.tr.x, tile.tr.y);
+
+		/*
 		renderer->render_quad(
 				tile.tl.x, tile.tl.y, 
 				tile.bl.x, tile.bl.y, 
@@ -75,7 +100,7 @@ void draw_spawners(platform_window* window) {
 		renderer->render_line(tile.tl.x, tile.tl.y, tile.tr.x, tile.tr.y, 1, rgb(0,255,255)); // top
 		renderer->render_line(tile.tl.x, tile.tl.y, tile.bl.x, tile.bl.y, 1, rgb(0,255,255)); // left
 		renderer->render_line(tile.tr.x, tile.tr.y, tile.br.x, tile.br.y, 1, rgb(0,255,255)); // right
-		renderer->render_line(tile.bl.x, tile.bl.y, tile.br.x, tile.br.y, 1, rgb(0,255,255)); // bottom
+		renderer->render_line(tile.bl.x, tile.bl.y, tile.br.x, tile.br.y, 1, rgb(0,255,255)); // bottom*/
 	}
 }
 
