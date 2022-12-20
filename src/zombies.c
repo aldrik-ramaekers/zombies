@@ -28,7 +28,7 @@ void create_spawner(vec2 position) {
 	s.active = true;
 	s.position = position;
 	s.sec_since_last_spawn = 999.0f;
-	s.sprite = create_sprite(img_spawner, 14, 64, 64, 0.3f);
+	s.sprite = create_sprite(img_spawner, 14, 64, 64, 0.1f);
 
 	for (int i = 0; i < MAX_SPAWNERS; i++) {
 		spawner o = spawner_tiles[i];
@@ -64,6 +64,7 @@ void update_spawners_server() {
 	for (int x = 0; x < MAX_SPAWNERS; x++) {
 		spawner spawner = spawner_tiles[x];
 		if (!spawner.active) continue;
+		update_sprite(&spawner_tiles[x].sprite);
 		spawner_tiles[x].sec_since_last_spawn += SERVER_TICK_RATE;
 		if (spawner_tiles[x].sec_since_last_spawn >= 2.0f) {
 			spawn_zombie(spawner.position.x, spawner.position.y);
@@ -83,11 +84,13 @@ void draw_spawners(platform_window* window) {
 
 		tile tile = map_loaded[spawner.position.y][spawner.position.x];
 
-		renderer->render_image_quad(spawner.sprite.image, 
+		sprite_frame frame = sprite_get_frame(&spawner.sprite);
+		renderer->render_image_quad_partial(spawner.sprite.image, 
 			tile.tl.x, tile.tl.y,
 			tile.bl.x, tile.bl.y, 
 			tile.br.x, tile.br.y, 
-			tile.tr.x, tile.tr.y);
+			tile.tr.x, tile.tr.y, 
+			frame.tl, frame.tr, frame.bl, frame.br);
 
 		/*
 		renderer->render_quad(
