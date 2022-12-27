@@ -95,9 +95,18 @@ static int get_height_of_tile_tr(int current_height, int x, int y) {
 
 // load hardcoded map.
 void load_map_from_data() {
+
+	// load map from file..
+	file_content content = platform_read_file_content("data/maps/map1.dat", "rb");
+	memcpy(&map_to_load, content.content, content.content_length);
+
+	//map_to_load.width = MAP_SIZE_X;
+	//map_to_load.height = MAP_SIZE_Y;
+	//memcpy(map_to_load.heightmap, map, sizeof(map));
+
 	for (int y = 0; y < MAP_SIZE_Y; y++) {
 		for (int x = MAP_SIZE_X-1; x >= 0; x--) {
-			int h = map[y][x];
+			int h = map_to_load.heightmap[y][x];
 			int highest_point_topleft = get_height_of_tile_tl(h, x, y);
 			int highest_point_topright = get_height_of_tile_tr(h, x, y);
 			int highest_point_bottomright = get_height_of_tile_br(h, x, y);

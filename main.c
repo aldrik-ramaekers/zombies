@@ -1,3 +1,5 @@
+#define ASSET_IMAGE_COUNT 50
+
 #include <projectbase/project_base.h>
 
 #include "include/players.h"

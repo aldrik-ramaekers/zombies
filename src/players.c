@@ -40,6 +40,7 @@ void spawn_player(u32 id, network_client client) {
 		players[i].guntype = GUN_MP5;
 		players[i].height = 0.0f;
 		players[i].client = client;
+		players[i].sprite = create_sprite(img_player, 5, 87, 100, 0.07f);
 
 		gun g = get_gun_by_type(players[i].guntype);
 		players[i].total_ammo = g.max_ammunition;
@@ -139,9 +140,22 @@ int get_my_player_index() {
 	return -1;
 }
 
+static void take_update_debug(platform_window* window) {
+	if (keyboard_is_key_down(KEY_LEFT_CONTROL) && keyboard_is_key_pressed(KEY_S)) {
+		platform_write_file_content("../data/maps/map1.dat", "wb", (u8*)&map_to_load, sizeof(map_to_load));
+		platform_write_file_content("data/maps/map1.dat", "wb", (u8*)&map_to_load, sizeof(map_to_load));
+		
+		log_info("Saved map");
+	}
+}
+
 void take_player_input(platform_window* window) {
 	player* p = get_player_by_id(player_id);
 	if (!p) return;
+
+#ifdef MODE_DEBUG
+	take_update_debug(window);
+#endif
 
 	if (keyboard_is_key_down(KEY_W)) {
 		if (!global_state.server) {
@@ -208,6 +222,7 @@ void update_players_server() {
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
 		players[i].sec_since_last_shot += SERVER_TICK_RATE;
+		update_sprite(&players[i].sprite);
 	}
 }
 
@@ -222,14 +237,22 @@ void draw_players(platform_window* window) {
 		players[i].height = height;
 
 		box box = get_render_box_of_square(window, (vec3f){players[i].playerx, players[i].playery, height}, (vec3f){size,size,0.8f});
+		/*
 		render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgb(200,150,120));
 		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgb(200,150,120));
 		render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, rgb(200,150,120));
 		render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgb(200,150,120));
+*/
+		sprite_frame frame = sprite_get_frame(&players[i].sprite);
+		renderer->render_image_quad_partial(players[i].sprite.image, 
+			box.tl_u.x, box.tl_u.y,
+			box.bl_d.x, box.bl_d.y, 
+			box.br_d.x, box.br_d.y, 
+			box.tr_u.x, box.tr_u.y, 
+			frame.tl, frame.tr, frame.bl, frame.br);
 
 		int size = get_tile_width(window) / 2;
 		map_info info = get_map_info(window);
-
 
 		float player_render_x = players[i].playerx*info.tile_width + (players[i].playery*info.px_incline);
 		float player_render_y = players[i].playery*info.tile_height - (height*info.px_raised_per_h);

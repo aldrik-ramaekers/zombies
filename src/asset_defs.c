@@ -16,4 +16,9 @@ void load_assets() {
 	img_tile_cobblestone = assets_load_image_from_file("data/imgs/tile_cobblestone.png");
 
 	img_spawner = assets_load_image_from_file("data/imgs/spawner.png");
+
+	img_obj_plants = assets_load_image_from_file("data/imgs/plants.png");
+	img_obj_wall1 = assets_load_image_from_file("data/imgs/wall1.png");
+
+	img_player = assets_load_image_from_file("data/imgs/player.png");
 }

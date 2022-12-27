@@ -14,6 +14,7 @@ typedef struct t_object {
 	vec2f position;
 	vec3f size;
 	float h;
+	image* image;
 } object;
 
 typedef struct t_box {

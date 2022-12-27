@@ -8,6 +8,7 @@
 #include "zombies.h"
 #include "math_helper.h"
 #include "guns.h"
+#include "sprite.h"
 
 #define MAX_PLAYERS 10
 
@@ -27,6 +28,7 @@ typedef struct t_player {
 	network_client client; // For the host: is_connected = false and socket = 0
 	int kills;
 	u64 ping;
+	sprite sprite;
 } player;
 
 #include "protocol.h"
