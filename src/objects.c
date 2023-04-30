@@ -30,7 +30,7 @@ void render_quad_with_outline(vec2f tl, vec2f tr, vec2f bl, vec2f br, color c) {
 }
 
 object get_object_at_tile(float x, float y) {
-	for (int i = 0; i < max_objects; i++) {
+	for (int i = 0; i < MAX_OBJECTS; i++) {
 		object o = objects[i];
 		if (!o.active) continue;	
 		if (x >= o.position.x && x < o.position.x + o.size.x && y >= o.position.y && y < o.position.y + o.size.y) return o;
@@ -59,7 +59,7 @@ void draw_objects_at_row(platform_window* window, int row) {
 }
 
 void create_box(float x, float y, float h, image* img) {
-	for (int i = 0; i < max_objects; i++) {
+	for (int i = 0; i < MAX_OBJECTS; i++) {
 		object o = objects[i];
 		if (o.active) continue;
 
@@ -75,6 +75,7 @@ void create_box(float x, float y, float h, image* img) {
 void create_objects() {
 	// rechts naar links op map.
 
+	
 	for (int i = MAP_SIZE_X-1; i >= 0; i--) {
 		create_box(i, 0, 0, img_obj_wall1);
 		create_box(i, MAP_SIZE_Y-1, 0, img_obj_wall1);

@@ -75,7 +75,7 @@ bool check_if_bullet_collided_with_object(bullet* b, platform_window* window) {
 	bool result = false;
 	float dist_of_closest_intersect = __FLT_MAX__;
 
-	for (int i = 0; i < max_objects; i++) {
+	for (int i = 0; i < MAX_OBJECTS; i++) {
 		object o = objects[i];
 		if (!o.active) continue;
 		if (b->position.z <= o.h + o.size.z && b->position.z >= o.h) {

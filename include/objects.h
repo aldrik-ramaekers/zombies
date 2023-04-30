@@ -5,6 +5,8 @@
 
 #include "map.h"
 
+#define MAX_OBJECTS 1000
+
 typedef struct t_vec3f {
 	float x,y,z;
 } vec3f;
@@ -29,8 +31,7 @@ typedef struct t_box {
 	vec2f br_u;
 } box;
 
-int max_objects = 150;
-object objects[150];
+object objects[MAX_OBJECTS];
 
 object get_object_at_tile(float x, float y);
 void create_objects();

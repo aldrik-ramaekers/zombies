@@ -63,7 +63,7 @@ void draw_drops(platform_window* window) {
 		//render_box_with_outline(full_box, rgba(218,112,214, alpha));
 		renderer->render_image_tint(img_drop, full_box.tl_u.x, full_box.tl_u.y, 
 			full_box.br_d.x - full_box.tl_d.x, full_box.br_d.y - full_box.tr_u.y, rgba(218,112,214, alpha));
-
+        
 		int drop_h = full_box.br_d.y - full_box.tr_d.y;
 
 		int icon_size = full_box.tr_d.x - full_box.tl_d.x;
