@@ -145,25 +145,24 @@ void add_message_to_outgoing_queue(send_queue_entry entry) {
 
 void* network_send_thread(void* args) {
 	while (1) {
+		mutex_lock(&messages_to_send_queue_mutex);
 		for (int i = 0; i < OUTGOING_QUEUE_SIZE; i++)
 		{
-			mutex_lock(&messages_to_send_queue_mutex);
 			if (!messages_to_send_queue[i].active) {
-				mutex_unlock(&messages_to_send_queue_mutex);
 				continue;
 			}
 			send_queue_entry message = messages_to_send_queue[i];
 			messages_to_send_queue[i].active = false;
-			mutex_unlock(&messages_to_send_queue_mutex);
 
-			for (int x = 0; x < 10; x++) {
+			for (int x = 0; x < SERVER_MAX_PLAYERS; x++) {
 				network_client c = message.recipients[x];
 				if (c.ConnectSocket != 0) {
 					network_client_send(&c, message.message);
 				}
 			}
 			mem_free(message.message.data);	
-			thread_sleep(1000);		
 		}
+		mutex_unlock(&messages_to_send_queue_mutex);
+		thread_sleep(1000);
 	}	
 }

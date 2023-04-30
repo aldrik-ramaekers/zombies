@@ -64,7 +64,7 @@ void load_map() {
 		thread_detach(&send_thread);
 	}
 
-	load_map_from_data();
+	load_map_from_file();
 	create_objects();
 
 	pathfinding_init();
@@ -322,6 +322,10 @@ void update_game(platform_window* window) {
 		draw_players(window);
 		draw_spawners(window);
 		draw_overlay(window);
+	
+#ifdef MODE_DEBUG
+		draw_debug(window);
+#endif
 
 		_global_camera.x = (int)_next_camera_pos.x;
 		_global_camera.y = (int)_next_camera_pos.y;

@@ -79,6 +79,8 @@ int main(int argc, char **argv)
 	platform_toggle_vsync(window, false);
 	//platform_toggle_fullscreen(window, true);
 
+	settings_set_number("USE_GPU", 1);
+
 	init_game();
 	handle_args(argc, argv);
 
