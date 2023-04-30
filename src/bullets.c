@@ -40,7 +40,6 @@ void shoot(platform_window* window, u32 id, float dirx, float diry) {
 		for (int i = 0; i < max_bullets; i++) {
 			bullet b = bullets[i];
 			if (b.active) continue;
-
 			bullets[i] = (bullet){p->id, true, bulletx, bullety, hh + 0.5,.endx = bullet_end_point_x,.endy = bullet_end_point_y, .damage = g.damage};
 			break;
 		}
@@ -76,7 +75,7 @@ bool check_if_bullet_collided_with_object(bullet* b, platform_window* window) {
 	float dist_of_closest_intersect = __FLT_MAX__;
 
 	for (int i = 0; i < MAX_OBJECTS; i++) {
-		object o = objects[i];
+		object o = loaded_map.objects[i];
 		if (!o.active) continue;
 		if (b->position.z <= o.h + o.size.z && b->position.z >= o.h) {
 			box obj_box = get_box_of_square((vec3f){o.position.x, o.position.y, o.h}, o.size);
@@ -259,8 +258,7 @@ void draw_bullets(platform_window* window) {
 			b.position.z = p->gun_height;
 		}
 
-		if ((int)bullets[i].position.y < (int)bullets[i].endy) { BULLET_RENDER_DEPTH((int)bullets[i].position.y); }
-		else { BULLET_RENDER_DEPTH((int)bullets[i].endy); }
+		BULLET_RENDER_DEPTH((int)bullets[i].position.y);
 
 		float bullet_render_x = b.position.x*info.tile_width + (b.position.y*info.px_incline);
 		float bullet_render_y = b.position.y*info.tile_height - (b.position.z*info.px_raised_per_h);

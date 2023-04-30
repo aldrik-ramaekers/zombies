@@ -11,6 +11,8 @@
 #define SERVER_MAX_PLAYERS (10)
 #define SERVER_PATHFINDING_INTERVAL (0.25f)
 
+bool is_editing_map = false;
+
 typedef enum t_game_state {
 	GAMESTATE_IDLE,
 	GAMESTATE_LOADING_MAP,

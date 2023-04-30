@@ -11,12 +11,17 @@ typedef struct t_vec3f {
 	float x,y,z;
 } vec3f;
 
+typedef enum t_object_type {
+	OBJECT_COBBLESTONEWALL1 = 1,
+	OBJECT_PLANTBOX1 = 2,
+} object_type;
+
 typedef struct t_object {
 	bool active;
 	vec2f position;
 	vec3f size;
 	float h;
-	image* image;
+	object_type type;
 } object;
 
 typedef struct t_box {
@@ -30,8 +35,6 @@ typedef struct t_box {
 	vec2f bl_u;
 	vec2f br_u;
 } box;
-
-object objects[MAX_OBJECTS];
 
 object get_object_at_tile(float x, float y);
 void create_objects();

@@ -93,7 +93,8 @@ static int get_height_of_tile_tr(int current_height, int x, int y) {
 	return highest_point;
 }
 
-void export_map_from_map_data() {
+void load_mapdata_into_world() {
+	// Load heightmap
 	for (int y = 0; y < MAP_SIZE_Y; y++) {
 		for (int x = MAP_SIZE_X-1; x >= 0; x--) {
 			int h = map_to_load.heightmap[y][x];
@@ -101,11 +102,29 @@ void export_map_from_map_data() {
 			int highest_point_topright = get_height_of_tile_tr(h, x, y);
 			int highest_point_bottomright = get_height_of_tile_br(h, x, y);
 			int highest_point_bottomleft = get_height_of_tile_bl(h, x, y);
-			loaded_map.heightmap[y][x] = (tile){h, highest_point_topleft, highest_point_topright, highest_point_bottomleft, highest_point_bottomright};
+			loaded_map.heightmap[y][x] = (tile){h, TILE_COBBLESTONE1, highest_point_topleft, highest_point_topright, highest_point_bottomleft, highest_point_bottomright};
 		}
 	}
+
+	// Load objects
+	memcpy(loaded_map.objects, map_to_load.objects, sizeof(loaded_map.objects));
 }
 
+void create_empty_map() {
+	loaded_map.width = MAP_SIZE_X;
+	loaded_map.height = MAP_SIZE_Y;
+
+	memset(map_to_load.tiles, TILE_COBBLESTONE1, sizeof(map_to_load.tiles));
+	memset(map_to_load.heightmap, 0, sizeof(loaded_map.heightmap));
+
+	map_to_load.objects[0] = (object){.active = true, .h = 0, .position = (vec2f){16, 8}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
+
+	map_to_load.objects[1] = (object){.active = true, .h = 0, .position = (vec2f){0, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
+	map_to_load.objects[2] = (object){.active = true, .h = 0, .position = (vec2f){0, 1}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
+	map_to_load.objects[3] = (object){.active = true, .h = 0, .position = (vec2f){0, 2}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
+
+	load_mapdata_into_world();
+}
 
 void load_map_from_file() {
 
@@ -120,7 +139,7 @@ void load_map_from_file() {
 	loaded_map.width = map_to_load.width;
 	loaded_map.height = map_to_load.height;
 
-	export_map_from_map_data();
+	load_mapdata_into_world();
 }
 
 tile get_tile_under_coords(float x, float y) {
@@ -172,6 +191,16 @@ bool is_in_bounds(float x, float y) {
 	return (x >= 0 && x <= MAP_SIZE_X && y >= 0 && y < MAP_SIZE_Y);
 }
 
+image* get_image_from_tiletype(tile_type tile) {
+	switch (tile)
+	{
+	case TILE_COBBLESTONE1:
+		return img_tile_cobblestone;
+	default:
+		return 0;
+	}
+}
+
 static float offset = 0.0f;
 static bool dir = true;
 void draw_grid(platform_window* window) {
@@ -216,19 +245,14 @@ void draw_grid(platform_window* window) {
 			if (highest_point_topleft < highest_point_bottomleft || highest_point_topright < highest_point_bottomright ||
 				highest_point_topleft > highest_point_topright) c = rgb(255,255,255);
 
-			renderer->render_image_quad_tint(img_tile_cobblestone, 
-				topleft.x, topleft.y, 
-				bottomleft.x, bottomleft.y, 
-				bottomright.x, bottomright.y, 
-				topright.x, topright.y, c);
-
-			/*
-			renderer->render_quad(
-				topleft.x, topleft.y, 
-				bottomleft.x, bottomleft.y, 
-				bottomright.x, bottomright.y, 
-				topright.x, topright.y, 
-				c);*/
+			image* img = get_image_from_tiletype(tile.type);
+			if (img) {
+				renderer->render_image_quad_tint(img, 
+					topleft.x, topleft.y, 
+					bottomleft.x, bottomleft.y, 
+					bottomright.x, bottomright.y, 
+					topright.x, topright.y, c);
+			}
 
 			if (highest_point_topleft != highest_point_bottomright && highest_point_bottomleft == highest_point_topright) {
 				if (highest_point_bottomleft < highest_point_topleft || highest_point_bottomleft < highest_point_bottomright) {

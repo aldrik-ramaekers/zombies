@@ -121,7 +121,7 @@ object check_if_player_collided_with_object(platform_window* window, player p) {
 	float player_size = get_player_size(window);
 
 	for (int i = 0; i < MAX_OBJECTS; i++) {
-		object o = objects[i];
+		object o = loaded_map.objects[i];
 		if (!o.active) continue;
 
 		if (check_if_player_collided_with_box(p, get_box_of_square((vec3f){o.position.x, o.position.y, o.h}, o.size))) {
@@ -140,7 +140,7 @@ int get_my_player_index() {
 	return -1;
 }
 
-static bool is_editing_map = false;
+#ifdef MODE_DEBUG
 void draw_debug(platform_window* window) {
 	if (is_editing_map) {
 		map_info info = get_map_info(window);
@@ -155,23 +155,30 @@ void draw_debug(platform_window* window) {
 
 		if (is_left_clicked()) {
 			map_to_load.heightmap[mouse_tile_y][mouse_tile_x]++;
-			export_map_from_map_data();
+			load_mapdata_into_world();
+		}
+		if (is_right_clicked()) {
+			map_to_load.heightmap[mouse_tile_y][mouse_tile_x]--;
+			load_mapdata_into_world();
 		}
 	}
 }
 
 static void take_update_debug(platform_window* window) {
+	if (keyboard_is_key_pressed(KEY_F1)) {
+		is_editing_map = !is_editing_map;
+		log_infox("Editing map: %d", is_editing_map);
+	}
+
+	if (!is_editing_map) return;
+
 	if (keyboard_is_key_down(KEY_LEFT_CONTROL) && keyboard_is_key_pressed(KEY_S)) {
 		platform_write_file_content("../data/maps/map1.dat", "wb", (u8*)&map_to_load, sizeof(map_to_load));
 		platform_write_file_content("data/maps/map1.dat", "wb", (u8*)&map_to_load, sizeof(map_to_load));
 		log_info("Saved map");
 	}
-
-	if (keyboard_is_key_pressed(KEY_F1)) {
-		is_editing_map = !is_editing_map;
-		log_infox("Editing map: %d", is_editing_map);
-	}
 }
+#endif
 
 void take_player_input(platform_window* window) {
 	player* p = get_player_by_id(player_id);
@@ -183,11 +190,11 @@ void take_player_input(platform_window* window) {
 
 	if (keyboard_is_key_down(KEY_W)) {
 		network_message message = create_protocol_user_moved(MOVE_UP, player_id);
-			add_message_to_outgoing_queuex(message, *global_state.client);
+		add_message_to_outgoing_queuex(message, *global_state.client);
 	}
 	if (keyboard_is_key_down(KEY_S)) {
 		network_message message = create_protocol_user_moved(MOVE_DOWN, player_id);
-			add_message_to_outgoing_queuex(message, *global_state.client);
+		add_message_to_outgoing_queuex(message, *global_state.client);
 	}
 	if (keyboard_is_key_down(KEY_A)) {
 		network_message message = create_protocol_user_moved(MOVE_LEFT, player_id);
@@ -197,6 +204,10 @@ void take_player_input(platform_window* window) {
 		network_message message = create_protocol_user_moved(MOVE_RIGHT, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
 	}
+
+#ifdef MODE_DEBUG
+	if (is_editing_map) return;
+#endif
 
 	// Send gun position
 	{
@@ -212,20 +223,16 @@ void take_player_input(platform_window* window) {
 		add_message_to_outgoing_queuex(create_protocol_user_look(player_id, gun_offset_x, gun_offset_y), *global_state.client);
 	}
 
-	// shoot
-	if (is_editing_map) return;
+	// shooting
+	if (is_left_down()) {
+		float dirx = (_global_mouse.x - (window->width/2));
+		float diry = (_global_mouse.y - (window->height/2));
+		double length = sqrt(dirx * dirx + diry * diry);
+		dirx /= length;
+		diry /= length;
 
-	{
-		if (is_left_down()) {
-			float dirx = (_global_mouse.x - (window->width/2));
-			float diry = (_global_mouse.y - (window->height/2));
-			double length = sqrt(dirx * dirx + diry * diry);
-			dirx /= length;
-			diry /= length;
-
-			network_message message = create_protocol_user_shoot(player_id, dirx, diry);
-			add_message_to_outgoing_queuex(message, *global_state.client);
-		}
+		network_message message = create_protocol_user_shoot(player_id, dirx, diry);
+		add_message_to_outgoing_queuex(message, *global_state.client);
 	}
 }
 

@@ -62,7 +62,8 @@ void load_map() {
 		thread_detach(&send_thread);
 	}
 
-	load_map_from_file();
+	create_empty_map();
+	//load_map_from_file();
 	create_objects();
 
 	pathfinding_init();
@@ -294,7 +295,12 @@ void update_game(platform_window* window) {
 		draw_zombie_chunks(window);
 		draw_drops(window);
 		draw_bullets(window);
+
+		#ifdef MODE_DEBUG 
+			if (!is_editing_map) 
+		#endif 
 		draw_zombies(window);
+		
 		draw_players(window);
 		draw_spawners(window);
 		draw_overlay(window);

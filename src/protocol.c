@@ -1,7 +1,7 @@
 #include "../include/protocol.h"
 #include "../include/players.h"
 
-#define alloc_network_message(_type) mem_alloc(sizeof(_type) + 20);
+#define alloc_network_message(_type) mem_alloc(sizeof(_type) + NETWORK_PACKET_OVERHEAD);
 
 network_message create_protocol_get_id_up(u32 id)
 {

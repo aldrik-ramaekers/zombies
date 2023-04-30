@@ -6,8 +6,14 @@
 #include "players.h"
 #include "objects.h"
 
+typedef enum t_tile_type {
+	TILE_NONE = 0,
+	TILE_COBBLESTONE1 = 1,
+} tile_type;
+
 typedef struct t_tile {
 	int height;
+	tile_type type;
 
 	// filled in on load.
 	int topleft;
@@ -36,17 +42,21 @@ typedef struct t_map_data {
 	int width;
 	int height;
 	int heightmap[MAP_SIZE_Y][MAP_SIZE_X];
+	tile_type tiles[MAP_SIZE_Y][MAP_SIZE_X];
+	object objects[MAX_OBJECTS];
 } map_data;
 
 typedef struct t_extracted_map_data {
 	int width;
 	int height;
 	tile heightmap[MAP_SIZE_Y][MAP_SIZE_X];
+	object objects[MAX_OBJECTS];
 } extracted_map_data;
 
 map_data map_to_load = {0};
 extracted_map_data loaded_map = {0};
 
+void create_empty_map();
 void load_map_from_file();
 tile get_tile_under_coords(float x, float y);
 float get_height_of_tile_under_coords(float tocheckx, float tochecky);
