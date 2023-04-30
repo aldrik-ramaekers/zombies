@@ -39,7 +39,7 @@ void create_spawner(vec2 position) {
 }
 
 void spawn_zombie(int x, int y) {
-	for (int i = 0; i < MAX_ZOMBIES; i++) {
+	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (o.alive) continue;
 
@@ -159,14 +159,14 @@ static bool is_within_tile(zombie o, vec2f dest) {
 static bool is_within_next_tile(zombie o) {
 	if (o.path.length > 0) {
 		vec2f dest = *(vec2f*)array_at(&o.path, o.path.length-1);
-		is_within_tile(o, dest);
+		return is_within_tile(o, dest);
 	}
 	return false;
 }
 
 void update_zombies_client(platform_window* window) {
 	float speed = 4.0f * update_delta;
-	for (int i = 0; i < MAX_ZOMBIES; i++) {
+	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
 		if (o.next2tiles[0].x == -1 || o.next2tiles[0].y == -1) continue; // ran out of stored path.
@@ -203,32 +203,37 @@ static vec2f get_random_point_around_player(player p, zombie o) {
 void update_zombies_server(platform_window* window) {
 	float speed = 4.0f * SERVER_TICK_RATE;
 
-	for (int i = 0; i < MAX_ZOMBIES; i++) {
+	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
 
 		zombies[i].time_since_last_path += SERVER_TICK_RATE;
-		if (zombies[i].time_since_last_path > 0.05f) {
+		if (zombies[i].time_since_last_path > SERVER_PATHFINDING_INTERVAL) {
 			player closest_player = get_closest_player_to_tile((int)o.position.x, (int)o.position.y);
 			vec2f target_tile = (vec2f){closest_player.playerx, closest_player.playery+(get_player_size_in_tile()/2)};
 
+			array_clear(zombies[i].request.to_fill);
 			make_pathfinding_request((vec2f){o.position.x,o.position.y}, target_tile, &zombies[i].next_path, &zombies[i].request);
 			zombies[i].time_since_last_path = 0;
 		}
 		else {
-			if (mutex_trylock(&zombies[i].request.mutex))
+			if (zombies[i].request.active)
 			{
 				if (zombies[i].request.to_fill->length) {
+					mutex_trylock(&zombies[i].request.mutex);
+
 					array_destroy(&zombies[i].path);
 					zombies[i].path = array_copy(zombies[i].request.to_fill);
 					
 					player closest_player = get_closest_player_to_tile((int)o.position.x, (int)o.position.y);
 					vec2f final_pos = get_random_point_around_player(closest_player, zombies[i]);
 					array_push_at(&zombies[i].path, (u8*)&final_pos, 0);
-					array_clear(zombies[i].request.to_fill);
+
+					zombies[i].request.active = false;
+
+					mutex_unlock(&zombies[i].request.mutex);
 				}
 			}
-			mutex_unlock(&zombies[i].request.mutex);
 		}
 
 		if (is_within_next_tile(zombies[i])) {
@@ -256,7 +261,7 @@ void update_zombies_server(platform_window* window) {
 void draw_zombies(platform_window* window) {
 	map_info info = get_map_info(window);
 
-	for (int i = 0; i < MAX_ZOMBIES; i++) {
+	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
 

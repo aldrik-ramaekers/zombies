@@ -15,6 +15,7 @@ typedef struct t_pathfinding_request
 	array *to_fill;
 	uint64_t timestamp;
 	mutex mutex;
+	bool active;
 } pathfinding_request;
 
 array global_pathfinding_queue;

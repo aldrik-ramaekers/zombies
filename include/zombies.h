@@ -28,11 +28,10 @@ typedef struct t_spawner {
 } spawner;
 
 #define MAX_SPAWNERS (5)
-// data data that is stored on disk
 spawner spawner_tiles[MAX_SPAWNERS] = {0};
 
-#define MAX_ZOMBIES (50)
-zombie zombies[MAX_ZOMBIES] = {0};
+#define SERVER_MAX_ZOMBIES (50)
+zombie zombies[SERVER_MAX_ZOMBIES] = {0};
 
 void create_spawner(vec2 position);
 void draw_spawners(platform_window* window);

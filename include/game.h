@@ -9,6 +9,7 @@
 
 #define SERVER_TICK_RATE (1.0f/60.0f)
 #define SERVER_MAX_PLAYERS (10)
+#define SERVER_PATHFINDING_INTERVAL (0.25f)
 
 typedef enum t_game_state {
 	GAMESTATE_IDLE,

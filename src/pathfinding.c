@@ -311,6 +311,7 @@ void make_pathfinding_request(vec2f start, vec2f end, array *to_fill, pathfindin
 	request->start = start;
 	request->end = end;
 	request->to_fill = to_fill;
+	request->active = true;
 
 	request->timestamp = 0;
 	array_push(&global_pathfinding_queue, (uint8_t*)&request);

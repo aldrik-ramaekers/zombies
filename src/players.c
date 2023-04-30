@@ -182,32 +182,36 @@ void take_player_input(platform_window* window) {
 #endif
 
 	if (keyboard_is_key_down(KEY_W)) {
-		if (!global_state.server) {
+		//if (!global_state.server) 
+		{
 			network_message message = create_protocol_user_moved(MOVE_UP, player_id);
 			add_message_to_outgoing_queuex(message, *global_state.client);
 		}
-		move_user(window, player_id, MOVE_UP, update_delta);
+		//move_user(window, player_id, MOVE_UP, update_delta);
 	}
 	if (keyboard_is_key_down(KEY_S)) {
-		if (!global_state.server) {
+		//if (!global_state.server) 
+		{
 			network_message message = create_protocol_user_moved(MOVE_DOWN, player_id);
 			add_message_to_outgoing_queuex(message, *global_state.client);
 		}
-		move_user(window, player_id, MOVE_DOWN, update_delta);
+		//move_user(window, player_id, MOVE_DOWN, update_delta);
 	}
 	if (keyboard_is_key_down(KEY_A)) {
-		if (!global_state.server) {
+		//if (!global_state.server) 
+		{
 			network_message message = create_protocol_user_moved(MOVE_LEFT, player_id);
 			add_message_to_outgoing_queuex(message, *global_state.client);
 		}
-		move_user(window, player_id, MOVE_LEFT, update_delta);
+		//move_user(window, player_id, MOVE_LEFT, update_delta);
 	}
 	if (keyboard_is_key_down(KEY_D)) {
-		if (!global_state.server) {
+		//if (!global_state.server) 
+		{
 			network_message message = create_protocol_user_moved(MOVE_RIGHT, player_id);
 			add_message_to_outgoing_queuex(message, *global_state.client);
 		}
-		move_user(window, player_id, MOVE_RIGHT, update_delta);
+		//move_user(window, player_id, MOVE_RIGHT, update_delta);
 	}
 
 	// Send gun position
@@ -221,8 +225,8 @@ void take_player_input(platform_window* window) {
 		float gun_offset_x = (get_player_size_in_tile()/2) + dirx;
 		float gun_offset_y = (get_player_size_in_tile()/2) + diry;
 
-		p->gunx = p->playerx + gun_offset_x;
-		p->guny = p->playery + gun_offset_y;
+		//p->gunx = p->playerx + gun_offset_x;
+		//p->guny = p->playery + gun_offset_y;
 		
 		add_message_to_outgoing_queuex(create_protocol_user_look(player_id, gun_offset_x, gun_offset_y), *global_state.client);
 	}

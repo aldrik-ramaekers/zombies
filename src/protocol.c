@@ -116,18 +116,18 @@ void add_message_to_outgoing_queuex(network_message message, network_client c) {
 }
 
 void add_message_to_outgoing_queue(send_queue_entry entry) {
-	network_message_type type = *(network_message_type*)(entry.message.data+12);
+	network_message_type type = *(network_message_type*)(entry.message.data+NETWORK_PACKET_OVERHEAD);
 
 	bool can_overwrite = type != MESSAGE_USER_SHOOT && type != MESSAGE_USER_MOVED && type != MESSAGE_USER_LOOK;
 
-	//mutex_lock(&messages_to_send_queue_mutex);
+	mutex_lock(&messages_to_send_queue_mutex);
 	for (int i = 0; i < OUTGOING_QUEUE_SIZE; i++)
 	{
 		if (messages_to_send_queue[i].active) {
-			network_message_type type_existing = *(network_message_type*)(messages_to_send_queue[i].message.data+12);
+			network_message_type type_existing = *(network_message_type*)(messages_to_send_queue[i].message.data+NETWORK_PACKET_OVERHEAD);
 			if (type == type_existing && can_overwrite) {
 				messages_to_send_queue[i] = entry;
-				//mutex_unlock(&messages_to_send_queue_mutex);
+				mutex_unlock(&messages_to_send_queue_mutex);
 				return;
 			}
 			else {
@@ -136,10 +136,10 @@ void add_message_to_outgoing_queue(send_queue_entry entry) {
 		}
 		messages_to_send_queue[i] = entry;
 		messages_to_send_queue[i].active = true;
-		//mutex_unlock(&messages_to_send_queue_mutex);
+		mutex_unlock(&messages_to_send_queue_mutex);
 		return;
 	}
-	//mutex_unlock(&messages_to_send_queue_mutex);
+	mutex_unlock(&messages_to_send_queue_mutex);
 	log_info("Outgoing network queue is full");
 }
 

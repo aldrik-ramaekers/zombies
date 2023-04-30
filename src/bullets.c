@@ -115,7 +115,7 @@ bool check_if_bullet_collided_with_zombie(bullet* b, platform_window* window, pl
 	int index_of_closest_zombie = -1;
 	vec2f intersect_point_of_closest_zombie;
 	
-	for (int i = 0; i < MAX_ZOMBIES; i++) {
+	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
 

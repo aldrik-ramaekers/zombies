@@ -53,7 +53,7 @@ typedef struct t_protocol_user_list
 typedef struct t_protocol_zombie_list
 {
 	network_message_type type;
-	zombie zombies[MAX_ZOMBIES];
+	zombie zombies[SERVER_MAX_ZOMBIES];
 } protocol_zombie_list;
 
 #include "drops.h"
