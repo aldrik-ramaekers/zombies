@@ -129,8 +129,6 @@ void create_empty_map() {
 	map_to_load.objects[2] = (object){.active = true, .h = 0, .position = (vec2f){0, 1}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
 	map_to_load.objects[3] = (object){.active = true, .h = 0, .position = (vec2f){0, 2}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
 
-	printf("XDD: %d\n", map_to_load.tiles[0][0]);
-
 	load_mapdata_into_world();
 }
 
@@ -234,15 +232,13 @@ void draw_grid(platform_window* window) {
 			vec2f topright;
 
 			int highest_point_topleft = tile.topleft;
-			topleft = (vec2f){render_x, info.tile_width * y - highest_point_topleft*info.px_raised_per_h};
-			
 			int highest_point_topright = tile.topright;
-			topright = (vec2f){render_x + info.tile_width, info.tile_height * y - highest_point_topright*info.px_raised_per_h};
-
 			int highest_point_bottomright = tile.bottomright;
-			bottomright = (vec2f){render_x + xdiff_between_bottom_and_top+info.tile_width, info.tile_height * y + info.tile_height - highest_point_bottomright*info.px_raised_per_h};
-
 			int highest_point_bottomleft = tile.bottomleft;
+
+			topleft = (vec2f){render_x, info.tile_width * y - highest_point_topleft*info.px_raised_per_h};
+			topright = (vec2f){render_x + info.tile_width, info.tile_height * y - highest_point_topright*info.px_raised_per_h};
+			bottomright = (vec2f){render_x + xdiff_between_bottom_and_top+info.tile_width, info.tile_height * y + info.tile_height - highest_point_bottomright*info.px_raised_per_h};
 			bottomleft = (vec2f){render_x + xdiff_between_bottom_and_top, info.tile_height * y + info.tile_height - highest_point_bottomleft*info.px_raised_per_h};
 
 			color c = rgb(205,205,205);
