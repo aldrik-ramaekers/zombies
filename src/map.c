@@ -94,6 +94,9 @@ static int get_height_of_tile_tr(int current_height, int x, int y) {
 }
 
 void load_mapdata_into_world() {
+	loaded_map.width = map_to_load.width;
+	loaded_map.height = map_to_load.height;
+
 	// Load heightmap
 	for (int y = 0; y < MAP_SIZE_Y; y++) {
 		for (int x = MAP_SIZE_X-1; x >= 0; x--) {
@@ -111,8 +114,8 @@ void load_mapdata_into_world() {
 }
 
 void create_empty_map() {
-	loaded_map.width = MAP_SIZE_X;
-	loaded_map.height = MAP_SIZE_Y;
+	map_to_load.width = MAP_SIZE_X;
+	map_to_load.height = MAP_SIZE_Y;
 
 	memset(map_to_load.tiles, TILE_COBBLESTONE1, sizeof(map_to_load.tiles));
 	memset(map_to_load.heightmap, 0, sizeof(loaded_map.heightmap));

@@ -301,12 +301,16 @@ void update_game(platform_window* window) {
 		#endif 
 		draw_zombies(window);
 		
+		#ifdef MODE_DEBUG 
+			if (!is_editing_map) 
+		#endif 
 		draw_players(window);
+		
 		draw_spawners(window);
 		draw_overlay(window);
 	
 #ifdef MODE_DEBUG
-		draw_debug(window);
+		draw_editor(window);
 #endif
 
 		_global_camera.x = (int)_next_camera_pos.x;

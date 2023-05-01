@@ -13,7 +13,7 @@ void load_assets() {
 	img_zombie_chunk_foot = assets_load_image_from_file("data/imgs/zombie_chunk_foot.png");
 	img_zombie_chunk_blood = assets_load_image_from_file("data/imgs/zombie_chunk_blood.png");
 
-	img_tile_cobblestone = assets_load_image_from_file("data/imgs/tile_cobblestone.png");
+	img_tile_cobblestone = assets_load_image_from_file("data/imgs/tiles/tile_cobblestone.png");
 
 	img_spawner = assets_load_image_from_file("data/imgs/spawner.png");
 
