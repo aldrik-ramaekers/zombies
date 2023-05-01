@@ -3,6 +3,16 @@
 float camera_x = 0;
 float camera_y = 0;
 
+typedef enum t_editor_state
+{
+	PLACING_TILE,
+	RAISING_GROUND,
+	LOWERING_GROUND,
+} editor_state;
+
+editor_state edit_state = PLACING_TILE;
+tile_type tile_to_place = TILE_NONE;
+
 void update_editor(platform_window* window)
 {
 	if (keyboard_is_key_pressed(KEY_F1)) {
@@ -47,19 +57,45 @@ void draw_placing_rectangle(platform_window* window) {
 	tile t = loaded_map.heightmap[mouse_tile_y][mouse_tile_x];
 	renderer->render_rectangle_outline(t.tl.x, t.tl.y, t.tr.x - t.tl.x, t.br.y - t.tr.y, 2, rgb(255,0,0));
 
-	if (is_left_clicked()) {
-		map_to_load.heightmap[mouse_tile_y][mouse_tile_x]++;
-		load_mapdata_into_world();
-	}
-	if (is_right_clicked()) {
-		map_to_load.heightmap[mouse_tile_y][mouse_tile_x]--;
-		load_mapdata_into_world();
+	switch (edit_state)
+	{
+	case PLACING_TILE:
+		if (is_left_down()) {
+			map_to_load.tiles[mouse_tile_y][mouse_tile_x] = tile_to_place;
+			load_mapdata_into_world();
+		}
+		break;
+
+	case RAISING_GROUND:
+		if (is_left_clicked()) {
+			map_to_load.heightmap[mouse_tile_y][mouse_tile_x]++;
+			load_mapdata_into_world();
+		}
+		break;
+
+	case LOWERING_GROUND:
+		if (is_left_clicked()) {
+			map_to_load.heightmap[mouse_tile_y][mouse_tile_x]--;
+			load_mapdata_into_world();
+		}
+		break;
+	
+	default:
+		break;
 	}
 }
 
 static bool push_icon_button(int x, int y, int w, image* img) {
 	if (img) renderer->render_image(img,_global_camera.x+ x,_global_camera.y+ y, w, w);
 	renderer->render_rectangle_outline(_global_camera.x+ x,_global_camera.y+ y, w, w, 1, rgb(255,0,0));
+
+	if (_global_mouse.x > x && _global_mouse.x < x + w && _global_mouse.y > y && _global_mouse.y < y + w) {
+		renderer->render_rectangle(_global_camera.x+ x,_global_camera.y+ y, w, w, rgba(100,120,200,120));
+
+		if (is_left_clicked()) {
+			return true;
+		}
+	}
 
 	return false;
 }
@@ -73,21 +109,26 @@ void draw_tile_panel(platform_window* window) {
 	renderer->render_rectangle(_global_camera.x, _global_camera.y, width, window->height, rgb(200,150,100));
 
 	if (push_icon_button(tile_w*0, 0, tile_w, img_arrow_up)) {
-
+		edit_state = RAISING_GROUND;
 	}
 	if (push_icon_button(tile_w*1, 0, tile_w, img_arrow_down)) {
-		
+		edit_state = LOWERING_GROUND;
 	}
 	if (push_icon_button(tile_w*2, 0, tile_w, img_cancel)) {
-		
+		tile_to_place = TILE_NONE;
+		edit_state = PLACING_TILE;
 	}
 
-	for (int i = 0; i < TILE_END; i++) {
-		int x = i % cols * tile_w;
-		int y = (start_y + (i / cols)) * tile_w;
+	int tile_start = TILE_NONE+1;
+	for (int i = tile_start; i < TILE_END; i++) {
+		int x = ((i-tile_start) % cols) * tile_w;
+		int y = (start_y + ((i-tile_start) / cols)) * tile_w;
 
 		image* img = get_image_from_tiletype((tile_type)i);
-		push_icon_button(x, y, tile_w, img);
+		if (push_icon_button(x, y, tile_w, img)) {
+			tile_to_place = i;
+			edit_state = PLACING_TILE;
+		}
 	}
 }
 

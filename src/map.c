@@ -105,7 +105,7 @@ void load_mapdata_into_world() {
 			int highest_point_topright = get_height_of_tile_tr(h, x, y);
 			int highest_point_bottomright = get_height_of_tile_br(h, x, y);
 			int highest_point_bottomleft = get_height_of_tile_bl(h, x, y);
-			loaded_map.heightmap[y][x] = (tile){h, TILE_COBBLESTONE1, highest_point_topleft, highest_point_topright, highest_point_bottomleft, highest_point_bottomright};
+			loaded_map.heightmap[y][x] = (tile){.height = h, .type = map_to_load.tiles[y][x], highest_point_topleft, highest_point_topright, highest_point_bottomleft, highest_point_bottomright};
 		}
 	}
 
@@ -117,14 +117,19 @@ void create_empty_map() {
 	map_to_load.width = MAP_SIZE_X;
 	map_to_load.height = MAP_SIZE_Y;
 
-	memset(map_to_load.tiles, TILE_COBBLESTONE1, sizeof(map_to_load.tiles));
-	memset(map_to_load.heightmap, 0, sizeof(loaded_map.heightmap));
+	for (int y = 0; y < MAP_SIZE_Y; y++) {
+		for (int x = 0; x < MAP_SIZE_X; x++) {
+			map_to_load.tiles[y][x] = TILE_COBBLESTONE1;
+		}
+	}
 
 	map_to_load.objects[0] = (object){.active = true, .h = 0, .position = (vec2f){16, 8}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
 
 	map_to_load.objects[1] = (object){.active = true, .h = 0, .position = (vec2f){0, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
 	map_to_load.objects[2] = (object){.active = true, .h = 0, .position = (vec2f){0, 1}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
 	map_to_load.objects[3] = (object){.active = true, .h = 0, .position = (vec2f){0, 2}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
+
+	printf("XDD: %d\n", map_to_load.tiles[0][0]);
 
 	load_mapdata_into_world();
 }
