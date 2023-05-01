@@ -9,6 +9,9 @@
 typedef enum t_tile_type {
 	TILE_NONE = 0,
 	TILE_COBBLESTONE1 = 1,
+	TILE_GRASS1 = 2,
+
+	TILE_END,
 } tile_type;
 
 typedef struct t_tile {
@@ -65,5 +68,6 @@ int get_tile_width(platform_window* window);
 bool is_in_bounds(float x, float y);
 void draw_grid(platform_window* window);
 map_info get_map_info(platform_window* window);
+image* get_image_from_tiletype(tile_type tile);
 
 #endif

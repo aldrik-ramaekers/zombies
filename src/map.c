@@ -197,10 +197,9 @@ bool is_in_bounds(float x, float y) {
 image* get_image_from_tiletype(tile_type tile) {
 	switch (tile)
 	{
-	case TILE_COBBLESTONE1:
-		return img_tile_cobblestone;
-	default:
-		return 0;
+		case TILE_COBBLESTONE1: return img_tile_cobblestone;
+		case TILE_GRASS1: return img_tile_grass1;
+		default: return 0;
 	}
 }
 
