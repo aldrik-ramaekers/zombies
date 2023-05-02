@@ -3,14 +3,20 @@
 float camera_x = 0;
 float camera_y = 0;
 
-typedef enum t_editor_state
+typedef enum t_tile_editor_state
 {
 	PLACING_TILE,
 	RAISING_GROUND,
 	LOWERING_GROUND,
+} tile_editor_state;
+
+typedef enum t_editor_state
+{
+	EDITING_TILES,
+	EDITING_OBJECTS,
 } editor_state;
 
-editor_state edit_state = PLACING_TILE;
+tile_editor_state tile_edit_state = PLACING_TILE;
 tile_type tile_to_place = TILE_NONE;
 
 void update_editor(platform_window* window)
@@ -46,7 +52,7 @@ void update_editor(platform_window* window)
 	if (mouse_tile_x < 0 || mouse_tile_y < 0) return;
 	if (mouse_tile_x >= loaded_map.width || mouse_tile_y >= loaded_map.height) return;
 
-	switch (edit_state)
+	switch (tile_edit_state)
 	{
 		case PLACING_TILE:
 			if (is_left_down()) {
@@ -125,15 +131,15 @@ void draw_tile_panel(platform_window* window) {
 
 	renderer->render_rectangle(_global_camera.x, _global_camera.y, width, window->height, rgb(200,150,100));
 
-	if (push_icon_button(tile_w*0, 0, tile_w, img_arrow_up, edit_state == RAISING_GROUND)) {
-		edit_state = RAISING_GROUND;
+	if (push_icon_button(tile_w*0, 0, tile_w, img_arrow_up, tile_edit_state == RAISING_GROUND)) {
+		tile_edit_state = RAISING_GROUND;
 	}
-	if (push_icon_button(tile_w*1, 0, tile_w, img_arrow_down, edit_state == LOWERING_GROUND)) {
-		edit_state = LOWERING_GROUND;
+	if (push_icon_button(tile_w*1, 0, tile_w, img_arrow_down, tile_edit_state == LOWERING_GROUND)) {
+		tile_edit_state = LOWERING_GROUND;
 	}
-	if (push_icon_button(tile_w*2, 0, tile_w, img_cancel, edit_state == PLACING_TILE && tile_to_place == TILE_NONE)) {
+	if (push_icon_button(tile_w*2, 0, tile_w, img_cancel, tile_edit_state == PLACING_TILE && tile_to_place == TILE_NONE)) {
 		tile_to_place = TILE_NONE;
-		edit_state = PLACING_TILE;
+		tile_edit_state = PLACING_TILE;
 	}
 
 	int tile_start = TILE_NONE+1;
@@ -142,9 +148,9 @@ void draw_tile_panel(platform_window* window) {
 		int y = (start_y + ((i-tile_start) / cols)) * tile_w;
 
 		image* img = get_image_from_tiletype((tile_type)i);
-		if (push_icon_button(x, y, tile_w, img, edit_state == PLACING_TILE && tile_to_place == i)) {
+		if (push_icon_button(x, y, tile_w, img, tile_edit_state == PLACING_TILE && tile_to_place == i)) {
 			tile_to_place = i;
-			edit_state = PLACING_TILE;
+			tile_edit_state = PLACING_TILE;
 		}
 	}
 }

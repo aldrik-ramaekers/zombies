@@ -49,11 +49,19 @@ typedef struct t_map_data {
 	object objects[MAX_OBJECTS];
 } map_data;
 
+typedef struct t_light_data {
+	float tl;
+	float tr;
+	float bl;
+	float br;
+} light_data;
+
 typedef struct t_extracted_map_data {
 	int width;
 	int height;
 	tile heightmap[MAP_SIZE_Y][MAP_SIZE_X];
 	object objects[MAX_OBJECTS];
+	light_data lightmap[MAP_SIZE_Y][MAP_SIZE_X];
 } extracted_map_data;
 
 map_data map_to_load = {0};

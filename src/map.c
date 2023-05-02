@@ -93,6 +93,35 @@ static int get_height_of_tile_tr(int current_height, int x, int y) {
 	return highest_point;
 }
 
+static float distance_between_3f(vec3f v1, vec3f v2)
+{
+	return sqrt((v1.x-v2.x)*(v1.x-v2.x)+(v1.y-v2.y)*(v1.y-v2.y)+(v1.z-v2.z)*(v1.z-v2.z));
+}
+
+static bool ray_intersects_with_ground(vec3f begin, vec3f end) {
+	float dirx = (end.x - begin.x);
+	float diry = (end.y - begin.y);
+	float dirz = (end.z - begin.z);
+	float length = sqrt(dirx * dirx + diry * diry + dirz * dirz);
+	dirx /= length;
+	diry /= length;
+	dirz /= length;
+	double nr_tiles_to_check = length*4; // check 4 points per tile.
+
+	for (int i = 1; i < nr_tiles_to_check; i++) {
+		float xtocheck = begin.x + (dirx*i/4);
+		float ytocheck = begin.y + (diry*i/4);
+		float ztocheck = begin.z + (dirz*i/4);
+		if (!is_in_bounds(xtocheck, ytocheck)) break;
+		tile tile = get_tile_under_coords(xtocheck, ytocheck);
+		float h = get_height_of_tile_under_coords(xtocheck, ytocheck);
+		if (ztocheck < h) {
+			return true;
+		}
+	}
+	return false;
+}
+
 void load_mapdata_into_world() {
 	loaded_map.width = map_to_load.width;
 	loaded_map.height = map_to_load.height;
@@ -106,6 +135,52 @@ void load_mapdata_into_world() {
 			int highest_point_bottomright = get_height_of_tile_br(h, x, y);
 			int highest_point_bottomleft = get_height_of_tile_bl(h, x, y);
 			loaded_map.heightmap[y][x] = (tile){.height = h, .type = map_to_load.tiles[y][x], highest_point_topleft, highest_point_topright, highest_point_bottomleft, highest_point_bottomright};
+			loaded_map.lightmap[y][x] = (light_data){0.0f,0.0f,0.0f,0.0f};
+		}
+	}
+
+	light_emitter emitters[1] = {
+		{.brightness = 1.0f, .position = (vec3f){0, 0, 0}, .range = 10.0f},
+	};
+
+	// Load lightmap
+	for (int y = 0; y < MAP_SIZE_Y; y++) {
+		for (int x = 0; x < MAP_SIZE_X; x++) {
+			for (int l = 0; l < 1; l++) {
+				light_emitter emitter = emitters[l];
+				float dist_tl = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].topleft});
+				float dist_tr = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].topright});
+				float dist_bl = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].bottomleft});
+				float dist_br = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].bottomright});
+
+				float p_tl = 1.0f - dist_tl / emitter.range;
+				float p_tr = 1.0f - dist_tr / emitter.range;
+				float p_bl = 1.0f - dist_bl / emitter.range;
+				float p_br = 1.0f - dist_br / emitter.range;
+
+				if (p_tl > 1.0f) p_tl = 1.0f; if (p_tl < 0.0f) p_tl = 0.0f;
+				if (p_tr > 1.0f) p_tr = 1.0f; if (p_tr < 0.0f) p_tr = 0.0f;
+				if (p_bl > 1.0f) p_bl = 1.0f; if (p_bl < 0.0f) p_bl = 0.0f;
+				if (p_br > 1.0f) p_br = 1.0f; if (p_br < 0.0f) p_br = 0.0f;
+
+				loaded_map.lightmap[y][x].tl = p_tl;
+				loaded_map.lightmap[y][x].tr = p_tr;
+				loaded_map.lightmap[y][x].bl = p_bl;
+				loaded_map.lightmap[y][x].br = p_br;
+
+				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].topleft}, emitter.position)) {
+					loaded_map.lightmap[y][x].tl = 0.0f;
+				}
+				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].topright}, emitter.position)) {
+					loaded_map.lightmap[y][x].tr = 0.0f;
+				}
+				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].bottomleft}, emitter.position)) {
+					loaded_map.lightmap[y][x].bl = 0.0f;
+				}
+				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].bottomright}, emitter.position)) {
+					loaded_map.lightmap[y][x].br = 0.0f;
+				}
+			}
 		}
 	}
 
@@ -217,8 +292,8 @@ void draw_grid(platform_window* window) {
 	map_info info = get_map_info(window);
 
 	for (int y = 0; y < MAP_SIZE_Y; y++) {
-		MAP_RENDER_DEPTH;
 		for (int x = MAP_SIZE_X-1; x >= 0; x--) {
+			MAP_RENDER_DEPTH;
 			tile tile = loaded_map.heightmap[y][x];
 
 			float xdiff_between_bottom_and_top = info.px_incline;
@@ -241,22 +316,35 @@ void draw_grid(platform_window* window) {
 			bottomright = (vec2f){render_x + xdiff_between_bottom_and_top+info.tile_width, info.tile_height * y + info.tile_height - highest_point_bottomright*info.px_raised_per_h};
 			bottomleft = (vec2f){render_x + xdiff_between_bottom_and_top, info.tile_height * y + info.tile_height - highest_point_bottomleft*info.px_raised_per_h};
 
+			/*
 			color c = rgb(205,205,205);
 			if (highest_point_topleft > highest_point_bottomleft || highest_point_topright > highest_point_bottomright ||
 				highest_point_topleft > highest_point_bottomright || highest_point_topright > highest_point_bottomleft ||
 				highest_point_topright > highest_point_topleft || highest_point_bottomright > highest_point_bottomleft) c = rgb(165,165,165);
 			if (highest_point_topleft < highest_point_bottomleft || highest_point_topright < highest_point_bottomright ||
 				highest_point_topleft > highest_point_topright) c = rgb(255,255,255);
-
+			*/
+			
+			float min_brightness = 150;
 			image* img = get_image_from_tiletype(tile.type);
 			if (img) {
-				renderer->render_image_quad_tint(img, 
+				renderer->render_image_quad(img, 
 					topleft.x, topleft.y, 
 					bottomleft.x, bottomleft.y, 
 					bottomright.x, bottomright.y, 
-					topright.x, topright.y, c);
+					topright.x, topright.y);
+
+				color c_tl = rgba(0,0,0, (u8)(min_brightness * (1.0f - loaded_map.lightmap[y][x].tl)));
+				color c_tr = rgba(0,0,0, (u8)(min_brightness * (1.0f - loaded_map.lightmap[y][x].tr)));
+				color c_bl = rgba(0,0,0, (u8)(min_brightness * (1.0f - loaded_map.lightmap[y][x].bl)));
+				color c_br = rgba(0,0,0, (u8)(min_brightness * (1.0f - loaded_map.lightmap[y][x].br)));
+				renderer->render_quad_gradient(topleft.x, topleft.y, 
+					bottomleft.x, bottomleft.y, 
+					bottomright.x, bottomright.y, 
+					topright.x, topright.y, c_tl, c_bl, c_br, c_tr);
 			}
 
+/*
 			if (highest_point_topleft != highest_point_bottomright && highest_point_bottomleft == highest_point_topright) {
 				if (highest_point_bottomleft < highest_point_topleft || highest_point_bottomleft < highest_point_bottomright) {
 					renderer->render_tri(topleft.x, topleft.y, 
@@ -265,16 +353,8 @@ void draw_grid(platform_window* window) {
 				}
 				//renderer->render_line(topleft.x, topleft.y, bottomright.x, bottomright.y, 1, rgb(0,0,255)); // diag
 			}
-/*
-			if (highest_point_bottomleft != highest_point_topright && highest_point_topleft == highest_point_bottomright) {
-				renderer->render_line(topright.x, topright.y, bottomleft.x, bottomleft.y, 1, rgb(0,0,255)); // diag
-			}
-			
-			renderer->render_line(topleft.x, topleft.y, topright.x, topright.y, 1, rgb(0,0,255)); // top
-			renderer->render_line(topleft.x, topleft.y, bottomleft.x, bottomleft.y, 1, rgb(0,0,255)); // left
-			renderer->render_line(topright.x, topright.y, bottomright.x, bottomright.y, 1, rgb(0,0,255)); // right
-			renderer->render_line(bottomleft.x, bottomleft.y, bottomright.x, bottomright.y, 1, rgb(0,0,255)); // bottom
 */
+
 			loaded_map.heightmap[y][x].tl = topleft;
 			loaded_map.heightmap[y][x].tr = topright;
 			loaded_map.heightmap[y][x].bl = bottomleft;

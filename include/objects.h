@@ -11,6 +11,12 @@ typedef struct t_vec3f {
 	float x,y,z;
 } vec3f;
 
+typedef struct t_light_emitter {
+	vec3f position;
+	float brightness;
+	float range;
+} light_emitter;
+
 typedef enum t_object_type {
 	OBJECT_COBBLESTONEWALL1 = 1,
 	OBJECT_PLANTBOX1 = 2,
