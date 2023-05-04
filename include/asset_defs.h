@@ -13,6 +13,9 @@ image* img_drop;
 image* img_arrow_up;
 image* img_arrow_down;
 image* img_cancel;
+image* img_3d;
+image* img_tiles;
+image* img_sunny;
 
 // Objects
 image* img_spawner;

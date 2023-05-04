@@ -11,6 +11,9 @@ void load_assets() {
 	img_arrow_up = assets_load_image_from_file("data/imgs/icons/arrow_up.png");
 	img_arrow_down = assets_load_image_from_file("data/imgs/icons/arrow_down.png");
 	img_cancel = assets_load_image_from_file("data/imgs/icons/cross.png");
+	img_3d = assets_load_image_from_file("data/imgs/icons/3d.png");
+	img_tiles = assets_load_image_from_file("data/imgs/icons/tiles.png");
+	img_sunny = assets_load_image_from_file("data/imgs/icons/sunny.png");
 
 	// Objects
 	img_spawner = assets_load_image_from_file("data/imgs/spawner.png");

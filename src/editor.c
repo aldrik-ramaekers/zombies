@@ -14,10 +14,16 @@ typedef enum t_editor_state
 {
 	EDITING_TILES,
 	EDITING_OBJECTS,
+	EDITING_LIGHTING,
 } editor_state;
 
+editor_state edit_state = EDITING_TILES;
 tile_editor_state tile_edit_state = PLACING_TILE;
 tile_type tile_to_place = TILE_NONE;
+
+int editor_width = 200;
+int borderw = 8;
+int offset_y = 50;
 
 void update_editor(platform_window* window)
 {
@@ -106,10 +112,10 @@ void draw_placing_rectangle(platform_window* window) {
 
 static bool push_icon_button(int x, int y, int w, image* img, bool isSelected) {
 	if (img) renderer->render_image(img,_global_camera.x+ x,_global_camera.y+ y, w, w);
-	renderer->render_rectangle_outline(_global_camera.x+ x,_global_camera.y+ y, w, w, 1, rgb(255,255,255));
+	renderer->render_rectangle_outline(_global_camera.x+ x,_global_camera.y+ y, w+1, w+1, 1, rgb(255,255,255));
 
 	if (isSelected) {
-		renderer->render_rectangle_outline(_global_camera.x+ x,_global_camera.y+ y, w, w, 3, rgb(50,50,200));
+		renderer->render_rectangle_outline(_global_camera.x+ x + 1,_global_camera.y+ y + 1, w-2, w-2, 3, rgb(50,50,200));
 	}
 
 	if (_global_mouse.x > x && _global_mouse.x < x + w && _global_mouse.y > y && _global_mouse.y < y + w) {
@@ -124,20 +130,17 @@ static bool push_icon_button(int x, int y, int w, image* img, bool isSelected) {
 }
 
 void draw_tile_panel(platform_window* window) {
-	int start_y = 1;
-	int width = 200;
+	int start_y = 1; // rows to skip
 	int cols = 4;
-	int tile_w = width / cols;
+	int tile_w = editor_width / cols;
 
-	renderer->render_rectangle(_global_camera.x, _global_camera.y, width, window->height, rgb(200,150,100));
-
-	if (push_icon_button(tile_w*0, 0, tile_w, img_arrow_up, tile_edit_state == RAISING_GROUND)) {
+	if (push_icon_button(tile_w*0, offset_y, tile_w, img_arrow_up, tile_edit_state == RAISING_GROUND)) {
 		tile_edit_state = RAISING_GROUND;
 	}
-	if (push_icon_button(tile_w*1, 0, tile_w, img_arrow_down, tile_edit_state == LOWERING_GROUND)) {
+	if (push_icon_button(tile_w*1, offset_y, tile_w, img_arrow_down, tile_edit_state == LOWERING_GROUND)) {
 		tile_edit_state = LOWERING_GROUND;
 	}
-	if (push_icon_button(tile_w*2, 0, tile_w, img_cancel, tile_edit_state == PLACING_TILE && tile_to_place == TILE_NONE)) {
+	if (push_icon_button(tile_w*2, offset_y, tile_w, img_cancel, tile_edit_state == PLACING_TILE && tile_to_place == TILE_NONE)) {
 		tile_to_place = TILE_NONE;
 		tile_edit_state = PLACING_TILE;
 	}
@@ -147,6 +150,8 @@ void draw_tile_panel(platform_window* window) {
 		int x = ((i-tile_start) % cols) * tile_w;
 		int y = (start_y + ((i-tile_start) / cols)) * tile_w;
 
+		y += offset_y;
+
 		image* img = get_image_from_tiletype((tile_type)i);
 		if (push_icon_button(x, y, tile_w, img, tile_edit_state == PLACING_TILE && tile_to_place == i)) {
 			tile_to_place = i;
@@ -155,10 +160,42 @@ void draw_tile_panel(platform_window* window) {
 	}
 }
 
+void draw_lighting_panel(platform_window* window) {
+	int row_h = 40;
+
+	int count = 0;
+	for (int i = 0; i < MAX_LIGHT_EMITTERS; i++) {
+		light_emitter emitter = loaded_map.light_emitters[i];
+		if (!emitter.active) continue;
+
+		renderer->render_rectangle(_global_camera.x, _global_camera.y + offset_y + ((row_h+1)*count), editor_width, row_h, rgba(255,0,0,40));
+	}
+}
+
 void draw_editor(platform_window* window)
 {
 	if (is_editing_map) {
 		draw_placing_rectangle(window);
-		draw_tile_panel(window);
+
+		renderer->render_rectangle(_global_camera.x, _global_camera.y, editor_width, window->height, rgb(73, 140, 138));
+		renderer->render_rectangle(_global_camera.x + editor_width, _global_camera.y, borderw, window->height, rgb(70, 172, 194));
+
+		if (push_icon_button(10, 10, 30, img_tiles, edit_state == EDITING_TILES)) {
+			edit_state = EDITING_TILES;
+		}
+		if (push_icon_button(50, 10, 30, img_3d, edit_state == EDITING_OBJECTS)) {
+			edit_state = EDITING_OBJECTS;
+		}
+		if (push_icon_button(90, 10, 30, img_sunny, edit_state == EDITING_LIGHTING)) {
+			edit_state = EDITING_LIGHTING;
+		}
+		
+		switch (edit_state)
+		{
+			case EDITING_TILES: draw_tile_panel(window); break;
+			case EDITING_OBJECTS:  break;
+			case EDITING_LIGHTING: draw_lighting_panel(window); break;
+		}
+		
 	}
 }

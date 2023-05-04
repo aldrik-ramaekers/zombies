@@ -12,6 +12,7 @@ typedef struct t_vec3f {
 } vec3f;
 
 typedef struct t_light_emitter {
+	bool active;
 	vec3f position;
 	float brightness;
 	float range;

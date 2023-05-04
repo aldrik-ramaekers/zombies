@@ -139,15 +139,16 @@ void load_mapdata_into_world() {
 		}
 	}
 
-	light_emitter emitters[1] = {
-		{.brightness = 1.0f, .position = (vec3f){0, 0, 0}, .range = 10.0f},
-	};
+	// Load emitters
+	for (int i = 0; i < MAX_LIGHT_EMITTERS; i++) {
+		loaded_map.light_emitters[i] = map_to_load.light_emitters[i];
+	}
 
 	// Load lightmap
 	for (int y = 0; y < MAP_SIZE_Y; y++) {
 		for (int x = 0; x < MAP_SIZE_X; x++) {
 			for (int l = 0; l < 1; l++) {
-				light_emitter emitter = emitters[l];
+				light_emitter emitter = loaded_map.light_emitters[l];
 				float dist_tl = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].topleft});
 				float dist_tr = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].topright});
 				float dist_bl = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].bottomleft});
@@ -203,6 +204,8 @@ void create_empty_map() {
 	map_to_load.objects[1] = (object){.active = true, .h = 0, .position = (vec2f){0, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
 	map_to_load.objects[2] = (object){.active = true, .h = 0, .position = (vec2f){0, 1}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
 	map_to_load.objects[3] = (object){.active = true, .h = 0, .position = (vec2f){0, 2}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
+
+	map_to_load.light_emitters[0] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 0, 0}, .range = 10.0f, .active = true};
 
 	load_mapdata_into_world();
 }
