@@ -25,6 +25,41 @@ int editor_width = 200;
 int borderw = 8;
 int offset_y = 50;
 
+static void update_tile_editor(platform_window* window) {
+	map_info info = get_map_info(window);
+	vec2 pos = screen_pos_to_world_pos(window, _global_mouse.x, _global_mouse.y);
+
+	if (pos.x < 0 || pos.y < 0) return;
+	if (pos.x >= loaded_map.width || pos.y >= loaded_map.height) return;
+
+	switch (tile_edit_state)
+	{
+		case PLACING_TILE:
+			if (is_left_down()) {
+				map_to_load.tiles[pos.y][pos.x] = tile_to_place;
+				load_mapdata_into_world();
+			}
+			break;
+
+		case RAISING_GROUND:
+			if (is_left_clicked()) {
+				map_to_load.heightmap[pos.y][pos.x]++;
+				load_mapdata_into_world();
+			}
+			break;
+
+		case LOWERING_GROUND:
+			if (is_left_clicked()) {
+				if (map_to_load.heightmap[pos.y][pos.x] > 0) map_to_load.heightmap[pos.y][pos.x]--;
+				load_mapdata_into_world();
+			}
+			break;
+		
+		default:
+			break;
+	}
+}
+
 void update_editor(platform_window* window)
 {
 	if (keyboard_is_key_pressed(KEY_F1)) {
@@ -51,39 +86,13 @@ void update_editor(platform_window* window)
 	_next_camera_pos.x = -(window->width / 2) + camera_x;
 	_next_camera_pos.y = -(window->height / 2) + camera_y;
 
-	map_info info = get_map_info(window);
-	int mouse_tile_y = (_global_mouse.y + _global_camera.y) / info.tile_height;
-	int mouse_tile_x = (((_global_mouse.x + _global_camera.x) - (info.px_incline * mouse_tile_y)) / info.tile_width);
-
-	if (mouse_tile_x < 0 || mouse_tile_y < 0) return;
-	if (mouse_tile_x >= loaded_map.width || mouse_tile_y >= loaded_map.height) return;
-
-	switch (tile_edit_state)
+	switch (edit_state)
 	{
-		case PLACING_TILE:
-			if (is_left_down()) {
-				map_to_load.tiles[mouse_tile_y][mouse_tile_x] = tile_to_place;
-				load_mapdata_into_world();
-			}
-			break;
-
-		case RAISING_GROUND:
-			if (is_left_clicked()) {
-				map_to_load.heightmap[mouse_tile_y][mouse_tile_x]++;
-				load_mapdata_into_world();
-			}
-			break;
-
-		case LOWERING_GROUND:
-			if (is_left_clicked()) {
-				if (map_to_load.heightmap[mouse_tile_y][mouse_tile_x] > 0) map_to_load.heightmap[mouse_tile_y][mouse_tile_x]--;
-				load_mapdata_into_world();
-			}
-			break;
-		
-		default:
-			break;
+		case EDITING_TILES: update_tile_editor(window); break;
+		case EDITING_OBJECTS: break;
+		case EDITING_LIGHTING: break;
 	}
+
 
 	if (keyboard_is_key_down(KEY_LEFT_CONTROL) && keyboard_is_key_pressed(KEY_S)) {
 		platform_write_file_content("../data/maps/map1.dat", "wb", (u8*)&map_to_load, sizeof(map_to_load));
@@ -161,14 +170,61 @@ void draw_tile_panel(platform_window* window) {
 }
 
 void draw_lighting_panel(platform_window* window) {
-	int row_h = 40;
+	static bool dragging_light = false;
+	static int dragging_light_index = 0;
+	static int drag_start_x = 0;
+	static int drag_start_y = 0;
+	static float orig_x = 0;
+	static float orig_y = 0;
 
-	int count = 0;
+	int row_h = 20;
+	int offsety = 0;
+
 	for (int i = 0; i < MAX_LIGHT_EMITTERS; i++) {
 		light_emitter emitter = loaded_map.light_emitters[i];
 		if (!emitter.active) continue;
 
-		renderer->render_rectangle(_global_camera.x, _global_camera.y + offset_y + ((row_h+1)*count), editor_width, row_h, rgba(255,0,0,40));
+		renderer->render_rectangle(_global_camera.x, _global_camera.y + offset_y + row_h + offsety, editor_width, row_h, rgba(255,0,0,40));
+
+		char buf[50];
+		sprintf(buf, "{x: %.0f y: %.0f, z: %.0f}", emitter.position.x, emitter.position.y, emitter.position.z);
+		renderer->render_text(fnt_20, _global_camera.x, _global_camera.y + offset_y + row_h + offsety + 5, buf, rgb(0,0,0));
+
+		vec2f pos = world_pos_to_screen_pos(window, emitter.position.x, emitter.position.y, emitter.position.z);
+		renderer->render_rectangle(pos.x-3, pos.y-3, 36, 36, rgb(100,0,0));
+		renderer->render_rectangle(pos.x, pos.y, 30, 30, rgb(255,0,0));
+		renderer->render_image(img_sunny, pos.x, pos.y, 30, 30);
+
+		if (_global_mouse.x + _global_camera.x > pos.x && 
+			_global_mouse.x + _global_camera.x < pos.x + 30 && 
+			_global_mouse.y + _global_camera.y > pos.y && 
+			_global_mouse.y + _global_camera.y < pos.y + 30) {
+			if (is_left_clicked()) {
+				dragging_light = true;
+				dragging_light_index = i;
+				drag_start_x = _global_mouse.x;
+				drag_start_y = _global_mouse.y;
+				orig_x = emitter.position.x;
+				orig_y = emitter.position.y;
+			}
+		}
+
+		if (dragging_light && dragging_light_index == i) {
+			if (is_left_down()) {
+				int newx = (_global_mouse.x - drag_start_x) - _global_camera.x;
+				int newy = (_global_mouse.y - drag_start_y) - _global_camera.y;
+				vec2 newpos = screen_pos_to_world_pos(window, newx, newy);
+
+				map_to_load.light_emitters[i].position.x = orig_x + newpos.x;
+				map_to_load.light_emitters[i].position.y = orig_y + newpos.y;
+				load_mapdata_into_world();
+			}
+			else {
+				dragging_light = false;
+			}
+		}
+
+		offsety+=row_h+1;
 	}
 }
 

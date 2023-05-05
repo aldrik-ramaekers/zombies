@@ -107,7 +107,6 @@ static bool ray_intersects_with_ground(vec3f begin, vec3f end) {
 	diry /= length;
 	dirz /= length;
 	double nr_tiles_to_check = length*4; // check 4 points per tile.
-
 	for (int i = 1; i < nr_tiles_to_check; i++) {
 		float xtocheck = begin.x + (dirx*i/4);
 		float ytocheck = begin.y + (diry*i/4);
@@ -147,8 +146,9 @@ void load_mapdata_into_world() {
 	// Load lightmap
 	for (int y = 0; y < MAP_SIZE_Y; y++) {
 		for (int x = 0; x < MAP_SIZE_X; x++) {
-			for (int l = 0; l < 1; l++) {
+			for (int l = 0; l < MAX_LIGHT_EMITTERS; l++) {
 				light_emitter emitter = loaded_map.light_emitters[l];
+				if (!emitter.active) continue;
 				float dist_tl = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].topleft});
 				float dist_tr = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].topright});
 				float dist_bl = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].bottomleft});
@@ -158,29 +158,37 @@ void load_mapdata_into_world() {
 				float p_tr = 1.0f - dist_tr / emitter.range;
 				float p_bl = 1.0f - dist_bl / emitter.range;
 				float p_br = 1.0f - dist_br / emitter.range;
+				if (p_tl < 0.0f) p_tl = 0.0f;
+				if (p_tr < 0.0f) p_tr = 0.0f;
+				if (p_bl < 0.0f) p_bl = 0.0f;
+				if (p_br < 0.0f) p_br = 0.0f;
 
-				if (p_tl > 1.0f) p_tl = 1.0f; if (p_tl < 0.0f) p_tl = 0.0f;
-				if (p_tr > 1.0f) p_tr = 1.0f; if (p_tr < 0.0f) p_tr = 0.0f;
-				if (p_bl > 1.0f) p_bl = 1.0f; if (p_bl < 0.0f) p_bl = 0.0f;
-				if (p_br > 1.0f) p_br = 1.0f; if (p_br < 0.0f) p_br = 0.0f;
+				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].topleft}, emitter.position)) {
+					p_tl = 0.0f;
+				}
+				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].topright}, emitter.position)) {
+					p_tr = 0.0f;
+				}
+				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].bottomleft}, emitter.position)) {
+					p_bl = 0.0f;
+				}
+				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].bottomright}, emitter.position)) {
+					p_br = 0.0f;
+				}
+
+				p_tl += loaded_map.lightmap[y][x].tl;
+				p_tr += loaded_map.lightmap[y][x].tr;
+				p_bl += loaded_map.lightmap[y][x].bl;
+				p_br += loaded_map.lightmap[y][x].br;
+				if (p_tl > 1.0f) p_tl = 1.0f;
+				if (p_tr > 1.0f) p_tr = 1.0f;
+				if (p_bl > 1.0f) p_bl = 1.0f;
+				if (p_br > 1.0f) p_br = 1.0f;
 
 				loaded_map.lightmap[y][x].tl = p_tl;
 				loaded_map.lightmap[y][x].tr = p_tr;
 				loaded_map.lightmap[y][x].bl = p_bl;
 				loaded_map.lightmap[y][x].br = p_br;
-
-				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].topleft}, emitter.position)) {
-					loaded_map.lightmap[y][x].tl = 0.0f;
-				}
-				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].topright}, emitter.position)) {
-					loaded_map.lightmap[y][x].tr = 0.0f;
-				}
-				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].bottomleft}, emitter.position)) {
-					loaded_map.lightmap[y][x].bl = 0.0f;
-				}
-				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].bottomright}, emitter.position)) {
-					loaded_map.lightmap[y][x].br = 0.0f;
-				}
 			}
 		}
 	}
@@ -205,7 +213,8 @@ void create_empty_map() {
 	map_to_load.objects[2] = (object){.active = true, .h = 0, .position = (vec2f){0, 1}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
 	map_to_load.objects[3] = (object){.active = true, .h = 0, .position = (vec2f){0, 2}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
 
-	map_to_load.light_emitters[0] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 0, 0}, .range = 10.0f, .active = true};
+	map_to_load.light_emitters[0] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 0, 10}, .range = 20.0f, .active = true};
+	map_to_load.light_emitters[1] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 30, 10}, .range = 20.0f, .active = true};
 
 	load_mapdata_into_world();
 }
@@ -282,6 +291,22 @@ image* get_image_from_tiletype(tile_type tile) {
 		case TILE_GRASS1: return img_tile_grass1;
 		default: return 0;
 	}
+}
+
+vec2 screen_pos_to_world_pos(platform_window* window, float x, float y) {
+	map_info info = get_map_info(window);
+	int tile_y = (y + _global_camera.y) / info.tile_height;
+	int tile_x = (((x + _global_camera.x) - (info.px_incline * tile_y)) / info.tile_width);
+	return (vec2){.x = (s32)tile_x, .y = (s32)tile_y};
+}
+
+vec2f world_pos_to_screen_pos(platform_window* window, float x, float y, float z) {
+	map_info info = get_map_info(window);
+	float xdiff_between_bottom_and_top = info.px_incline;
+	float render_x =  (info.tile_width * x) + (xdiff_between_bottom_and_top * y);
+	float render_y = info.tile_height * y;
+	render_y -= z*info.px_raised_per_h;
+	return (vec2f){.x = render_x, .y = render_y};
 }
 
 static float offset = 0.0f;

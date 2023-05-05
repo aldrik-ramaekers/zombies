@@ -70,6 +70,8 @@ typedef struct t_extracted_map_data {
 map_data map_to_load = {0};
 extracted_map_data loaded_map = {0};
 
+vec2 screen_pos_to_world_pos(platform_window* window, float x, float y);
+vec2f world_pos_to_screen_pos(platform_window* window, float x, float y, float z);
 void create_empty_map();
 void load_map_from_file();
 tile get_tile_under_coords(float x, float y);

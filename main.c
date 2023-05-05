@@ -1,4 +1,5 @@
 #define ASSET_IMAGE_COUNT 50
+#define ASSET_QUEUE_COUNT 50
 
 #include <projectbase/project_base.h>
 
