@@ -31,4 +31,7 @@ void load_assets() {
 	// Tiles
 	img_tile_cobblestone = assets_load_image_from_file("data/imgs/tiles/tile_cobblestone.png");
 	img_tile_grass1 = assets_load_image_from_file("data/imgs/tiles/tile_grass1.png");
+
+	// sounds
+	wav_throwable_bounce = Mix_LoadWAV("data/sounds/throwable_bounce.wav");
 }

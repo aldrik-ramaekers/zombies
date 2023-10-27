@@ -194,6 +194,21 @@ void take_player_input(platform_window* window) {
 		network_message message = create_protocol_user_shoot(player_id, dirx, diry);
 		add_message_to_outgoing_queuex(message, *global_state.client);
 	}
+
+	// throwing
+	if (is_right_clicked()) {
+		float dirx = (_global_mouse.x - (window->width/2));
+		float diry = (_global_mouse.y - (window->height/2));
+		double length = sqrt(dirx * dirx + diry * diry);
+		dirx /= length;
+		diry /= length;
+		log_info("THROWING!");
+		throw_throwable(window, player_id, THROWABLE_GRENADE, dirx, diry);
+		//network_message message = create_protocol_user_shoot(player_id, dirx, diry);
+		//add_message_to_outgoing_queuex(message, *global_state.client);
+	}
+
+	
 }
 
 void update_players_server() {

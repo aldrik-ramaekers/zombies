@@ -34,6 +34,8 @@ image* img_zombie_chunk_blood;
 image* img_tile_cobblestone;
 image* img_tile_grass1;
 
+// Sounds
+Mix_Chunk* wav_throwable_bounce;
 
 void load_assets();
 

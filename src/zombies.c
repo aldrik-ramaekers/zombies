@@ -220,7 +220,7 @@ void update_zombies_server(platform_window* window) {
 			if (zombies[i].request.active)
 			{
 				if (zombies[i].request.to_fill->length) {
-					mutex_trylock(&zombies[i].request.mutex);
+					mutex_lock(&zombies[i].request.mutex);
 
 					array_destroy(&zombies[i].path);
 					zombies[i].path = array_copy(zombies[i].request.to_fill);

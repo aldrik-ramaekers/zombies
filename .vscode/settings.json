@@ -1,6 +1,7 @@
 {
 	"files.associations": {
 		"*.ejs": "html",
-		"editor.h": "c"
+		"throwables.h": "c",
+		"cstdlib": "c"
 	}
 }

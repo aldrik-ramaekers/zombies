@@ -3,12 +3,15 @@
 
 #include <projectbase/project_base.h>
 
+#include "include/SDL2/SDL_mixer.h"
+
 #include "include/players.h"
 #include "include/objects.h"
 #include "include/map.h"
 #include "include/zombies.h"
 #include "include/math_helper.h"
 #include "include/bullets.h"
+#include "include/throwables.h"
 #include "include/pathfinding.h"
 #include "include/list.h"
 #include "include/allocator.h"
@@ -28,6 +31,7 @@
 #include "src/objects.c"
 #include "src/zombies.c"
 #include "src/bullets.c"
+#include "src/throwables.c"
 #include "src/math_helper.c"
 #include "src/pathfinding.c"
 #include "src/list.c"
@@ -83,6 +87,13 @@ int main(int argc, char **argv)
 	//platform_toggle_fullscreen(window, true);
 
 	settings_set_number("USE_GPU", 1);
+
+	if (Mix_OpenAudio(48000, AUDIO_F32SYS, 2, 2048) == 0) {
+		log_info("Audio system initialized.");
+	}
+	else {
+		log_info("Audio failed.");
+	}
 
 	init_game();
 	handle_args(argc, argv);

@@ -189,6 +189,7 @@ void update_server(platform_window* window) {
 		update_zombies_server(window);
 		broadcast_zombies = platform_get_time(TIME_FULL, TIME_NS) - broadcast_zombies;
 
+		update_throwables_server(window);
 		broadcast_stamp = platform_get_time(TIME_FULL, TIME_NS);
 
 		broadcast_to_clients(create_protocol_user_list());
@@ -277,6 +278,7 @@ void update_client(platform_window* window) {
 
 void update_game(platform_window* window) {
 	clear_bullets();
+	clear_throwables();
 
 	if (global_state.server) {
 		update_server(window);
@@ -295,6 +297,7 @@ void update_game(platform_window* window) {
 		draw_zombie_chunks(window);
 		draw_drops(window);
 		draw_bullets(window);
+		draw_throwables(window);
 
 		#ifdef MODE_DEBUG 
 			if (!is_editing_map) 
