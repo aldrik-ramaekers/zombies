@@ -15,6 +15,9 @@ void load_assets() {
 	img_tiles = assets_load_image_from_file("data/imgs/icons/tiles.png");
 	img_sunny = assets_load_image_from_file("data/imgs/icons/sunny.png");
 
+	// Throwables
+	img_grenade = assets_load_image_from_file("data/imgs/grenade.png");
+
 	// Objects
 	img_spawner = assets_load_image_from_file("data/imgs/spawner.png");
 	img_obj_plants = assets_load_image_from_file("data/imgs/plants.png");
@@ -36,4 +39,6 @@ void load_assets() {
 	wav_throwable_bounce = Mix_LoadWAV("data/sounds/throwable_bounce.wav");
 	wav_shoot_mp5 = Mix_LoadWAV("data/sounds/shoot_mp5.wav");
 	wav_reload_mp5 = Mix_LoadWAV("data/sounds/reload_mp5.wav");
+	wav_impact_wood = Mix_LoadWAV("data/sounds/impact_wood.wav");
+	wav_error = Mix_LoadWAV("data/sounds/error.wav");
 }

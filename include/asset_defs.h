@@ -22,6 +22,9 @@ image* img_spawner;
 image* img_obj_plants;
 image* img_obj_wall1;
 
+// Throwables
+image* img_grenade;
+
 // Players
 image* img_player;
 
@@ -38,6 +41,10 @@ image* img_tile_grass1;
 Mix_Chunk* wav_throwable_bounce;
 Mix_Chunk* wav_shoot_mp5;
 Mix_Chunk* wav_reload_mp5;
+
+Mix_Chunk* wav_impact_wood;
+Mix_Chunk* wav_error;
+
 
 void load_assets();
 

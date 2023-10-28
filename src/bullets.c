@@ -70,14 +70,14 @@ bool check_if_bullet_collided_with_section(float* dist_of_closest_intersect, vec
 	return false;
 }
 
-bool check_if_bullet_collided_with_object(bullet* b, platform_window* window) {
+object_type check_if_bullet_collided_with_object(bullet* b, platform_window* window) {
 	map_info info = get_map_info(window);
 	float size = get_bullet_size_in_tile(window);
 	
 	vec2f bstart = (vec2f){b->position.x, b->position.y};
 	vec2f bend = (vec2f){b->endx, b->endy};
 
-	bool result = false;
+	object_type result = OBJECT_NONE;
 	float dist_of_closest_intersect = __FLT_MAX__;
 
 	for (int i = 0; i < MAX_OBJECTS; i++) {
@@ -87,19 +87,19 @@ bool check_if_bullet_collided_with_object(bullet* b, platform_window* window) {
 			box obj_box = get_box_of_square((vec3f){o.position.x, o.position.y, o.h}, o.size);
 			vec2f intersect_point;
 			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.bl_d, obj_box.br_d, &intersect_point)) {
-				result = true;
+				result = o.type;
 			}
 			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_d, obj_box.tr_d, &intersect_point)) {
-				result = true;
+				result = o.type;
 			}
 			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_d, obj_box.bl_d, &intersect_point)) {
-				result = true;
+				result = o.type;
 			}
 			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tr_d, obj_box.br_d, &intersect_point)) {
-				result = true;
+				result = o.type;
 			}
 
-			if (result) {
+			if (result != OBJECT_NONE) {
 				b->endy = intersect_point.y;
 				b->endx = intersect_point.x;
 			}
@@ -234,10 +234,13 @@ void update_bullets_server(platform_window* window) {
 			b = bullets[i];
 		}
 
-		if (check_if_bullet_collided_with_object(&b, window)) {
+		object_type obj_collision = check_if_bullet_collided_with_object(&b, window);
+		if (obj_collision != OBJECT_NONE) {
 			bullets[i].endy = b.endy;
 			bullets[i].endx = b.endx;
 			b = bullets[i];
+			
+			add_object_audio_event_to_queue(EVENT_IMPACT, obj_collision, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
 		}
 		
 		if (check_if_bullet_collided_with_zombie(&b, window, p)) {

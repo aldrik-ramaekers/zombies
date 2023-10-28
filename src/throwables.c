@@ -4,8 +4,8 @@
 void clear_throwables() {
 	for (int i = 0; i < max_throwables; i++) {
 		if (!throwables[i].active) continue;
-		throwables[i].alive_time += update_delta;
-		if (throwables[i].alive_time >= 3.0f) {
+		throwables[i].alive_time += SERVER_TICK_RATE;
+		if (throwables[i].alive_time >= 2.0f) {
 			throwables[i].active = false;
 		}
 	}
@@ -69,6 +69,7 @@ bool check_if_throwable_collided_with_object(throwable* b, vec3f oldpos, vec3f n
 void update_throwables_server() {
 	float speed = 7.0f * SERVER_TICK_RATE;
 	float gravity = 0.015f;
+	float speed_decrease = 0.97f;
 
 	for (int i = 0; i < max_throwables; i++) {
 		throwable b = throwables[i];
@@ -85,6 +86,9 @@ void update_throwables_server() {
 		// gravity
 		if (throwables[i].direction.z != 0) throwables[i].direction.z += gravity;
 		throwables[i].position.z -= throwables[i].direction.z;
+
+		throwables[i].direction.x *= speed_decrease;
+		throwables[i].direction.y *= speed_decrease;
 
 		// bouncing off floor
 		float floor = get_height_of_tile_under_coords(throwables[i].position.x, throwables[i].position.y);
@@ -117,6 +121,6 @@ void draw_throwables(platform_window* window) {
 		float throwable_render_x = t.position.x*info.tile_width + (t.position.y*info.px_incline);
 		float throwable_render_y = t.position.y*info.tile_height - (t.position.z*info.px_raised_per_h);
 
-		renderer->render_rectangle(throwable_render_x, throwable_render_y, 10, 10, rgb(255, 51, 51));
+		renderer->render_image(img_grenade, throwable_render_x, throwable_render_y, 10, 10);
 	}
 }

@@ -10,6 +10,7 @@
 
 typedef enum t_throwable_type
 {
+	THROWABLE_NONE = 0,
 	THROWABLE_GRENADE,
 } throwable_type;
 
