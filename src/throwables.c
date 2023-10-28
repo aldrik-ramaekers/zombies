@@ -96,13 +96,13 @@ void update_throwables_server(platform_window* window) {
 			throwables[i].direction.z = -throwables[i].direction.z*0.7;
 			throwables[i].bounces++;
 
-			play_positioned_sound(CHANNEL_THROWABLES, wav_throwable_bounce, b.position, 8);
+			add_audio_event_to_queue(EVENT_BOUNCE_THROWABLE, b.player_id, b.position);
 
 			if (throwables[i].bounces >= 3) throwables[i].direction.z = 0;
 		}
 
 		if (check_if_throwable_collided_with_object(&throwables[i], window, oldpos, throwables[i].position, &throwables[i].direction)) {
-			play_positioned_sound(CHANNEL_THROWABLES, wav_throwable_bounce, b.position, 8);
+			add_audio_event_to_queue(EVENT_BOUNCE_THROWABLE, b.player_id, b.position);
 		}
 	}
 }

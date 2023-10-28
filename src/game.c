@@ -190,13 +190,19 @@ void update_server(platform_window* window) {
 		broadcast_zombies = platform_get_time(TIME_FULL, TIME_NS) - broadcast_zombies;
 
 		update_throwables_server(window);
+		clear_throwables();
 
-		
 		broadcast_stamp = platform_get_time(TIME_FULL, TIME_NS);
 		broadcast_to_clients(create_protocol_user_list());
 		broadcast_to_clients(create_protocol_zombie_list());
 		broadcast_to_clients(create_protocol_bullets_list());
 		broadcast_to_clients(create_protocol_drop_list());
+
+		// play sounds locally and send them to clients.
+		play_sounds_in_queue();
+
+		clear_sounds_in_queue();
+
 		update_timer = 0.0f;
 	}
 
@@ -279,7 +285,6 @@ void update_client(platform_window* window) {
 
 void update_game(platform_window* window) {
 	clear_bullets();
-	clear_throwables();
 
 	if (global_state.server) {
 		update_server(window);
