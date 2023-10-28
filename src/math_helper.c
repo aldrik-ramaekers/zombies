@@ -12,7 +12,7 @@ bool onSegment(vec2f p, vec2f q, vec2f r)
 
 int orientation(vec2f p, vec2f q, vec2f r)
 {
-    int val = (q.y - p.y) * (r.x - q.x) -
+    float val = (q.y - p.y) * (r.x - q.x) -
               (q.x - p.x) * (r.y - q.y);
   
     if (val == 0) return 0;  // collinear

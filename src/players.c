@@ -202,7 +202,7 @@ void take_player_input(platform_window* window) {
 		double length = sqrt(dirx * dirx + diry * diry);
 		dirx /= length;
 		diry /= length;
-		log_info("THROWING!");
+		
 		throw_throwable(window, player_id, THROWABLE_GRENADE, dirx, diry);
 		//network_message message = create_protocol_user_shoot(player_id, dirx, diry);
 		//add_message_to_outgoing_queuex(message, *global_state.client);

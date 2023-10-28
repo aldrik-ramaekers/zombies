@@ -2,6 +2,8 @@
 	"files.associations": {
 		"*.ejs": "html",
 		"throwables.h": "c",
-		"cstdlib": "c"
+		"cstdlib": "c",
+		"audio.h": "c",
+		"project_base.h": "c"
 	}
 }

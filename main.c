@@ -8,6 +8,7 @@
 #include "include/players.h"
 #include "include/objects.h"
 #include "include/map.h"
+#include "include/audio.h"
 #include "include/zombies.h"
 #include "include/math_helper.h"
 #include "include/bullets.h"
@@ -29,6 +30,7 @@
 #include "src/map.c"
 #include "src/players.c"
 #include "src/objects.c"
+#include "src/audio.c"
 #include "src/zombies.c"
 #include "src/bullets.c"
 #include "src/throwables.c"
@@ -90,6 +92,7 @@ int main(int argc, char **argv)
 
 	if (Mix_OpenAudio(48000, AUDIO_F32SYS, 2, 2048) == 0) {
 		log_info("Audio system initialized.");
+		Mix_MasterVolume(MIX_MAX_VOLUME/4);
 	}
 	else {
 		log_info("Audio failed.");

@@ -1,4 +1,5 @@
 #include "../include/throwables.h"
+#include "../include/audio.h"
 
 void clear_throwables() {
 	for (int i = 0; i < max_throwables; i++) {
@@ -27,48 +28,81 @@ void throw_throwable(platform_window* window, u32 id, throwable_type type, float
 	}
 }
 
+bool check_if_throwable_collided_with_object(throwable* b, platform_window* window, vec3f oldpos, vec3f newpos, vec3f* direction) {
+	map_info info = get_map_info(window);
+	float size = get_bullet_size_in_tile(window);
+
+	bool result = false;
+
+	for (int i = 0; i < MAX_OBJECTS; i++) {
+		object o = loaded_map.objects[i];
+		if (!o.active) continue;
+		if (b->position.z <= o.h + o.size.z && b->position.z >= o.h) {
+			box obj_box = get_box_of_square((vec3f){o.position.x, o.position.y, o.h}, o.size);
+
+			if (lines_intersect((vec2f){.x = oldpos.x, .y = oldpos.y}, (vec2f){.x = newpos.x, .y = newpos.y}, 
+								(vec2f){.x = o.position.x, .y = o.position.y}, (vec2f){.x = o.position.x + o.size.x, .y = o.position.y})) {
+					result = true;
+			}
+			if (lines_intersect((vec2f){.x = oldpos.x, .y = oldpos.y}, (vec2f){.x = newpos.x, .y = newpos.y}, 
+								(vec2f){.x = o.position.x, .y = o.position.y + o.size.y}, (vec2f){.x = o.position.x + o.size.x, .y = o.position.y + o.size.y})) {
+					result = true;
+			}
+			if (lines_intersect((vec2f){.x = oldpos.x, .y = oldpos.y}, (vec2f){.x = newpos.x, .y = newpos.y}, 
+								(vec2f){.x = o.position.x, .y = o.position.y}, (vec2f){.x = o.position.x, .y = o.position.y + o.size.y})) {
+					result = true;
+			}
+			if (lines_intersect((vec2f){.x = oldpos.x, .y = oldpos.y}, (vec2f){.x = newpos.x, .y = newpos.y}, 
+								(vec2f){.x = o.position.x + o.size.x, .y = o.position.y}, (vec2f){.x = o.position.x + o.size.x, .y = o.position.y + o.position.y})) {
+					result = true;
+			}
+
+			if (result) {
+				b->position = oldpos;
+				direction->x = -direction->x;
+				direction->y = -direction->y;
+				return true;
+			}
+		}
+	}
+
+	return result;
+}
 
 void update_throwables_server(platform_window* window) {
 	float speed = 7.0f * SERVER_TICK_RATE;
 	float gravity = 0.015f;
-
-	float max_audible_throwable_dist = 10.0f;
 
 	for (int i = 0; i < max_throwables; i++) {
 		throwable b = throwables[i];
 		if (!b.active) continue;
 		player *p = get_player_by_id(b.player_id);
 		if (!p) continue; 
+
+		vec3f oldpos = throwables[i].position;
 		
+		// move forward
 		throwables[i].position.x += throwables[i].direction.x * speed;
 		throwables[i].position.y += throwables[i].direction.y * speed;
 
+		// gravity
 		if (throwables[i].direction.z != 0) throwables[i].direction.z += gravity;
 		throwables[i].position.z -= throwables[i].direction.z;
 
+		// bouncing off floor
 		float floor = get_height_of_tile_under_coords(throwables[i].position.x, throwables[i].position.y);
 		if (throwables[i].position.z < floor && throwables[i].direction.z != 0) {
 			throwables[i].position.z = floor;
 			throwables[i].direction.z = -throwables[i].direction.z*0.7;
+			throwables[i].bounces++;
 
-			// calculate volume
-			int tiles_between_throwable_and_player = distance_between_3f((vec3f){.x = p->playerx, .y = p->playery, .z = p->height}, b.position);
-			float volume = (tiles_between_throwable_and_player / max_audible_throwable_dist);
-			if (volume > 1.0f) volume = 1.0f;
+			play_positioned_sound(CHANNEL_THROWABLES, wav_throwable_bounce, b.position, 8);
 
-			// calculate angle
-			float dirx = (throwables[i].position.x - p->playerx);
-			float diry = (throwables[i].position.y - p->playery);
-			float rads = atan2(diry, dirx) * 180.0f/M_PI;
-			if (rads < 0) rads = 360 + rads;
-			rads += 90;
-			if (rads > 360) rads -= 360;
+			if (throwables[i].bounces >= 3) throwables[i].direction.z = 0;
+		}
 
-			log_infox("rads: %.2f", rads)
-			
-			Mix_SetPosition(0, rads, volume*255);
-			Mix_PlayChannel(0, wav_throwable_bounce, 0);
-			if (throwables[i].direction.z > -0.03f && throwables[i].direction.z < 0.03f) throwables[i].direction.z = 0;
+		if (check_if_throwable_collided_with_object(&throwables[i], window, oldpos, throwables[i].position, &throwables[i].direction)) {
+			play_positioned_sound(CHANNEL_THROWABLES, wav_throwable_bounce, b.position, 8);
 		}
 	}
 }

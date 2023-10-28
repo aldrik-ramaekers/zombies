@@ -20,6 +20,7 @@ typedef struct t_throwable {
 	vec3f position;
 	vec3f direction;
 	float alive_time;
+	int bounces;
 } throwable;
 
 throwable throwables[500] = {0};
