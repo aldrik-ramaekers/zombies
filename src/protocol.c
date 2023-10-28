@@ -19,6 +19,14 @@ network_message create_protocol_get_id_down(u32 id)
 	return network_create_message((u8*)buf, sizeof(protocol_get_id_downstream), MAX_NETWORK_BUFFER_SIZE);
 }
 
+network_message create_protocol_sound_list()
+{
+	protocol_sound_list *buf = alloc_network_message(protocol_sound_list);
+	buf->type = MESSAGE_SOUND_LIST;
+	memcpy(buf->audio_events, audio_events, sizeof(audio_events));
+	return network_create_message((u8*)buf, sizeof(protocol_sound_list), MAX_NETWORK_BUFFER_SIZE);
+}
+
 network_message create_protocol_user_list()
 {
 	protocol_user_list *buf = alloc_network_message(protocol_user_list);

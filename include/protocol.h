@@ -17,6 +17,7 @@ typedef enum t_network_message_type
 	MESSAGE_USER_SHOOT,
 	MESSAGE_BULLET_LIST,
 	MESSAGE_DROP_LIST,
+	MESSAGE_SOUND_LIST,
 } network_message_type;
 
 typedef struct t_protocol_generic_client_message
@@ -48,6 +49,13 @@ typedef struct t_protocol_user_list
 	network_message_type type;
 	player players[MAX_PLAYERS];
 } protocol_user_list;
+
+#include "audio.h"
+typedef struct t_protocol_sound_list
+{
+	network_message_type type;
+	audio_event audio_events[MAX_AUDIO_EVENTS];
+} protocol_sound_list;
 
 #include "zombies.h"
 typedef struct t_protocol_zombie_list
@@ -118,6 +126,7 @@ allocator outgoing_allocator;
 
 network_message create_protocol_get_id_up(u32 id);
 network_message create_protocol_get_id_down(u32 id);
+network_message create_protocol_sound_list();
 network_message create_protocol_user_list();
 network_message create_protocol_user_moved(protocol_move_type move, u32 id);
 network_message create_protocol_user_look(u32 id, float gunx, float guny);

@@ -19,8 +19,9 @@ typedef struct t_audio_event {
 	vec3f position;
 } audio_event;
 
-audio_event audio_events[20] = {0};
-int max_audio_events = 20;
+#define MAX_AUDIO_EVENTS 20
+audio_event audio_events[MAX_AUDIO_EVENTS] = {0};
+int max_audio_events = MAX_AUDIO_EVENTS;
 
 void add_audio_event_to_queue(audio_event_type event, u32 playerid, vec3f position);
 void play_sounds_in_queue();

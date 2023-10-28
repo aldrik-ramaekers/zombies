@@ -99,9 +99,14 @@ int main(int argc, char **argv)
 	}
 
 	init_game();
-	handle_args(argc, argv);
-
+	
+	bool did_handle_args = false;
     while(platform_keep_running(window)) {
+		if (global_asset_collection.done_loading_assets && !did_handle_args) {
+			handle_args(argc, argv);
+			did_handle_args = true;
+		}
+
         platform_handle_events();
     }
 

@@ -28,10 +28,7 @@ void throw_throwable(platform_window* window, u32 id, throwable_type type, float
 	}
 }
 
-bool check_if_throwable_collided_with_object(throwable* b, platform_window* window, vec3f oldpos, vec3f newpos, vec3f* direction) {
-	map_info info = get_map_info(window);
-	float size = get_bullet_size_in_tile(window);
-
+bool check_if_throwable_collided_with_object(throwable* b, vec3f oldpos, vec3f newpos, vec3f* direction) {
 	bool result = false;
 
 	for (int i = 0; i < MAX_OBJECTS; i++) {
@@ -69,7 +66,7 @@ bool check_if_throwable_collided_with_object(throwable* b, platform_window* wind
 	return result;
 }
 
-void update_throwables_server(platform_window* window) {
+void update_throwables_server() {
 	float speed = 7.0f * SERVER_TICK_RATE;
 	float gravity = 0.015f;
 
@@ -101,7 +98,7 @@ void update_throwables_server(platform_window* window) {
 			if (throwables[i].bounces >= 3) throwables[i].direction.z = 0;
 		}
 
-		if (check_if_throwable_collided_with_object(&throwables[i], window, oldpos, throwables[i].position, &throwables[i].direction)) {
+		if (check_if_throwable_collided_with_object(&throwables[i], oldpos, throwables[i].position, &throwables[i].direction)) {
 			add_audio_event_to_queue(EVENT_BOUNCE_THROWABLE, b.player_id, b.position);
 		}
 	}
