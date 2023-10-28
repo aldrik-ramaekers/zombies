@@ -4,13 +4,14 @@
 #include <projectbase/project_base.h>
 
 typedef struct t_sprite {
-	image* image;
 	int current_frame;
 	int frame_count;
 	int frame_width;
 	int frame_height;
 	float sec_per_frame;
 	float time;
+	int img_width;
+	int img_height;
 } sprite;
 
 typedef struct t_sprite_frame {

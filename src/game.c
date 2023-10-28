@@ -251,10 +251,6 @@ void update_client(platform_window* window) {
 		case MESSAGE_USER_LIST: {
 			protocol_user_list* msg_players = (protocol_user_list*)msg;
 			memcpy(players, msg_players->players, sizeof(players));
-
-			for (int i = 0; i < MAX_PLAYERS; i++) {
-				players[i].sprite.image = img_player;
-			}
 		} break;
 
 		case MESSAGE_ZOMBIE_LIST: {

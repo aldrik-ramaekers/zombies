@@ -6,7 +6,8 @@ sprite create_sprite(image* img, int frame_count, int fwidth, int fheight, float
 	s.frame_count = frame_count;
 	s.frame_height = fheight;
 	s.frame_width = fwidth;
-	s.image = img;
+	s.img_width = img->width;
+	s.img_height = img->height;
 	s.sec_per_frame = sec_per_frame;
 	s.time = 0.0f;
 	return s;
@@ -24,10 +25,8 @@ void update_sprite(sprite* sprite) {
 
 sprite_frame sprite_get_frame(sprite* sprite) {
 	sprite_frame frame = {0};
-	if (!sprite->image->loaded) return frame;
-	
-	int columns = sprite->image->width / sprite->frame_width;
-	int rows = sprite->image->height / sprite->frame_height;
+	int columns = sprite->img_width / sprite->frame_width;
+	int rows = sprite->img_height/ sprite->frame_height;
 	float column_percentage = 1.0f / columns;
 	float row_percentage = 1.0f / rows;
 

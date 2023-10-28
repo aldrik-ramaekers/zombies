@@ -249,7 +249,7 @@ void draw_players(platform_window* window) {
 		render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgb(200,150,120));
 */
 		sprite_frame frame = sprite_get_frame(&players[i].sprite);
-		renderer->render_image_quad_partial(players[i].sprite.image, 
+		renderer->render_image_quad_partial(img_player, 
 			box.tl_u.x, box.tl_u.y,
 			box.bl_d.x, box.bl_d.y, 
 			box.br_d.x, box.br_d.y, 
