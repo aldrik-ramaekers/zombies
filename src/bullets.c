@@ -21,6 +21,7 @@ void shoot(platform_window* window, u32 id, float dirx, float diry) {
 	if (bullets_to_shoot > p->ammo_in_mag) bullets_to_shoot = p->ammo_in_mag;
 	p->ammo_in_mag -= bullets_to_shoot;
 	if (p->ammo_in_mag == 0) {
+		play_positioned_sound(CHANNEL_SHOOTING, wav_reload_mp5, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height}, 10);
 		p->interact_state = INTERACT_RELOADING;
 		p->sec_since_interact_state_change = 0;
 		return;

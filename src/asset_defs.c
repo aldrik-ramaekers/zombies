@@ -35,4 +35,5 @@ void load_assets() {
 	// sounds
 	wav_throwable_bounce = Mix_LoadWAV("data/sounds/throwable_bounce.wav");
 	wav_shoot_mp5 = Mix_LoadWAV("data/sounds/shoot_mp5.wav");
+	wav_reload_mp5 = Mix_LoadWAV("data/sounds/reload_mp5.wav");
 }
