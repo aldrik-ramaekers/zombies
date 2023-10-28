@@ -12,10 +12,17 @@
 
 #define MAX_PLAYERS 10
 
+typedef enum t_player_interact_state {
+	INTERACT_IDLE,
+	INTERACT_RELOADING,
+} player_interact_state;
+
 typedef struct t_player {
 	u32 id;
 	bool active;
 	float sec_since_last_shot;
+	player_interact_state interact_state;
+	float sec_since_interact_state_change;
 	float playerx;
 	float playery;
 	float gunx;

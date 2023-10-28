@@ -215,6 +215,18 @@ void update_players_server() {
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
 		players[i].sec_since_last_shot += SERVER_TICK_RATE;
+		players[i].sec_since_interact_state_change += SERVER_TICK_RATE;
+
+		gun g = get_gun_by_type(players[i].guntype);
+		if (players[i].interact_state == INTERACT_RELOADING && players[i].sec_since_interact_state_change >= g.reload_time) {
+			int amount_to_reload = g.magazine_size;
+			if (amount_to_reload > players[i].total_ammo) amount_to_reload = players[i].total_ammo;
+			players[i].total_ammo -= amount_to_reload;
+			players[i].ammo_in_mag = amount_to_reload;
+
+			players[i].interact_state = INTERACT_IDLE;
+		}
+
 		update_sprite(&players[i].sprite);
 	}
 }

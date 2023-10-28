@@ -36,6 +36,7 @@ image* img_tile_grass1;
 
 // Sounds
 Mix_Chunk* wav_throwable_bounce;
+Mix_Chunk* wav_shoot_mp5;
 
 void load_assets();
 

@@ -5,6 +5,10 @@ void shoot(platform_window* window, u32 id, float dirx, float diry) {
 	if (!p) {
 		log_info("User with unknown id shot");
 	}
+	if (p->interact_state != INTERACT_IDLE) {
+		return;
+	}
+
 	gun g = get_gun_by_type(p->guntype);
 	float time_between_bullets = 1.0f/g.shots_per_second;
 
@@ -17,11 +21,12 @@ void shoot(platform_window* window, u32 id, float dirx, float diry) {
 	if (bullets_to_shoot > p->ammo_in_mag) bullets_to_shoot = p->ammo_in_mag;
 	p->ammo_in_mag -= bullets_to_shoot;
 	if (p->ammo_in_mag == 0) {
-		int amount_to_reload = g.magazine_size;
-		if (amount_to_reload > p->total_ammo) amount_to_reload = p->total_ammo;
-		p->total_ammo -= amount_to_reload;
-		p->ammo_in_mag = amount_to_reload;
+		p->interact_state = INTERACT_RELOADING;
+		p->sec_since_interact_state_change = 0;
+		return;
 	}
+
+	play_positioned_sound(CHANNEL_SHOOTING, wav_shoot_mp5, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height}, 20);
 
 	for (int i = 0; i < bullets_to_shoot; i++)
 	{
