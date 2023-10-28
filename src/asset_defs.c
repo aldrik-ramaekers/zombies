@@ -41,4 +41,5 @@ void load_assets() {
 	wav_reload_mp5 = Mix_LoadWAV("data/sounds/reload_mp5.wav");
 	wav_impact_wood = Mix_LoadWAV("data/sounds/impact_wood.wav");
 	wav_error = Mix_LoadWAV("data/sounds/error.wav");
+	wav_impact_zombie = Mix_LoadWAV("data/sounds/impact_zombie.wav");
 }

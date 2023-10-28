@@ -46,6 +46,7 @@ void spawn_zombie(int x, int y) {
 		zombies[i].path = array_create(sizeof(vec2f));
 		zombies[i].next_path = array_create(sizeof(vec2f));
 		zombies[i].alive = true;
+		zombies[i].type = ZOMBIE_TYPE_NORMAL;
 		zombies[i].health = 100.0f;
 		zombies[i].position = (vec3f){x,y, 0};
 		zombies[i].size = (vec3f){0.4, 0.4, 1};

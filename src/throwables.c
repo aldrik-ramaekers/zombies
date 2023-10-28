@@ -121,6 +121,11 @@ void draw_throwables(platform_window* window) {
 		float throwable_render_x = t.position.x*info.tile_width + (t.position.y*info.px_incline);
 		float throwable_render_y = t.position.y*info.tile_height - (t.position.z*info.px_raised_per_h);
 
-		renderer->render_image(img_grenade, throwable_render_x, throwable_render_y, 10, 10);
+		box full_box = get_render_box_of_square(window, t.position, (vec3f){0.2, 0.2, 0.2});
+		renderer->render_image(img_grenade, full_box.tl_u.x, full_box.tl_u.y, 
+			full_box.br_d.x - full_box.tl_d.x, full_box.br_d.y - full_box.tr_u.y);
+
+		
+		//renderer->render_image(img_grenade, throwable_render_x, throwable_render_y, 10, 10);
 	}
 }

@@ -1,0 +1,8 @@
+{
+	"files.associations": {
+		"*.ejs": "html",
+		"initializer_list": "c",
+		"type_traits": "c",
+		"xutility": "c"
+	}
+}

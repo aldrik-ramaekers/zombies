@@ -1,10 +1,19 @@
 #include "../include/audio.h"
 
+void add_zombie_audio_event_to_queue(audio_event_type event, zombie_type zombie, u32 playerid, vec3f position) {
+	for (int i = 0; i < max_audio_events; i++) {
+		if (audio_events[i].active) continue;
+
+		audio_events[i] = (audio_event){.active = true, .obj = OBJECT_NONE, .zombie = zombie, .playerid = playerid, .position = position, .type = event};
+		return;
+	}
+}
+
 void add_object_audio_event_to_queue(audio_event_type event, object_type obj, u32 playerid, vec3f position) {
 	for (int i = 0; i < max_audio_events; i++) {
 		if (audio_events[i].active) continue;
 
-		audio_events[i] = (audio_event){.active = true, .obj = obj, .playerid = playerid, .position = position, .type = event};
+		audio_events[i] = (audio_event){.active = true, .obj = obj, .zombie = ZOMBIE_TYPE_NONE, .playerid = playerid, .position = position, .type = event};
 		return;
 	}
 }
@@ -35,7 +44,7 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 		case EVENT_SHOOT: {
 			switch (p->guntype)
 			{
-				case GUN_MP5: return wav_shoot_mp5;		
+				case GUN_MP5: return wav_shoot_mp5;
 				default: return wav_error;
 			}
 		}
@@ -48,10 +57,19 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 		}
 
 		case EVENT_IMPACT: {
-			switch (event.obj)
-			{
-				case OBJECT_PLANTBOX1: return wav_impact_wood;		
-				default: return wav_error;
+			if (event.zombie != ZOMBIE_TYPE_NONE) {
+				switch (event.zombie)
+				{
+					case ZOMBIE_TYPE_NORMAL: return wav_impact_zombie;
+					default: return wav_error;
+				}
+			}
+			else {
+				switch (event.obj)
+				{
+					case OBJECT_PLANTBOX1: return wav_impact_wood;		
+					default: return wav_error;
+				}
 			}
 		}
 

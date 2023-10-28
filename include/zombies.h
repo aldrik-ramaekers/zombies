@@ -8,6 +8,11 @@
 #include "pathfinding.h"
 #include "sprite.h"
 
+typedef enum t_zombie_type {
+	ZOMBIE_TYPE_NONE,
+	ZOMBIE_TYPE_NORMAL,
+} zombie_type;
+
 typedef struct t_zombie {
 	bool alive;
 	float health;
@@ -18,6 +23,7 @@ typedef struct t_zombie {
 	float time_since_last_path;
 	pathfinding_request request;
 	vec2f next2tiles[2];
+	zombie_type type;
 } zombie;
 
 typedef struct t_spawner {
