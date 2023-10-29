@@ -21,7 +21,9 @@ void shoot(platform_window* window, u32 id, float dirx, float diry) {
 	if (bullets_to_shoot > p->ammo_in_mag) bullets_to_shoot = p->ammo_in_mag;
 	p->ammo_in_mag -= bullets_to_shoot;
 
-	add_audio_event_to_queue(EVENT_SHOOT, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
+	if (bullets_to_shoot > 0) {
+		add_audio_event_to_queue(EVENT_SHOOT, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
+	}
 	
 	for (int i = 0; i < bullets_to_shoot; i++)
 	{

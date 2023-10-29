@@ -30,11 +30,11 @@ vec2f get_dir_of_line(vec2f p1, vec2f p2) {
 }
 
 bool neg2(float p1, float p2) {
-	return p1 < 0.0f && p2 < 0.0f || abs(p1-p2) < 1.0f;
+	return p1 < 0.0f && p2 < 0.0f || abs(p1-p2) < 1.5f;
 }
 
 bool pos2(float p1, float p2) {
-	return (p1 >= 0.0f && p2 >= 0.0f) || abs(p1-p2) < 1.0f;
+	return (p1 >= 0.0f && p2 >= 0.0f) || abs(p1-p2) < 1.5f;
 }
 
 vec3f get_center_of_square(vec3f position, vec3f size) {
@@ -68,7 +68,7 @@ bool lines_intersect(vec2f p1, vec2f q1, vec2f p2, vec2f q2)
   
      // p2, q2 and q1 are collinear and q1 lies on segment p2q2
     if (o4 == 0 && onSegment(p2, q1, q2)) return true;
-  
+
     return false; // Doesn't fall in any of the above cases
 }
 

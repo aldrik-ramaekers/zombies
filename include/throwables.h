@@ -31,6 +31,7 @@ typedef struct t_throwable {
 	int bounces;
 	sprite sprite;
 	int damage;
+	float rotation;
 } throwable;
 
 vec3f grenade_explosion_size = (vec3f){2.0f, 2.0f, 2.0f};

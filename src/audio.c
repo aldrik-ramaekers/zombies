@@ -39,6 +39,7 @@ static int get_channel_from_audio_event_type(audio_event_type event) {
 		case EVENT_RELOAD: return CHANNEL_RELOAD;
 		case EVENT_IMPACT: return CHANNEL_IMPACT;
 		case EVENT_EXPLODE_THROWABLE: return CHANNEL_EXPLODE;
+		case EVENT_COLLECT: return CHANNEL_COLLECT;
 
 		default: return 0;
 	}

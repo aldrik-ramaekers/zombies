@@ -11,6 +11,7 @@
 #define CHANNEL_IMPACT 2
 #define CHANNEL_RELOAD 3
 #define CHANNEL_EXPLODE 4
+#define CHANNEL_COLLECT 5
 
 typedef enum t_audio_event_type {
 	EVENT_SHOOT,

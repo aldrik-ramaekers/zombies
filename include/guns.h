@@ -23,8 +23,8 @@ typedef struct t_gun {
 
 gun guns[GUN_ALL] = {
 	{GUN_DESERTEAGLE, "Desert Eagle", 8, 64, 0.0f, 1, 4.0f, 350, 1.0f},
-	{GUN_MP5, "MP5", 30, 120, 0.1f, 1, 10.0f, 150, 1.0f},
-	{GUN_NOVA, "Nova", 12, 80, 0.2f, 3, 1.2f, 600, 1.0f},
+	{GUN_MP5, "MP5", 30, 120, 0.05f, 1, 10.0f, 150, 1.0f},
+	{GUN_NOVA, "Nova", 12, 80, 0.1f, 3, 1.2f, 600, 1.0f},
 };
 
 image* get_image_of_gun(gun_type type);

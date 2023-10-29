@@ -398,6 +398,6 @@ inline map_info get_map_info(platform_window* window) {
 	info.tile_width = get_tile_width(window);
 	info.tile_height = get_tile_height(window);
 	info.px_incline = 0.0f; //info.tile_width/3; // info.tile_width/3; // offset*info.tile_width;
-	info.px_raised_per_h = info.tile_height/2.5;
+	info.px_raised_per_h = info.tile_height/5.0f;
 	return info;
 }

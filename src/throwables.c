@@ -33,27 +33,45 @@ bool check_if_throwable_collided_with_object(throwable* b, vec3f oldpos, vec3f n
 		if (b->position.z <= o.h + o.size.z && b->position.z >= o.h) {
 			box obj_box = get_box_of_square((vec3f){o.position.x, o.position.y, o.h}, o.size);
 
+			if (o.type == OBJECT_PLANTBOX1 && oldpos.x < o.position.x && newpos.x > o.position.x) {
+				log_infox("intersect {%.2f %.2f}{%.2f %.2f} {%.2f %.2f}{%.2f %.2f}",
+					oldpos.x, oldpos.y, newpos.x, newpos.y, o.position.x, o.position.y, o.position.x, o.position.y + o.size.y);
+
+				//if (lines_intersect((vec2f){15.99, 8.58}, (vec2f){16.05, 8.58}, (vec2f){16.00, 8.00}, (vec2f){16.00, 9.00})) {
+				//	log_info("POOOp");
+				//}
+			}
+
+			// top
 			if (lines_intersect((vec2f){.x = oldpos.x, .y = oldpos.y}, (vec2f){.x = newpos.x, .y = newpos.y}, 
 								(vec2f){.x = o.position.x, .y = o.position.y}, (vec2f){.x = o.position.x + o.size.x, .y = o.position.y})) {
-					result = true;
+				result = true;
+				direction->y = -direction->y;
 			}
-			if (lines_intersect((vec2f){.x = oldpos.x, .y = oldpos.y}, (vec2f){.x = newpos.x, .y = newpos.y}, 
+
+			// bottom
+			else if (lines_intersect((vec2f){.x = oldpos.x, .y = oldpos.y}, (vec2f){.x = newpos.x, .y = newpos.y}, 
 								(vec2f){.x = o.position.x, .y = o.position.y + o.size.y}, (vec2f){.x = o.position.x + o.size.x, .y = o.position.y + o.size.y})) {
-					result = true;
+				result = true;
+				direction->y = -direction->y;
 			}
-			if (lines_intersect((vec2f){.x = oldpos.x, .y = oldpos.y}, (vec2f){.x = newpos.x, .y = newpos.y}, 
+
+			// left
+			else if (lines_intersect((vec2f){.x = oldpos.x, .y = oldpos.y}, (vec2f){.x = newpos.x, .y = newpos.y}, 
 								(vec2f){.x = o.position.x, .y = o.position.y}, (vec2f){.x = o.position.x, .y = o.position.y + o.size.y})) {
-					result = true;
+				result = true;
+				direction->x = -direction->x;
 			}
-			if (lines_intersect((vec2f){.x = oldpos.x, .y = oldpos.y}, (vec2f){.x = newpos.x, .y = newpos.y}, 
-								(vec2f){.x = o.position.x + o.size.x, .y = o.position.y}, (vec2f){.x = o.position.x + o.size.x, .y = o.position.y + o.position.y})) {
-					result = true;
+			
+			// right
+			else if (lines_intersect((vec2f){.x = oldpos.x, .y = oldpos.y}, (vec2f){.x = newpos.x, .y = newpos.y}, 
+								(vec2f){.x = o.position.x + o.size.x, .y = o.position.y}, (vec2f){.x = o.position.x + o.size.x, .y = o.position.y + o.size.y})) {
+				result = true;
+				direction->x = -direction->x;
 			}
 
 			if (result) {
-				b->position = oldpos;
-				direction->x = -direction->x;
-				direction->y = -direction->y;
+				b->position = oldpos;	
 				return true;
 			}
 		}
@@ -90,6 +108,9 @@ void update_throwables_server() {
 	for (int i = 0; i < max_throwables; i++) {
 		throwable b = throwables[i];
 		if (!b.active) continue;
+
+		throwables[i].rotation += SERVER_TICK_RATE*3.0f*throwables[i].bounces;
+
 
 		throwables[i].alive_time += SERVER_TICK_RATE;
 		if (throwables[i].alive_time >= 2.0f) {
@@ -164,6 +185,7 @@ void draw_throwables(platform_window* window) {
 			box box = get_render_box_of_square(window, explode_location, grenade_explosion_size);
 			
 			sprite_frame frame = sprite_get_frame(&throwables[i].sprite);
+
 			renderer->render_image_quad_partial(img_grenade_explode, 
 				box.tl_u.x, box.tl_u.y,
 				box.bl_d.x, box.bl_d.y, 
@@ -172,9 +194,13 @@ void draw_throwables(platform_window* window) {
 				frame.tl, frame.tr, frame.bl, frame.br);
 		}
 		else if (t.state == THROWABLE_FLYING) {
+			renderer->render_set_rotation(t.rotation);
+
 			box full_box = get_render_box_of_square(window, t.position, (vec3f){0.2, 0.2, 0.2});
 			renderer->render_image(img_grenade, full_box.tl_u.x, full_box.tl_u.y, 
 			full_box.br_d.x - full_box.tl_d.x, full_box.br_d.y - full_box.tr_u.y);
+
+			renderer->render_set_rotation(0.0f);
 		}
 	}
 }

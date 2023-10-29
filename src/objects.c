@@ -61,16 +61,17 @@ void draw_objects_at_row(platform_window* window, int row) {
 		if (!o.active) continue;
 		box box = get_box_of_object(window, o);
 
+			/*
 		image* img = get_image_from_objecttype(o.type);
 		if (img) {
 			renderer->render_image(img, box.tl_u.x, box.tl_u.y, 
 				box.br_d.x - box.tl_d.x, box.br_d.y - box.tr_u.y);
 		}
-			/*
+		*/
 		render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgb(200,200,0));
 		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgb(200,200,0));
 		render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, rgb(200,200,0));
-		render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgb(200,200,0));*/
+		render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgb(200,200,0));
 	}
 }
 
