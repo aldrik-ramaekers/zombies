@@ -17,6 +17,17 @@ typedef enum t_player_interact_state {
 	INTERACT_RELOADING,
 } player_interact_state;
 
+typedef enum t_player_direction {
+	DIRECTION_UP,
+	DIRECTION_RIGHT,
+	DIRECTION_DOWN,
+	DIRECTION_LEFT,
+	DIRECTION_TOPLEFT,
+	DIRECTION_TOPRIGHT,
+	DIRECTION_BOTTOMLEFT,
+	DIRECTION_BOTTOMRIGHT,
+} player_direction;
+
 typedef struct t_player {
 	u32 id;
 	bool active;
@@ -28,6 +39,7 @@ typedef struct t_player {
 	float gunx;
 	float guny;
 	float gun_height;
+	player_direction direction;
 	int total_ammo;
 	int ammo_in_mag;
 	float height;

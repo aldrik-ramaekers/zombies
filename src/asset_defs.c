@@ -25,7 +25,7 @@ void load_assets() {
 	img_obj_wall1 = assets_load_image_from_file("data/imgs/wall1.png");
 
 	// Players
-	img_player = assets_load_image_from_file("data/imgs/player.png");
+	img_player_running = assets_load_image_from_file("data/imgs/players/player1_running.png");
 
 	// Other
 	img_zombie_chunk_hand = assets_load_image_from_file("data/imgs/zombie_chunk_hand.png");

@@ -10,6 +10,7 @@ sprite create_sprite(image* img, int frame_count, int fwidth, int fheight, float
 	s.img_height = img->height;
 	s.sec_per_frame = sec_per_frame;
 	s.time = 0.0f;
+	s.frame_start = 0;
 	return s;
 }
 
@@ -30,8 +31,8 @@ sprite_frame sprite_get_frame(sprite* sprite) {
 	float column_percentage = 1.0f / columns;
 	float row_percentage = 1.0f / rows;
 
-	int column = sprite->current_frame % columns;
-	int row = sprite->current_frame / columns;
+	int column = (sprite->frame_start + sprite->current_frame) % columns;
+	int row = (sprite->frame_start + sprite->current_frame) / columns;
 
 	frame.tl = (vec2f){column * column_percentage, row * row_percentage};
 	frame.tr = (vec2f){column * column_percentage + column_percentage, row * row_percentage};

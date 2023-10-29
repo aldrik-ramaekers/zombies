@@ -10,7 +10,7 @@ float get_bullet_size(platform_window* window) {
 }
 
 float get_player_size_in_tile() {
-	return 0.5;
+	return 0.8f;
 }
 
 float get_player_size(platform_window* window) {
@@ -40,7 +40,8 @@ void spawn_player(u32 id, network_client client) {
 		players[i].guntype = GUN_MP5;
 		players[i].height = 0.0f;
 		players[i].client = client;
-		players[i].sprite = create_sprite(img_player, 5, 87, 100, 0.07f);
+		players[i].sprite = create_sprite(img_player_running, 22, 108, 136, 0.02f);
+		players[i].direction = DIRECTION_DOWN;
 
 		gun g = get_gun_by_type(players[i].guntype);
 		players[i].total_ammo = g.max_ammunition;
@@ -148,22 +149,42 @@ void take_player_input(platform_window* window) {
 	update_editor(window);
 #endif
 
-	if (keyboard_is_key_down(KEY_W)) {
-		network_message message = create_protocol_user_moved(MOVE_UP, player_id);
-		add_message_to_outgoing_queuex(message, *global_state.client);
-	}
-	if (keyboard_is_key_down(KEY_S)) {
-		network_message message = create_protocol_user_moved(MOVE_DOWN, player_id);
-		add_message_to_outgoing_queuex(message, *global_state.client);
-	}
 	if (keyboard_is_key_down(KEY_A)) {
 		network_message message = create_protocol_user_moved(MOVE_LEFT, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
+		p->direction = DIRECTION_LEFT;
 	}
 	if (keyboard_is_key_down(KEY_D)) {
 		network_message message = create_protocol_user_moved(MOVE_RIGHT, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
+		p->direction = DIRECTION_RIGHT;
 	}
+
+	if (keyboard_is_key_down(KEY_W)) {
+		network_message message = create_protocol_user_moved(MOVE_UP, player_id);
+		add_message_to_outgoing_queuex(message, *global_state.client);
+		p->direction = DIRECTION_UP;
+
+		if (keyboard_is_key_down(KEY_A)) {
+			p->direction = DIRECTION_TOPLEFT;
+		}
+		else if (keyboard_is_key_down(KEY_D)) {
+			p->direction = DIRECTION_TOPRIGHT;
+		}
+	}
+	if (keyboard_is_key_down(KEY_S)) {
+		network_message message = create_protocol_user_moved(MOVE_DOWN, player_id);
+		add_message_to_outgoing_queuex(message, *global_state.client);
+		p->direction = DIRECTION_DOWN;
+
+		if (keyboard_is_key_down(KEY_A)) {
+			p->direction = DIRECTION_BOTTOMLEFT;
+		}
+		else if (keyboard_is_key_down(KEY_D)) {
+			p->direction = DIRECTION_BOTTOMRIGHT;
+		}
+	}
+
 
 #ifdef MODE_DEBUG
 	if (is_editing_map) return;
@@ -177,8 +198,8 @@ void take_player_input(platform_window* window) {
 		dirx /= length;
 		diry /= length;
 
-		float gun_offset_x = (get_player_size_in_tile()/2) + dirx;
-		float gun_offset_y = (get_player_size_in_tile()/2) + diry;
+		float gun_offset_x = (get_player_size_in_tile()/2) + (dirx/4);
+		float gun_offset_y = (get_player_size_in_tile()/2) + (diry/4);
 
 		add_message_to_outgoing_queuex(create_protocol_user_look(player_id, gun_offset_x, gun_offset_y), *global_state.client);
 	}
@@ -227,6 +248,33 @@ void update_players_server() {
 			players[i].interact_state = INTERACT_IDLE;
 		}
 
+		if (players[i].direction == DIRECTION_DOWN) {
+			players[i].sprite.frame_start = 374;
+		}
+		if (players[i].direction == DIRECTION_UP) {
+			players[i].sprite.frame_start = 0;
+		}
+		if (players[i].direction == DIRECTION_LEFT) {
+			players[i].sprite.frame_start = 660;
+		}
+		if (players[i].direction == DIRECTION_RIGHT) {
+			players[i].sprite.frame_start = 198;
+		}
+
+		if (players[i].direction == DIRECTION_TOPRIGHT) {
+			players[i].sprite.frame_start = 110;
+		}
+		if (players[i].direction == DIRECTION_TOPLEFT) {
+			players[i].sprite.frame_start = 506;
+		}
+		if (players[i].direction == DIRECTION_BOTTOMRIGHT) {
+			players[i].sprite.frame_start = 286;
+		}
+		if (players[i].direction == DIRECTION_BOTTOMLEFT) {
+			players[i].sprite.frame_start = 682;
+		}
+		
+
 		update_sprite(&players[i].sprite);
 	}
 }
@@ -241,15 +289,15 @@ void draw_players(platform_window* window) {
 		float height = get_height_of_tile_under_coords(players[i].playerx, players[i].playery);
 		players[i].height = height;
 
-		box box = get_render_box_of_square(window, (vec3f){players[i].playerx, players[i].playery, height}, (vec3f){size,size,0.8f});
+		box box = get_render_box_of_square(window, (vec3f){players[i].playerx, players[i].playery, height}, (vec3f){size,size,1.0f});
 		/*
 		render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgb(200,150,120));
 		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgb(200,150,120));
 		render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, rgb(200,150,120));
 		render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgb(200,150,120));
-*/
+		*/
 		sprite_frame frame = sprite_get_frame(&players[i].sprite);
-		renderer->render_image_quad_partial(img_player, 
+		renderer->render_image_quad_partial(img_player_running, 
 			box.tl_u.x, box.tl_u.y,
 			box.bl_d.x, box.bl_d.y, 
 			box.br_d.x, box.br_d.y, 
@@ -261,7 +309,7 @@ void draw_players(platform_window* window) {
 
 		float player_render_x = players[i].playerx*info.tile_width + (players[i].playery*info.px_incline);
 		float player_render_y = players[i].playery*info.tile_height - (height*info.px_raised_per_h);
-
+		
 		players[i].gun_height = height+0.5;
 		float gun_render_x = players[i].gunx*info.tile_width + (players[i].guny*info.px_incline);
 		float gun_render_y = players[i].guny*info.tile_height - (players[i].gun_height*info.px_raised_per_h);

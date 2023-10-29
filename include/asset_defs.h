@@ -27,7 +27,7 @@ image* img_grenade;
 image* img_grenade_explode;
 
 // Players
-image* img_player;
+image* img_player_running;
 
 // Other
 image* img_zombie_chunk_hand;
