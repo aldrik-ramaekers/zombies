@@ -14,20 +14,27 @@ typedef enum t_throwable_type
 	THROWABLE_GRENADE,
 } throwable_type;
 
+typedef enum t_throwable_state
+{
+	THROWABLE_FLYING,
+	THROWABLE_EXPLODED,
+} throwable_state;
+
 typedef struct t_throwable {
 	u32 player_id;
 	bool active;
+	throwable_state state;
 	throwable_type type;
 	vec3f position;
 	vec3f direction;
 	float alive_time;
 	int bounces;
+	sprite sprite;
 } throwable;
 
 throwable throwables[500] = {0};
 int max_throwables = 500;
 
-void clear_throwables();
 void throw_throwable(platform_window* window, u32 id, throwable_type type, float dirx, float diry);
 void draw_throwables(platform_window* window);
 

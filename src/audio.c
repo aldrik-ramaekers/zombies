@@ -1,10 +1,19 @@
 #include "../include/audio.h"
 
+void add_throwable_audio_event_to_queue(audio_event_type event, throwable_type throwable, u32 playerid, vec3f position) {
+	for (int i = 0; i < max_audio_events; i++) {
+		if (audio_events[i].active) continue;
+
+		audio_events[i] = (audio_event){.active = true, .throwable = throwable, .obj = OBJECT_NONE, .zombie = ZOMBIE_TYPE_NONE, .playerid = playerid, .position = position, .type = event};
+		return;
+	}
+}
+
 void add_zombie_audio_event_to_queue(audio_event_type event, zombie_type zombie, u32 playerid, vec3f position) {
 	for (int i = 0; i < max_audio_events; i++) {
 		if (audio_events[i].active) continue;
 
-		audio_events[i] = (audio_event){.active = true, .obj = OBJECT_NONE, .zombie = zombie, .playerid = playerid, .position = position, .type = event};
+		audio_events[i] = (audio_event){.active = true, .throwable = THROWABLE_NONE, .obj = OBJECT_NONE, .zombie = zombie, .playerid = playerid, .position = position, .type = event};
 		return;
 	}
 }
@@ -13,7 +22,7 @@ void add_object_audio_event_to_queue(audio_event_type event, object_type obj, u3
 	for (int i = 0; i < max_audio_events; i++) {
 		if (audio_events[i].active) continue;
 
-		audio_events[i] = (audio_event){.active = true, .obj = obj, .zombie = ZOMBIE_TYPE_NONE, .playerid = playerid, .position = position, .type = event};
+		audio_events[i] = (audio_event){.active = true, .throwable = THROWABLE_NONE, .obj = obj, .zombie = ZOMBIE_TYPE_NONE, .playerid = playerid, .position = position, .type = event};
 		return;
 	}
 }
@@ -29,6 +38,7 @@ static int get_channel_from_audio_event_type(audio_event_type event) {
 		case EVENT_SHOOT: return CHANNEL_SHOOTING;
 		case EVENT_RELOAD: return CHANNEL_RELOAD;
 		case EVENT_IMPACT: return CHANNEL_IMPACT;
+		case EVENT_EXPLODE_THROWABLE: return CHANNEL_EXPLODE;
 
 		default: return 0;
 	}
@@ -41,6 +51,12 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 	switch (event.type)
 	{
 		case EVENT_BOUNCE_THROWABLE: return wav_throwable_bounce;
+		case EVENT_EXPLODE_THROWABLE: {
+			switch(event.throwable) {
+				case THROWABLE_GRENADE: return wav_grenade_explode;
+				default: return wav_error;
+			}
+		}
 		case EVENT_SHOOT: {
 			switch (p->guntype)
 			{

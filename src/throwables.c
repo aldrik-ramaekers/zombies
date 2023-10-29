@@ -1,16 +1,6 @@
 #include "../include/throwables.h"
 #include "../include/audio.h"
 
-void clear_throwables() {
-	for (int i = 0; i < max_throwables; i++) {
-		if (!throwables[i].active) continue;
-		throwables[i].alive_time += SERVER_TICK_RATE;
-		if (throwables[i].alive_time >= 2.0f) {
-			throwables[i].active = false;
-		}
-	}
-}
-
 void throw_throwable(platform_window* window, u32 id, throwable_type type, float dirx, float diry) {
 	for (int i = 0; i < max_throwables; i++) {
 		if (throwables[i].active) continue;
@@ -20,8 +10,10 @@ void throw_throwable(platform_window* window, u32 id, throwable_type type, float
 			log_info("User with unknown id throwing stuff");
 		}
 
-		throwable t = {.active = true, .alive_time = 0.0f, .type = type, .direction = (vec3f){.x = dirx, .y = diry, .z = -0.2f}, 
+		throwable t = {.active = true, .state = THROWABLE_FLYING, .alive_time = 0.0f, .type = type, .direction = (vec3f){.x = dirx, .y = diry, .z = -0.2f}, 
 			.player_id = id, .position = (vec3f){.x = p->playerx, .y = p->playery, .z = p->height}};
+
+		t.sprite = create_sprite(img_grenade_explode, 12, 96, 96, 0.1f);
 
 		throwables[i] = t;
 		break;
@@ -74,6 +66,23 @@ void update_throwables_server() {
 	for (int i = 0; i < max_throwables; i++) {
 		throwable b = throwables[i];
 		if (!b.active) continue;
+
+		throwables[i].alive_time += SERVER_TICK_RATE;
+		if (throwables[i].alive_time >= 2.0f) {
+
+			if (throwables[i].state == THROWABLE_FLYING) {
+				//wav_grenade_explode
+				add_throwable_audio_event_to_queue(EVENT_EXPLODE_THROWABLE, b.type, b.player_id, b.position);
+			}
+
+			throwables[i].state = THROWABLE_EXPLODED;
+			update_sprite(&throwables[i].sprite);
+		}
+		if (throwables[i].alive_time >= 3.2f) {
+			throwables[i].active = false;
+			continue;
+		}
+
 		player *p = get_player_by_id(b.player_id);
 		if (!p) continue; 
 
@@ -121,11 +130,24 @@ void draw_throwables(platform_window* window) {
 		float throwable_render_x = t.position.x*info.tile_width + (t.position.y*info.px_incline);
 		float throwable_render_y = t.position.y*info.tile_height - (t.position.z*info.px_raised_per_h);
 
-		box full_box = get_render_box_of_square(window, t.position, (vec3f){0.2, 0.2, 0.2});
-		renderer->render_image(img_grenade, full_box.tl_u.x, full_box.tl_u.y, 
+		if (t.state == THROWABLE_EXPLODED) {
+			vec3f explode_location = t.position;
+			explode_location.x -= 0.9f;
+			explode_location.y -= 0.9f;
+			box box = get_render_box_of_square(window, explode_location, (vec3f){2.0f, 2.0f, 2.0f});
+			
+			sprite_frame frame = sprite_get_frame(&throwables[i].sprite);
+			renderer->render_image_quad_partial(img_grenade_explode, 
+				box.tl_u.x, box.tl_u.y,
+				box.bl_d.x, box.bl_d.y, 
+				box.br_d.x, box.br_d.y, 
+				box.tr_u.x, box.tr_u.y, 
+				frame.tl, frame.tr, frame.bl, frame.br);
+		}
+		else if (t.state == THROWABLE_FLYING) {
+			box full_box = get_render_box_of_square(window, t.position, (vec3f){0.2, 0.2, 0.2});
+			renderer->render_image(img_grenade, full_box.tl_u.x, full_box.tl_u.y, 
 			full_box.br_d.x - full_box.tl_d.x, full_box.br_d.y - full_box.tr_u.y);
-
-		
-		//renderer->render_image(img_grenade, throwable_render_x, throwable_render_y, 10, 10);
+		}
 	}
 }

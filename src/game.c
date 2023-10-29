@@ -191,8 +191,6 @@ void update_server(platform_window* window) {
 		broadcast_zombies = platform_get_time(TIME_FULL, TIME_NS);
 		update_zombies_server(window);
 		broadcast_zombies = platform_get_time(TIME_FULL, TIME_NS) - broadcast_zombies;
-   
-		clear_throwables();
 
 		broadcast_stamp = platform_get_time(TIME_FULL, TIME_NS);
 		broadcast_to_clients(create_protocol_user_list());

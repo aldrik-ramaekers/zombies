@@ -16,7 +16,8 @@ void load_assets() {
 	img_sunny = assets_load_image_from_file("data/imgs/icons/sunny.png");
 
 	// Throwables
-	img_grenade = assets_load_image_from_file("data/imgs/grenade.png");
+	img_grenade = assets_load_image_from_file("data/imgs/throwables/grenade.png");
+	img_grenade_explode = assets_load_image_from_file("data/imgs/throwables/grenade_explode.png");
 
 	// Objects
 	img_spawner = assets_load_image_from_file("data/imgs/spawner.png");
@@ -37,6 +38,7 @@ void load_assets() {
 
 	// sounds
 	wav_throwable_bounce = Mix_LoadWAV("data/sounds/throwable_bounce.wav");
+	wav_grenade_explode = Mix_LoadWAV("data/sounds/grenade_explode.wav");
 	wav_shoot_mp5 = Mix_LoadWAV("data/sounds/shoot_mp5.wav");
 	wav_reload_mp5 = Mix_LoadWAV("data/sounds/reload_mp5.wav");
 	wav_shoot_nova = Mix_LoadWAV("data/sounds/shoot_nova.wav");
