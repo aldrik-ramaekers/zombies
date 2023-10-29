@@ -263,6 +263,6 @@ void draw_bullets(platform_window* window) {
 		float bullet_render_x_end = b.endx*info.tile_width + (b.endy*info.px_incline);
 		float bullet_render_y_end = b.endy*info.tile_height - (b.position.z*info.px_raised_per_h);
 
-		renderer->render_line(bullet_render_x, bullet_render_y, bullet_render_x_end, bullet_render_y_end, 5, rgb(255, 51, 51));
+		renderer->render_line(bullet_render_x, bullet_render_y, bullet_render_x_end, bullet_render_y_end, 1, rgba(255, 221, 97, 100));
 	}
 }

@@ -18,6 +18,7 @@ typedef enum t_audio_event_type {
 	EVENT_BOUNCE_THROWABLE,
 	EVENT_EXPLODE_THROWABLE,
 	EVENT_IMPACT,
+	EVENT_COLLECT,
 } audio_event_type;
 
 typedef struct t_audio_event {

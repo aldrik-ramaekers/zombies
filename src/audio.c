@@ -50,6 +50,7 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 
 	switch (event.type)
 	{
+		case EVENT_COLLECT: return wav_collect;
 		case EVENT_BOUNCE_THROWABLE: return wav_throwable_bounce;
 		case EVENT_EXPLODE_THROWABLE: {
 			switch(event.throwable) {

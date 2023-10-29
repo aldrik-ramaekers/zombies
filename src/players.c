@@ -311,10 +311,10 @@ void draw_players(platform_window* window) {
 		float player_render_y = players[i].playery*info.tile_height - (height*info.px_raised_per_h);
 		
 		players[i].gun_height = height+0.5;
-		float gun_render_x = players[i].gunx*info.tile_width + (players[i].guny*info.px_incline);
-		float gun_render_y = players[i].guny*info.tile_height - (players[i].gun_height*info.px_raised_per_h);
+		//float gun_render_x = players[i].gunx*info.tile_width + (players[i].guny*info.px_incline);
+		//float gun_render_y = players[i].guny*info.tile_height - (players[i].gun_height*info.px_raised_per_h);
 		
-		renderer->render_rectangle(gun_render_x, gun_render_y, size/4, size/4, rgb(20,255,20));
+		//renderer->render_rectangle(gun_render_x, gun_render_y, size/4, size/4, rgb(20,255,20));
 
 		if (players[i].id == player_id) {
 			_next_camera_pos.x = -(window->width / 2) + player_render_x;

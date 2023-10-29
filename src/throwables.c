@@ -10,7 +10,7 @@ void throw_throwable(platform_window* window, u32 id, throwable_type type, float
 			log_info("User with unknown id throwing stuff");
 		}
 
-		throwable t = {.active = true, .state = THROWABLE_FLYING, .alive_time = 0.0f, .type = type, .direction = (vec3f){.x = dirx, .y = diry, .z = -0.2f}, 
+		throwable t = {.active = true, .state = THROWABLE_FLYING, .alive_time = 0.0f, .type = type, .direction = (vec3f){.x = dirx*1.5f, .y = diry*1.5f, .z = -0.2f}, 
 			.player_id = id, .position = (vec3f){.x = p->playerx, .y = p->playery, .z = p->height}};
 
 		t.sprite = create_sprite(img_grenade_explode, 12, 96, 96, 0.1f);

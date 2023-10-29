@@ -29,6 +29,8 @@ void update_drops_server() {
 
 			if (check_if_player_collided_with_box(*p, get_box_of_square(drops[i].position, drops[i].size))) {
 				handle_drop_pickup(p, &drops[i]);
+
+				add_audio_event_to_queue(EVENT_COLLECT, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
 			}
 		}
 

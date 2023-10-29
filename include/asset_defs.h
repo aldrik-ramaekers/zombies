@@ -51,6 +51,7 @@ Mix_Chunk* wav_reload_nova;
 Mix_Chunk* wav_impact_zombie;
 Mix_Chunk* wav_impact_wood;
 Mix_Chunk* wav_error;
+Mix_Chunk* wav_collect;
 
 
 void load_assets();
