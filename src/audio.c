@@ -82,7 +82,7 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 					default: return wav_error;
 				}
 			}
-			else {
+			else if (event.obj != OBJECT_NONE)  {
 				switch (event.obj)
 				{
 					case OBJECT_PLANTBOX1: return wav_impact_wood;		
@@ -98,10 +98,16 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 void play_sounds_in_queue() {
 	for (int i = 0; i < max_audio_events; i++) {
 		if (!audio_events[i].active) continue;
+
+		Mix_Chunk* sample = get_sample_from_audio_event(audio_events[i], audio_events[i].playerid);
+		/*if (sample == wav_error) {
+			log_infox("Missing sample for type: %d | zombie: %d | object: %d | throwable: %d", 
+			audio_events[i].type, audio_events[i].obj, audio_events[i].zombie, audio_events[i].throwable);
+		}*/
+
+		int channel = get_channel_from_audio_event_type(audio_events[i].type);
 		play_positioned_sound(
-			get_channel_from_audio_event_type(audio_events[i].type), 
-			get_sample_from_audio_event(audio_events[i], audio_events[i].playerid), 
-			audio_events[i].position, 20);
+			channel, sample, audio_events[i].position, 20);
 	}
 }
 

@@ -15,6 +15,10 @@ void throw_throwable(platform_window* window, u32 id, throwable_type type, float
 
 		t.sprite = create_sprite(img_grenade_explode, 12, 96, 96, 0.1f);
 
+		switch(type) {
+			case THROWABLE_GRENADE: t.damage = 1500; break;
+		}
+
 		throwables[i] = t;
 		break;
 	}
@@ -58,6 +62,26 @@ bool check_if_throwable_collided_with_object(throwable* b, vec3f oldpos, vec3f n
 	return result;
 }
 
+void explode_grenade(throwable t) {
+	int max_explosion_range = 3;
+	
+	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
+		zombie o = zombies[i];
+		if (!o.alive) continue;
+
+		if (t.position.z <= o.position.z + o.size.z && t.position.z >= t.position.z) {
+			
+			vec3f grenade_center = get_center_of_square(t.position, grenade_explosion_size);
+			vec3f zombie_center = get_center_of_square(o.position, o.size);
+			float dist_between_grenade_and_zombie = distance_between_3f(o.position, t.position);
+			if (dist_between_grenade_and_zombie > max_explosion_range) continue;
+
+			float damage_multiplier = 1.0f - (dist_between_grenade_and_zombie / max_explosion_range);
+			hit_zombie(i, t.damage*damage_multiplier);
+		}
+	}
+}
+
 void update_throwables_server() {
 	float speed = 7.0f * SERVER_TICK_RATE;
 	float gravity = 0.015f;
@@ -71,8 +95,11 @@ void update_throwables_server() {
 		if (throwables[i].alive_time >= 2.0f) {
 
 			if (throwables[i].state == THROWABLE_FLYING) {
-				//wav_grenade_explode
 				add_throwable_audio_event_to_queue(EVENT_EXPLODE_THROWABLE, b.type, b.player_id, b.position);
+
+				switch(b.type) {
+					case THROWABLE_GRENADE: explode_grenade(b); break;
+				}
 			}
 
 			throwables[i].state = THROWABLE_EXPLODED;
@@ -134,7 +161,7 @@ void draw_throwables(platform_window* window) {
 			vec3f explode_location = t.position;
 			explode_location.x -= 0.9f;
 			explode_location.y -= 0.9f;
-			box box = get_render_box_of_square(window, explode_location, (vec3f){2.0f, 2.0f, 2.0f});
+			box box = get_render_box_of_square(window, explode_location, grenade_explosion_size);
 			
 			sprite_frame frame = sprite_get_frame(&throwables[i].sprite);
 			renderer->render_image_quad_partial(img_grenade_explode, 

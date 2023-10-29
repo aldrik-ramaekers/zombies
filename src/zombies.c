@@ -38,6 +38,30 @@ void create_spawner(vec2 position) {
 	}
 }
 
+bool hit_zombie(int index, int damage) {
+	zombies[index].health -= damage;
+
+	// Random chunks when zombie is hit.
+	if (rand() % 5 == 0) {
+		spawn_zombie_chunk(get_center_of_square(zombies[index].position, zombies[index].size));
+	}
+
+	if (zombies[index].health <= 0) {
+		vec3f center = get_center_of_square(zombies[index].position, zombies[index].size);
+		spawn_zombie_splatter(center);
+
+		// Random chunks when zombie dies.
+		int chunk_count = rand() % 4 + 1;
+		for (int c = 0; c < chunk_count; c++) spawn_zombie_chunk(center);
+
+		zombies[index].alive = false;
+		spawn_drop(zombies[index].position);
+		return true;
+	}
+
+	return false;
+}
+
 void spawn_zombie(int x, int y) {
 	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
@@ -47,7 +71,7 @@ void spawn_zombie(int x, int y) {
 		zombies[i].next_path = array_create(sizeof(vec2f));
 		zombies[i].alive = true;
 		zombies[i].type = ZOMBIE_TYPE_NORMAL;
-		zombies[i].health = 100.0f;
+		zombies[i].health = 1000.0f;
 		zombies[i].position = (vec3f){x,y, 0};
 		zombies[i].size = (vec3f){0.4, 0.4, 1};
 		zombies[i].time_since_last_path = 0.0f;
