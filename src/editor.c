@@ -101,6 +101,26 @@ void update_editor(platform_window* window)
 	}
 }
 
+void draw_floor_grid(platform_window* window) {
+	map_info info = get_map_info(window);
+
+	for (int y = 0; y < MAP_SIZE_Y; y++) {
+		int x1 = 0;
+		int y1 = y*info.tile_height;
+		int x2 = MAP_SIZE_X*info.tile_width;
+		int y2 = y*info.tile_height;
+		renderer->render_line(x1, y1, x2, y2, 1, rgba(255,0,0,80));	
+	}
+
+	for (int x = MAP_SIZE_X-1; x >= 0; x--) {
+		int x1 = x*info.tile_width;
+		int y1 = 0;
+		int x2 = x*info.tile_width;
+		int y2 = MAP_SIZE_Y*info.tile_height;
+		renderer->render_line(x1, y1, x2, y2, 1, rgba(255,0,0,80));	
+	}
+}
+
 void draw_placing_rectangle(platform_window* window) {
 	map_info info = get_map_info(window);
 	int mouse_tile_y = (_global_mouse.y + _global_camera.y) / info.tile_height;
@@ -110,13 +130,12 @@ void draw_placing_rectangle(platform_window* window) {
 	if (mouse_tile_x >= loaded_map.width || mouse_tile_y >= loaded_map.height) return;
 
 	tile t = loaded_map.heightmap[mouse_tile_y][mouse_tile_x];
-	
-	//renderer->render_rectangle_outline(t.tl.x, t.tl.y, t.tr.x - t.tl.x, t.br.y - t.tr.y, 2, rgb(255,0,0));
+	box box = get_render_box_of_square(window, (vec3f){mouse_tile_x, mouse_tile_y, 0}, (vec3f){1,1,t.height});
 
-	renderer->render_line(t.tl.x, t.tl.y, t.tr.x, t.tr.y, 1, rgb(0,0,255)); // top
-	renderer->render_line(t.tl.x, t.tl.y, t.bl.x, t.bl.y, 1, rgb(0,0,255)); // left
-	renderer->render_line(t.tr.x, t.tr.y, t.br.x, t.br.y, 1, rgb(0,0,255)); // right
-	renderer->render_line(t.bl.x, t.bl.y, t.br.x, t.br.y, 1, rgb(0,0,255)); // bottom
+	render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgba(255,0,0, 70));
+	render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgba(255,0,0, 70));
+	render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, rgba(255,0,0, 70));
+	render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgba(255,0,0, 70));
 }
 
 static bool push_icon_button(int x, int y, int w, image* img, bool isSelected) {
@@ -231,6 +250,7 @@ void draw_lighting_panel(platform_window* window) {
 void draw_editor(platform_window* window)
 {
 	if (is_editing_map) {
+		draw_floor_grid(window);
 		draw_placing_rectangle(window);
 
 		renderer->render_rectangle(_global_camera.x, _global_camera.y, editor_width, window->height, rgb(73, 140, 138));

@@ -65,7 +65,7 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 		float newy = p->playery - speed;
 		if (is_in_bounds(p->playerx, newy)) {
 			p->playery = newy;
-			object o = check_if_player_collided_with_object(window, *p);
+			object o = check_if_player_collided_with_object(*p);
 			if (o.active) p->playery = o.position.y+o.size.y + pad_between_player_and_obj;
 		}
 	}
@@ -74,7 +74,7 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 		float newy = p->playery + speed;
 		if (is_in_bounds(p->playerx, newy)) {
 			p->playery = newy;
-			object o = check_if_player_collided_with_object(window, *p);
+			object o = check_if_player_collided_with_object(*p);
 			if (o.active) p->playery = o.position.y - get_player_size_in_tile() - pad_between_player_and_obj;
 		}
 	}
@@ -83,7 +83,7 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 		float newx = p->playerx - speed;
 		if (is_in_bounds(newx, p->playery)) {
 			p->playerx = newx;
-			object o = check_if_player_collided_with_object(window, *p);
+			object o = check_if_player_collided_with_object(*p);
 			if (o.active) p->playerx = o.position.x+o.size.x + pad_between_player_and_obj;
 		}
 	}
@@ -92,7 +92,7 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 		float newx = p->playerx + speed;
 		if (is_in_bounds(newx, p->playery)) {
 			p->playerx = newx;
-			object o = check_if_player_collided_with_object(window, *p);
+			object o = check_if_player_collided_with_object(*p);
 			if (o.active) p->playerx = o.position.x-get_player_size_in_tile() - pad_between_player_and_obj;
 		}
 	}
@@ -117,10 +117,7 @@ bool check_if_player_collided_with_box(player p, box o) {
 	return b1 && b2;
 }
 
-object check_if_player_collided_with_object(platform_window* window, player p) {
-	map_info info = get_map_info(window);
-	float player_size = get_player_size(window);
-
+object check_if_player_collided_with_object(player p) {
 	for (int i = 0; i < MAX_OBJECTS; i++) {
 		object o = loaded_map.objects[i];
 		if (!o.active) continue;

@@ -33,14 +33,10 @@ bool check_if_throwable_collided_with_object(throwable* b, vec3f oldpos, vec3f n
 		if (b->position.z <= o.h + o.size.z && b->position.z >= o.h) {
 			box obj_box = get_box_of_square((vec3f){o.position.x, o.position.y, o.h}, o.size);
 
-			if (o.type == OBJECT_PLANTBOX1 && oldpos.x < o.position.x && newpos.x > o.position.x) {
-				log_infox("intersect {%.2f %.2f}{%.2f %.2f} {%.2f %.2f}{%.2f %.2f}",
-					oldpos.x, oldpos.y, newpos.x, newpos.y, o.position.x, o.position.y, o.position.x, o.position.y + o.size.y);
-
-				//if (lines_intersect((vec2f){15.99, 8.58}, (vec2f){16.05, 8.58}, (vec2f){16.00, 8.00}, (vec2f){16.00, 9.00})) {
-				//	log_info("POOOp");
-				//}
-			}
+			//if (o.type == OBJECT_PLANTBOX1 && oldpos.x < o.position.x && newpos.x > o.position.x) {
+			//	log_infox("intersect {%.2f %.2f}{%.2f %.2f} {%.2f %.2f}{%.2f %.2f}",
+			//		oldpos.x, oldpos.y, newpos.x, newpos.y, o.position.x, o.position.y, o.position.x, o.position.y + o.size.y);
+			//}
 
 			// top
 			if (lines_intersect((vec2f){.x = oldpos.x, .y = oldpos.y}, (vec2f){.x = newpos.x, .y = newpos.y}, 
@@ -110,7 +106,6 @@ void update_throwables_server() {
 		if (!b.active) continue;
 
 		throwables[i].rotation += SERVER_TICK_RATE*3.0f*throwables[i].bounces;
-
 
 		throwables[i].alive_time += SERVER_TICK_RATE;
 		if (throwables[i].alive_time >= 2.0f) {

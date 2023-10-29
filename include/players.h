@@ -48,6 +48,7 @@ typedef struct t_player {
 	int kills;
 	u64 ping;
 	sprite sprite;
+	vec3f velocity;
 } player;
 
 #include "protocol.h"
@@ -62,7 +63,7 @@ int get_player_count();
 player* get_player_by_id(u32 id);
 void draw_players(platform_window* window);
 void draw_bullets(platform_window* window);
-object check_if_player_collided_with_object(platform_window* window, player p);
+object check_if_player_collided_with_object(player p);
 float get_player_size(platform_window* window);
 void move_user(platform_window* window, u32 id, protocol_move_type move, float delta);
 void update_players_server();
