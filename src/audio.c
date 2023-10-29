@@ -26,8 +26,8 @@ static int get_channel_from_audio_event_type(audio_event_type event) {
 	switch (event)
 	{
 		case EVENT_BOUNCE_THROWABLE: return CHANNEL_THROWABLES;
-		case EVENT_SHOOT:
-		case EVENT_RELOAD: return CHANNEL_SHOOTING;
+		case EVENT_SHOOT: return CHANNEL_SHOOTING;
+		case EVENT_RELOAD: return CHANNEL_RELOAD;
 		case EVENT_IMPACT: return CHANNEL_IMPACT;
 
 		default: return 0;
@@ -45,13 +45,15 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 			switch (p->guntype)
 			{
 				case GUN_MP5: return wav_shoot_mp5;
+				case GUN_NOVA: return wav_shoot_nova;
 				default: return wav_error;
 			}
 		}
 		case EVENT_RELOAD: {
 			switch (p->guntype)
 			{
-				case GUN_MP5: return wav_reload_mp5;		
+				case GUN_MP5: return wav_reload_mp5;
+				case GUN_NOVA: return wav_reload_nova;
 				default: return wav_error;
 			}
 		}

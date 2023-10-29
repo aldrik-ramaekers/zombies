@@ -42,6 +42,9 @@ Mix_Chunk* wav_throwable_bounce;
 Mix_Chunk* wav_shoot_mp5;
 Mix_Chunk* wav_reload_mp5;
 
+Mix_Chunk* wav_shoot_nova;
+Mix_Chunk* wav_reload_nova;
+
 Mix_Chunk* wav_impact_zombie;
 Mix_Chunk* wav_impact_wood;
 Mix_Chunk* wav_error;

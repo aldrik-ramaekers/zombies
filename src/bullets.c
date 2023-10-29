@@ -20,12 +20,6 @@ void shoot(platform_window* window, u32 id, float dirx, float diry) {
 	int bullets_to_shoot = g.bullets_per_shot;
 	if (bullets_to_shoot > p->ammo_in_mag) bullets_to_shoot = p->ammo_in_mag;
 	p->ammo_in_mag -= bullets_to_shoot;
-	if (p->ammo_in_mag == 0) {
-		add_audio_event_to_queue(EVENT_RELOAD, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
-		p->interact_state = INTERACT_RELOADING;
-		p->sec_since_interact_state_change = 0;
-		return;
-	}
 
 	add_audio_event_to_queue(EVENT_SHOOT, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
 	
@@ -49,6 +43,13 @@ void shoot(platform_window* window, u32 id, float dirx, float diry) {
 			bullets[i] = (bullet){p->id, true, bulletx, bullety, hh + 0.5,.endx = bullet_end_point_x,.endy = bullet_end_point_y, .damage = g.damage};
 			break;
 		}
+	}
+
+	if (p->ammo_in_mag == 0) {
+		add_audio_event_to_queue(EVENT_RELOAD, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
+		p->interact_state = INTERACT_RELOADING;
+		p->sec_since_interact_state_change = 0;
+		return;
 	}
 }
 

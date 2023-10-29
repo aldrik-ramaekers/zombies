@@ -52,6 +52,7 @@ void connect_to_server(char* ip, char* port) {
 }
 
 void load_map() {
+	log_info("STATE: GAMESTATE_LOADING_MAP");
 	global_state.state = GAMESTATE_LOADING_MAP;
 
 	outgoing_allocator = create_allocator(MAX_NETWORK_BUFFER_SIZE);
@@ -71,12 +72,13 @@ void load_map() {
 	thread t = thread_start(pathfinding_thread, 0);
 	thread_detach(&t);
 
-	global_state.state = GAMESTATE_PLAYING;
-	log_info("Done loading map");
+	log_info("STATE: GAMESTATE_LOADING_ASSETS");
+	global_state.state = GAMESTATE_LOADING_ASSETS;
 }
 
 void init_game() {
-	global_state.state = IDLE;
+	log_info("STATE: GAMESTATE_IDLE");
+	global_state.state = GAMESTATE_IDLE;
 	global_state.network_state = DISCONNECTED;
 	
 	load_assets();

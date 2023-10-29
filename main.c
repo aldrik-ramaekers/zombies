@@ -77,6 +77,9 @@ void handle_args(int argc, char **argv) {
 		}
 		connect_to_server(ip, port);
 	}
+
+	log_info("STATE: GAMESTATE_PLAYING");
+	global_state.state = GAMESTATE_PLAYING;
 }
 
 int main(int argc, char **argv)
@@ -91,8 +94,13 @@ int main(int argc, char **argv)
 	settings_set_number("USE_GPU", 1);
 
 	if (Mix_OpenAudio(48000, AUDIO_F32SYS, 2, 2048) == 0) {
-		log_info("Audio system initialized.");
-		Mix_MasterVolume(MIX_MAX_VOLUME/4);
+		if (Mix_AllocateChannels(NUMBER_OF_AUDIO_CHANNELS) == 64) {
+			log_info("Audio system initialized.");
+			Mix_MasterVolume(MIX_MAX_VOLUME/4);
+		}
+		else {
+			log_info("Channel allocation failed.");
+		}
 	}
 	else {
 		log_info("Audio failed.");
@@ -102,7 +110,7 @@ int main(int argc, char **argv)
 	
 	bool did_handle_args = false;
     while(platform_keep_running(window)) {
-		if (global_asset_collection.done_loading_assets && !did_handle_args) {
+		if (global_asset_collection.done_loading_assets && !did_handle_args && global_state.state == GAMESTATE_LOADING_ASSETS) {
 			handle_args(argc, argv);
 			did_handle_args = true;
 		}

@@ -3,9 +3,12 @@
 
 #include <projectbase/project_base.h>
 
+#define NUMBER_OF_AUDIO_CHANNELS 64
+
 #define CHANNEL_THROWABLES 0
 #define CHANNEL_SHOOTING 1
 #define CHANNEL_IMPACT 2
+#define CHANNEL_RELOAD 3
 
 typedef enum t_audio_event_type {
 	EVENT_SHOOT,

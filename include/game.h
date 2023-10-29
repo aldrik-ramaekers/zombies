@@ -14,6 +14,7 @@
 typedef enum t_game_state {
 	GAMESTATE_IDLE,
 	GAMESTATE_LOADING_MAP,
+	GAMESTATE_LOADING_ASSETS,
 	GAMESTATE_PLAYING,
 } game_state;
 
