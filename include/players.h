@@ -53,7 +53,7 @@ typedef struct t_player {
 
 #include "protocol.h"
 
-u32 player_id = -1;
+u32 player_id = -1; // Session id on current server.
 
 camera _next_camera_pos;
 

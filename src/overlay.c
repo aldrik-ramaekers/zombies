@@ -23,7 +23,12 @@ static void draw_gun_info(platform_window* window) {
 	renderer->render_text(fnt_20, (int)_global_camera.x + x, (int)_global_camera.y + y, ammo_txt, rgb(255,255,255));
 }
 
-static void draw_leaderboard_entry(int x, int y, int w, int h, char* name, char* kills, char* deaths, char* ping) {
+static void draw_leaderboard_entry(int x, int y, int w, int h, char* name, char* kills, char* deaths, char* ping, bool highlighted) {
+
+	if (highlighted) {
+		renderer->render_rectangle(x, y, w, h, rgba(255,0,0,50));
+	}
+
 	int width_for_name = w / 2;
 	int width_per_entry = (w-width_for_name)/3;
 	int pad_y = (h-fnt_20->px_h)/2;
@@ -50,14 +55,14 @@ static void draw_leaderboard(platform_window* window) {
 
 		renderer->render_rectangle(x, y, actual_width, height_total, rgba(0,0,0,120));
 
-		draw_leaderboard_entry(x, y, actual_width, height_per_row, "Player", "Kills", "Deaths", "Ping");
+		draw_leaderboard_entry(x, y, actual_width, height_per_row, "Player", "Kills", "Deaths", "Ping", false);
 		for (int i = 0; i < MAX_PLAYERS; i++) {
 			if (!players[i].active) continue;
 
 			char kills[30]; snprintf(kills, 30, "%d", players[i].kills);
 			char deaths[30]; snprintf(deaths, 30, "%d", 0);
 			char ping[30]; snprintf(ping, 30, "%d", players[i].ping);
-			draw_leaderboard_entry(x, y + ((i+1)*height_per_row), actual_width, height_per_row, players[i].client.ip, kills, deaths, ping);
+			draw_leaderboard_entry(x, y + ((i+1)*height_per_row), actual_width, height_per_row, players[i].client.ip, kills, deaths, ping, players[i].id == player_id);
 		}
 	}
 }
