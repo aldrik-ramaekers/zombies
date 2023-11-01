@@ -27,15 +27,12 @@ static u32 get_session_id() {
 void connect_to_server(char* ip, char* port) {
 	client_incomming_allocator = create_allocator(MAX_NETWORK_BUFFER_SIZE);
 
-	player_id = get_session_id();
 	messages_received_on_client = array_create(sizeof(protocol_generic_message*));
 	array_reserve(&messages_received_on_client, 100);
 
 	global_state.network_state = CONNECTING;
 	global_state.client = network_connect_to_server(ip, port);
 	global_state.client->on_message = client_on_message_received;
-
-	log_infox("Session id: %u", player_id);
 
 	if (global_state.server) {
 		spawn_player(player_id, (network_client){0, false, 0, "Host"});
@@ -45,6 +42,7 @@ void connect_to_server(char* ip, char* port) {
 		if (global_state.client->is_connected) {
 			global_state.network_state = WAITING_FOR_ID;
 
+			player_id = get_session_id();
 			network_message message = create_protocol_get_id_up(player_id);
 			add_message_to_outgoing_queuex(message, *global_state.client);
 		}
@@ -121,10 +119,25 @@ static void set_ping_for_player(protocol_generic_message* msg) {
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		player p = players[i];
 		if (p.client.ConnectSocket == msg->client.ConnectSocket) {
-			players[i].ping = diff;		
+			players[i].ping = diff;
 			return;
 		}
 	}
+}
+
+static u32 get_id_from_ip(network_client client) {
+	u32 result = 0;
+	int i = 0;
+	while (client.ip[i] != '\0') {
+        if (client.ip[i] < '0' || client.ip[i] > '9') {
+			i++;
+            continue;
+        }
+        result = result * 10 + (client.ip[i] - '0');
+        i++;
+    }
+
+	return result;
 }
 
 float update_timer = 0.0f;
@@ -141,9 +154,10 @@ void update_server(platform_window* window) {
 		{
 			case MESSAGE_GET_ID_UPSTREAM: {
 				protocol_get_id_upstream* m = (protocol_get_id_upstream*)msg->message;
-				add_message_to_outgoing_queuex(create_protocol_get_id_down(m->id), msg->client);
-				spawn_player(m->id, msg->client);
-				log_info("Player connected to server");
+				u32 new_id = get_id_from_ip(msg->client);
+				add_message_to_outgoing_queuex(create_protocol_get_id_down(new_id), msg->client);
+				spawn_player(new_id, msg->client);
+				log_infox("Player connected to server / ip: %s id: %d", msg->client.ip, new_id);
 			} break;
 
 			case MESSAGE_USER_MOVED: {

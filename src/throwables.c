@@ -91,7 +91,10 @@ void explode_grenade(throwable t) {
 			if (dist_between_grenade_and_zombie > max_explosion_range) continue;
 
 			float damage_multiplier = 1.0f - (dist_between_grenade_and_zombie / max_explosion_range);
-			hit_zombie(i, t.damage*damage_multiplier);
+			if (hit_zombie(i, t.damage*damage_multiplier)) {
+				player* p = get_player_by_id(t.player_id);
+				if (p) p->kills++;
+			}
 		}
 	}
 }
