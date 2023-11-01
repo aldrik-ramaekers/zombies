@@ -23,7 +23,7 @@ static void draw_gun_info(platform_window* window) {
 	renderer->render_text(fnt_20, (int)_global_camera.x + x, (int)_global_camera.y + y, ammo_txt, rgb(255,255,255));
 }
 
-static void draw_leaderboard_entry(int x, int y, int w, int h, char* name, char* kills, char* deaths, char* ping, bool highlighted) {
+static void draw_leaderboard_entry(int x, int y, int w, int h, char* name, char* kills, char* deaths, char* ping, bool highlighted, bool disconnected) {
 
 	if (highlighted) {
 		renderer->render_rectangle(x, y, w, h, rgba(255,0,0,50));
@@ -36,7 +36,15 @@ static void draw_leaderboard_entry(int x, int y, int w, int h, char* name, char*
 	renderer->render_text(fnt_20, x+pad_x, y+pad_y, name, rgb(255,255,255));
 	renderer->render_text(fnt_20, x+pad_x+width_for_name+width_per_entry*0, y+pad_y, kills, rgb(255,255,255));
 	renderer->render_text(fnt_20, x+pad_x+width_for_name+width_per_entry*1, y+pad_y, deaths, rgb(255,255,255));
-	renderer->render_text(fnt_20, x+pad_x+width_for_name+width_per_entry*2, y+pad_y, ping, rgb(255,255,255));
+
+	if (disconnected) {
+		int icon_h = h*0.8f;
+		int iconpad = ((h-icon_h)/2);
+		renderer->render_image(img_disconnected, x+pad_x+width_for_name+width_per_entry*2.5f - iconpad, y + iconpad, icon_h, icon_h);
+	}
+	else {
+		renderer->render_text(fnt_20, x+pad_x+width_for_name+width_per_entry*2, y+pad_y, ping, rgb(255,255,255));
+	}
 }
 
 static void draw_leaderboard(platform_window* window) {
@@ -55,14 +63,15 @@ static void draw_leaderboard(platform_window* window) {
 
 		renderer->render_rectangle(x, y, actual_width, height_total, rgba(0,0,0,120));
 
-		draw_leaderboard_entry(x, y, actual_width, height_per_row, "Player", "Kills", "Deaths", "Ping", false);
+		draw_leaderboard_entry(x, y, actual_width, height_per_row, "Player", "Kills", "Deaths", "Ping", false, false);
 		for (int i = 0; i < MAX_PLAYERS; i++) {
 			if (!players[i].active) continue;
 
 			char kills[30]; snprintf(kills, 30, "%d", players[i].kills);
 			char deaths[30]; snprintf(deaths, 30, "%d", 0);
 			char ping[30]; snprintf(ping, 30, "%d", players[i].ping);
-			draw_leaderboard_entry(x, y + ((i+1)*height_per_row), actual_width, height_per_row, players[i].client.ip, kills, deaths, ping, players[i].id == player_id);
+			draw_leaderboard_entry(x, y + ((i+1)*height_per_row), actual_width, height_per_row, 
+				players[i].client.ip, kills, deaths, ping, players[i].id == player_id, players[i].connection_state == DISCONNECTED);
 		}
 	}
 }

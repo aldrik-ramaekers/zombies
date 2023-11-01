@@ -16,6 +16,7 @@ image* img_cancel;
 image* img_3d;
 image* img_tiles;
 image* img_sunny;
+image* img_disconnected;
 
 // Objects
 image* img_spawner;

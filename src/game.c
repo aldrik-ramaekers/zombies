@@ -163,11 +163,11 @@ void update_server(platform_window* window) {
 
 				if (player_has_old_session(new_id)) {
 					rejoin_player(new_id, msg->client);
-					log_infox("Player connected to session / ip: %s id: %d", msg->client.ip, new_id);
+					log_infox("Player rejoined session / ip: %s id: %d", msg->client.ip, new_id);
 				}
 				else {
 					spawn_player(new_id, msg->client);
-					log_infox("Player rejoined session / ip: %s id: %d", msg->client.ip, new_id);
+					log_infox("Player connected to session / ip: %s id: %d", msg->client.ip, new_id);
 				}
 				
 				add_message_to_outgoing_queuex(create_protocol_get_id_down(new_id), msg->client);

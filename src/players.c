@@ -332,6 +332,11 @@ void draw_players(platform_window* window) {
 		
 		//renderer->render_rectangle(gun_render_x, gun_render_y, size/4, size/4, rgb(20,255,20));
 
+		if (players[i].connection_state == DISCONNECTED) {
+			float icon_h = (box.tr_u.x - box.tl_u.x)/2;
+			renderer->render_image(img_disconnected, box.tl_u.x + (icon_h/3), box.tr_u.y - icon_h, icon_h, icon_h);
+		}
+
 		if (players[i].id == player_id) {
 			_next_camera_pos.x = -(window->width / 2) + player_render_x;
 			_next_camera_pos.y = -(window->height / 2) + player_render_y;

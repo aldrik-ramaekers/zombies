@@ -14,6 +14,7 @@ void load_assets() {
 	img_3d = assets_load_image_from_file("data/imgs/icons/3d.png");
 	img_tiles = assets_load_image_from_file("data/imgs/icons/tiles.png");
 	img_sunny = assets_load_image_from_file("data/imgs/icons/sunny.png");
+	img_disconnected = assets_load_image_from_file("data/imgs/icons/disconnected.png");
 
 	// Throwables
 	img_grenade = assets_load_image_from_file("data/imgs/throwables/grenade.png");
