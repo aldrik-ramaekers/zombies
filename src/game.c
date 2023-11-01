@@ -4,7 +4,12 @@
 static void server_on_client_disconnect(network_client c) {
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		player p = players[i];
-		if (p.client.ConnectSocket == c.ConnectSocket) players[i].active = false;
+		if (p.client.ConnectSocket == c.ConnectSocket) {
+			//players[i].active = false;
+			players[i].connection_state = DISCONNECTED;
+			network_client_close(&players[i].client);
+			return;
+		}
 	}
 }
 
@@ -155,9 +160,18 @@ void update_server(platform_window* window) {
 			case MESSAGE_GET_ID_UPSTREAM: {
 				protocol_get_id_upstream* m = (protocol_get_id_upstream*)msg->message;
 				u32 new_id = get_id_from_ip(msg->client);
+
+				if (player_has_old_session(new_id)) {
+					rejoin_player(new_id, msg->client);
+					log_infox("Player connected to session / ip: %s id: %d", msg->client.ip, new_id);
+				}
+				else {
+					spawn_player(new_id, msg->client);
+					log_infox("Player rejoined session / ip: %s id: %d", msg->client.ip, new_id);
+				}
+				
 				add_message_to_outgoing_queuex(create_protocol_get_id_down(new_id), msg->client);
-				spawn_player(new_id, msg->client);
-				log_infox("Player connected to server / ip: %s id: %d", msg->client.ip, new_id);
+				
 			} break;
 
 			case MESSAGE_USER_MOVED: {

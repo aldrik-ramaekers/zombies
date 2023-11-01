@@ -9,6 +9,7 @@
 #include "math_helper.h"
 #include "guns.h"
 #include "sprite.h"
+#include "../include/players.h"
 
 #define MAX_PLAYERS 10
 
@@ -49,6 +50,7 @@ typedef struct t_player {
 	u64 ping;
 	sprite sprite;
 	vec3f velocity;
+	network_state connection_state;
 } player;
 
 #include "protocol.h"
@@ -68,5 +70,7 @@ float get_player_size(platform_window* window);
 void move_user(platform_window* window, u32 id, protocol_move_type move, float delta);
 void update_players_server();
 void spawn_player(u32 id, network_client client);
+bool player_has_old_session(u32 id);
+void rejoin_player(u32 id, network_client client);
 
 #endif

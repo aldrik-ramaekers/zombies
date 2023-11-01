@@ -5,6 +5,7 @@
 
 #include "include/SDL2/SDL_mixer.h"
 
+#include "include/network.h"
 #include "include/players.h"
 #include "include/objects.h"
 #include "include/map.h"

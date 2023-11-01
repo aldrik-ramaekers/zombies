@@ -26,6 +26,24 @@ int get_player_count() {
 	return count;
 }
 
+bool player_has_old_session(u32 id) {
+	for (int i = 0; i < MAX_PLAYERS; i++) {
+		if (players[i].id == id && players[i].connection_state == DISCONNECTED) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void rejoin_player(u32 id, network_client client) {
+	for (int i = 0; i < MAX_PLAYERS; i++) {
+		if (players[i].id == id) {
+			players[i].connection_state = CONNECTED;
+			players[i].client = client;
+		}
+	}
+}
+
 void spawn_player(u32 id, network_client client) {
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (players[i].active) continue;
@@ -42,6 +60,7 @@ void spawn_player(u32 id, network_client client) {
 		players[i].client = client;
 		players[i].sprite = create_sprite(img_player_running, 22, 108, 136, 0.02f);
 		players[i].direction = DIRECTION_DOWN;
+		players[i].connection_state = CONNECTED;
 
 		gun g = get_gun_by_type(players[i].guntype);
 		players[i].total_ammo = g.max_ammunition;
