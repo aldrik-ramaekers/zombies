@@ -51,6 +51,14 @@ network_message create_protocol_zombie_list()
 	return network_create_message((u8*)buf, sizeof(protocol_zombie_list), MAX_NETWORK_BUFFER_SIZE);
 }
 
+network_message create_protocol_zombie_chunk_list()
+{
+	protocol_zombie_chunk_list *buf = alloc_network_message(protocol_zombie_chunk_list);
+	buf->type = MESSAGE_ZOMBIE_CHUNK_LIST;
+	memcpy(buf->zombie_chunks, zombie_chunks, sizeof(zombie_chunks));
+	return network_create_message((u8*)buf, sizeof(protocol_zombie_chunk_list), MAX_NETWORK_BUFFER_SIZE);
+}
+
 network_message create_protocol_bullets_list()
 {
 	protocol_bullets_list *buf = alloc_network_message(protocol_bullets_list);

@@ -14,6 +14,7 @@ typedef enum t_network_message_type
 	MESSAGE_USER_MOVED,
 	MESSAGE_USER_LOOK,
 	MESSAGE_USER_THROW,
+	MESSAGE_ZOMBIE_CHUNK_LIST,
 	MESSAGE_ZOMBIE_LIST,
 	MESSAGE_USER_SHOOT,
 	MESSAGE_BULLET_LIST,
@@ -65,6 +66,13 @@ typedef struct t_protocol_zombie_list
 	network_message_type type;
 	zombie zombies[SERVER_MAX_ZOMBIES];
 } protocol_zombie_list;
+
+#include "zombie_chunk.h"
+typedef struct t_protocol_zombie_chunk_list
+{
+	network_message_type type;
+	zombie_chunk zombie_chunks[MAX_ZOMBIE_CHUNKS];
+} protocol_zombie_chunk_list;
 
 #include "drops.h"
 typedef struct t_protocol_drop_list
@@ -150,6 +158,7 @@ network_message create_protocol_user_look(u32 id, float gunx, float guny);
 network_message create_protocol_user_shoot(u32 id, float dirx, float diry);
 network_message create_protocol_user_throw(u32 id, float dirx, float diry, throwable_type type);
 network_message create_protocol_zombie_list();
+network_message create_protocol_zombie_chunk_list();
 network_message create_protocol_bullets_list();
 network_message create_protocol_drop_list();
 network_message create_protocol_throwables_list();

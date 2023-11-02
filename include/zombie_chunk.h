@@ -5,6 +5,13 @@
 
 #include "objects.h"
 
+typedef enum t_zombie_chunk_type
+{
+	CHUNK_FOOT,
+	CHUNK_HAND,
+	CHUNK_SPLATTER,
+} zombie_chunk_type;
+
 typedef struct t_zombie_chunk {
 	bool active;
 	vec3f start_position;
@@ -12,7 +19,8 @@ typedef struct t_zombie_chunk {
 	vec3f target_position;
 	float duration;
 	vec2f direction;
-	image* img;
+	zombie_chunk_type type;
+	int random_chunk;
 	float rotation;
 	float rotation_speed;
 } zombie_chunk;

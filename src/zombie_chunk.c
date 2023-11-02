@@ -10,11 +10,20 @@ static vec2f get_random_point_around_point(vec3f center, float distance) {
 	return (vec2f){x, y};
 }
 
-static image* get_chunk_image() {
+static image* get_chunk_image_from_type(zombie_chunk_type type) {
+	switch(type) {
+		default:
+		case CHUNK_HAND: return img_zombie_chunk_hand;
+		case CHUNK_FOOT: return img_zombie_chunk_foot;
+		case CHUNK_SPLATTER: return img_zombie_chunk_blood;
+	}
+}
+
+static zombie_chunk_type get_random_chunk_type() {
 	#define AVAILABLE_ZOMBIE_CHUNK_COUNT 2
-	image* available_zombie_chunks[AVAILABLE_ZOMBIE_CHUNK_COUNT] = {
-		img_zombie_chunk_hand,
-		img_zombie_chunk_foot,
+	zombie_chunk_type available_zombie_chunks[AVAILABLE_ZOMBIE_CHUNK_COUNT] = {
+		CHUNK_HAND,
+		CHUNK_FOOT,
 	};
 	return available_zombie_chunks[rand() % AVAILABLE_ZOMBIE_CHUNK_COUNT];
 }
@@ -30,7 +39,7 @@ void spawn_zombie_splatter(vec3f center) {
 		
 		zombie_chunk chunk = {.active = true, .start_position = center, .direction = dir, 
 			.position = center, .duration = 0.0f, .target_position = center,
-			.img = img_zombie_chunk_blood, .rotation = (float)rand()/(float)(RAND_MAX), .rotation_speed = 0.0f};
+			.type = CHUNK_SPLATTER, .rotation = (float)rand()/(float)(RAND_MAX), .rotation_speed = 0.0f};
 		zombie_chunks[i] = chunk;
 		return;
 	}
@@ -47,7 +56,7 @@ void spawn_zombie_chunk(vec3f center) {
 		
 		zombie_chunk chunk = {.active = true, .start_position = center, .direction = dir, 
 			.position = center, .duration = 0.0f, .target_position = (vec3f){target.x, target.y, height},
-			.img = get_chunk_image(), .rotation = (float)rand()/(float)(RAND_MAX), .rotation_speed = dir.x < 0.0f ? update_delta : -update_delta};
+			.type = get_random_chunk_type(), .rotation = (float)rand()/(float)(RAND_MAX), .rotation_speed = dir.x < 0.0f ? update_delta : -update_delta};
 		zombie_chunks[i] = chunk;
 		return;
 	}
@@ -97,7 +106,7 @@ void draw_zombie_chunks(platform_window* window) {
 		//render_box_with_outline(box, rgba(200, 50, 50, alpha));
 
 		renderer->render_set_rotation(zombie_chunks[i].rotation);
-		renderer->render_image_tint(zombie_chunks[i].img, box.tl_d.x, box.tl_d.y, box.tr_d.x - box.tl_d.x, box.br_d.y - box.tr_d.y, rgba(255,255,255,alpha));
+		renderer->render_image_tint(get_chunk_image_from_type(zombie_chunks[i].type), box.tl_d.x, box.tl_d.y, box.tr_d.x - box.tl_d.x, box.br_d.y - box.tr_d.y, rgba(255,255,255,alpha));
 		renderer->render_set_rotation(0.0f);
 	}
 }

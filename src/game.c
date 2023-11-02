@@ -231,6 +231,7 @@ void update_server(platform_window* window) {
 		broadcast_to_clients(create_protocol_bullets_list());
 		broadcast_to_clients(create_protocol_drop_list());
 		broadcast_to_clients(create_protocol_throwables_list());
+		broadcast_to_clients(create_protocol_zombie_chunk_list());
 
 		// play sounds locally and send them to clients.
 		play_sounds_in_queue();
@@ -290,6 +291,11 @@ void update_client(platform_window* window) {
 		case MESSAGE_ZOMBIE_LIST: {
 			protocol_zombie_list* msg_zombies = (protocol_zombie_list*)msg;
 			memcpy(zombies, msg_zombies->zombies, sizeof(zombies));
+		} break;
+
+		case MESSAGE_ZOMBIE_CHUNK_LIST: {
+			protocol_zombie_chunk_list* msg_zombies = (protocol_zombie_chunk_list*)msg;
+			memcpy(zombie_chunks, msg_zombies->zombie_chunks, sizeof(zombie_chunks));
 		} break;
 
 		case MESSAGE_THROWABLES_LIST: {
