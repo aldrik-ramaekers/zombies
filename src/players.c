@@ -240,12 +240,8 @@ void take_player_input(platform_window* window) {
 		dirx /= length;
 		diry /= length;
 		
-		throw_throwable(window, player_id, THROWABLE_GRENADE, dirx, diry);
-		//network_message message = create_protocol_user_shoot(player_id, dirx, diry);
-		//add_message_to_outgoing_queuex(message, *global_state.client);
-	}
-
-	
+		add_message_to_outgoing_queuex(create_protocol_user_throw(player_id, dirx, diry, THROWABLE_GRENADE), *global_state.client);
+	}	
 }
 
 void update_players_client() {

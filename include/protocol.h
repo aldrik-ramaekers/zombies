@@ -13,11 +13,13 @@ typedef enum t_network_message_type
 	MESSAGE_USER_LIST,
 	MESSAGE_USER_MOVED,
 	MESSAGE_USER_LOOK,
+	MESSAGE_USER_THROW,
 	MESSAGE_ZOMBIE_LIST,
 	MESSAGE_USER_SHOOT,
 	MESSAGE_BULLET_LIST,
 	MESSAGE_DROP_LIST,
 	MESSAGE_SOUND_LIST,
+	MESSAGE_THROWABLES_LIST,
 } network_message_type;
 
 typedef struct t_protocol_generic_client_message
@@ -87,6 +89,15 @@ typedef struct t_protocol_move
 	float delta;
 } protocol_move;
 
+typedef struct t_protocol_user_throw
+{
+	network_message_type type;
+	u32 id;
+	float dirx;
+	float diry;
+	throwable_type throwable;
+} protocol_user_throw;
+
 typedef struct t_protocol_user_look
 {
 	network_message_type type;
@@ -102,6 +113,12 @@ typedef struct t_protocol_bullets_list
 	network_message_type type;
 	bullet bullets[500];
 } protocol_bullets_list;
+
+typedef struct t_protocol_throwables_list
+{
+	network_message_type type;
+	throwable throwables[50];
+} protocol_throwables_list;
 
 typedef struct t_protocol_user_shoot
 {
@@ -131,9 +148,11 @@ network_message create_protocol_user_list();
 network_message create_protocol_user_moved(protocol_move_type move, u32 id);
 network_message create_protocol_user_look(u32 id, float gunx, float guny);
 network_message create_protocol_user_shoot(u32 id, float dirx, float diry);
+network_message create_protocol_user_throw(u32 id, float dirx, float diry, throwable_type type);
 network_message create_protocol_zombie_list();
 network_message create_protocol_bullets_list();
 network_message create_protocol_drop_list();
+network_message create_protocol_throwables_list();
 
 array messages_received_on_server;
 array messages_received_on_client;

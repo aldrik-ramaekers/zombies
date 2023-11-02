@@ -1,7 +1,7 @@
 #include "../include/throwables.h"
 #include "../include/audio.h"
 
-void throw_throwable(platform_window* window, u32 id, throwable_type type, float dirx, float diry) {
+void throw_throwable(u32 id, throwable_type type, float dirx, float diry) {
 	for (int i = 0; i < max_throwables; i++) {
 		if (throwables[i].active) continue;
 

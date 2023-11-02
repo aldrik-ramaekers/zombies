@@ -36,10 +36,10 @@ typedef struct t_throwable {
 
 vec3f grenade_explosion_size = (vec3f){2.0f, 2.0f, 2.0f};
 
-throwable throwables[500] = {0};
-int max_throwables = 500;
+throwable throwables[50] = {0};
+int max_throwables = 50;
 
-void throw_throwable(platform_window* window, u32 id, throwable_type type, float dirx, float diry);
+void throw_throwable(u32 id, throwable_type type, float dirx, float diry);
 void draw_throwables(platform_window* window);
 
 #endif

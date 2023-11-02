@@ -35,6 +35,14 @@ network_message create_protocol_user_list()
 	return network_create_message((u8*)buf, sizeof(protocol_user_list), MAX_NETWORK_BUFFER_SIZE);
 }
 
+network_message create_protocol_throwables_list()
+{
+	protocol_throwables_list *buf = alloc_network_message(protocol_throwables_list);
+	buf->type = MESSAGE_THROWABLES_LIST;
+	memcpy(buf->throwables, throwables, sizeof(throwables));
+	return network_create_message((u8*)buf, sizeof(protocol_throwables_list), MAX_NETWORK_BUFFER_SIZE);
+}
+
 network_message create_protocol_zombie_list()
 {
 	protocol_zombie_list *buf = alloc_network_message(protocol_zombie_list);
@@ -68,6 +76,17 @@ network_message create_protocol_user_moved(protocol_move_type move, u32 id)
 	buf->id = id;
 	buf->delta = update_delta;
 	return network_create_message((u8*)buf, sizeof(protocol_move), MAX_NETWORK_BUFFER_SIZE);
+}
+
+network_message create_protocol_user_throw(u32 id, float dirx, float diry, throwable_type type)
+{
+	protocol_user_throw *buf = alloc_network_message(protocol_user_throw);
+	buf->type = MESSAGE_USER_THROW;
+	buf->id = id;
+	buf->dirx = dirx;
+	buf->diry = diry;
+	buf->throwable = type;
+	return network_create_message((u8*)buf, sizeof(protocol_user_throw), MAX_NETWORK_BUFFER_SIZE);
 }
 
 network_message create_protocol_user_shoot(u32 id, float dirx, float diry)

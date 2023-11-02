@@ -174,6 +174,11 @@ void update_server(platform_window* window) {
 				
 			} break;
 
+			case MESSAGE_USER_THROW: {
+				protocol_user_throw* throw_msg = (protocol_user_throw*)msg->message;
+				throw_throwable(throw_msg->id, throw_msg->throwable, throw_msg->dirx, throw_msg->diry);
+			} break;
+
 			case MESSAGE_USER_MOVED: {
 				protocol_move* move_msg = (protocol_move*)msg->message;
 				move_user(window,  move_msg->id, move_msg->move, move_msg->delta);
@@ -225,6 +230,7 @@ void update_server(platform_window* window) {
 		broadcast_to_clients(create_protocol_zombie_list());
 		broadcast_to_clients(create_protocol_bullets_list());
 		broadcast_to_clients(create_protocol_drop_list());
+		broadcast_to_clients(create_protocol_throwables_list());
 
 		// play sounds locally and send them to clients.
 		play_sounds_in_queue();
@@ -284,6 +290,11 @@ void update_client(platform_window* window) {
 		case MESSAGE_ZOMBIE_LIST: {
 			protocol_zombie_list* msg_zombies = (protocol_zombie_list*)msg;
 			memcpy(zombies, msg_zombies->zombies, sizeof(zombies));
+		} break;
+
+		case MESSAGE_THROWABLES_LIST: {
+			protocol_throwables_list* msg_throwables = (protocol_throwables_list*)msg;
+			memcpy(throwables, msg_throwables->throwables, sizeof(throwables));
 		} break;
 
 		case MESSAGE_BULLET_LIST: {
