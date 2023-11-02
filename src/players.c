@@ -82,6 +82,7 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 
 	if (move == MOVE_UP) {
 		float newy = p->playery - speed;
+		p->direction = DIRECTION_UP;
 		if (is_in_bounds(p->playerx, newy)) {
 			p->playery = newy;
 			object o = check_if_player_collided_with_object(*p);
@@ -91,6 +92,7 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 
 	if (move == MOVE_DOWN) {
 		float newy = p->playery + speed;
+		p->direction = DIRECTION_DOWN;
 		if (is_in_bounds(p->playerx, newy)) {
 			p->playery = newy;
 			object o = check_if_player_collided_with_object(*p);
@@ -99,7 +101,8 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 	}
 
 	if (move == MOVE_LEFT) {
-		float newx = p->playerx - speed;
+		float newx = p->playerx - speed;	
+		p->direction = DIRECTION_LEFT;
 		if (is_in_bounds(newx, p->playery)) {
 			p->playerx = newx;
 			object o = check_if_player_collided_with_object(*p);
@@ -109,6 +112,7 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 
 	if (move == MOVE_RIGHT) {
 		float newx = p->playerx + speed;
+		p->direction = DIRECTION_RIGHT;
 		if (is_in_bounds(newx, p->playery)) {
 			p->playerx = newx;
 			object o = check_if_player_collided_with_object(*p);
@@ -168,37 +172,33 @@ void take_player_input(platform_window* window) {
 	if (keyboard_is_key_down(KEY_A)) {
 		network_message message = create_protocol_user_moved(MOVE_LEFT, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
-		p->direction = DIRECTION_LEFT;
 	}
 	if (keyboard_is_key_down(KEY_D)) {
 		network_message message = create_protocol_user_moved(MOVE_RIGHT, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
-		p->direction = DIRECTION_RIGHT;
 	}
 
 	if (keyboard_is_key_down(KEY_W)) {
 		network_message message = create_protocol_user_moved(MOVE_UP, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
-		p->direction = DIRECTION_UP;
 
-		if (keyboard_is_key_down(KEY_A)) {
-			p->direction = DIRECTION_TOPLEFT;
-		}
-		else if (keyboard_is_key_down(KEY_D)) {
-			p->direction = DIRECTION_TOPRIGHT;
-		}
+		// if (keyboard_is_key_down(KEY_A)) {
+		// 	p->direction = DIRECTION_TOPLEFT;
+		// }
+		// else if (keyboard_is_key_down(KEY_D)) {
+		// 	p->direction = DIRECTION_TOPRIGHT;
+		// }
 	}
 	if (keyboard_is_key_down(KEY_S)) {
 		network_message message = create_protocol_user_moved(MOVE_DOWN, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
-		p->direction = DIRECTION_DOWN;
 
-		if (keyboard_is_key_down(KEY_A)) {
-			p->direction = DIRECTION_BOTTOMLEFT;
-		}
-		else if (keyboard_is_key_down(KEY_D)) {
-			p->direction = DIRECTION_BOTTOMRIGHT;
-		}
+		// if (keyboard_is_key_down(KEY_A)) {
+		// 	p->direction = DIRECTION_BOTTOMLEFT;
+		// }
+		// else if (keyboard_is_key_down(KEY_D)) {
+		// 	p->direction = DIRECTION_BOTTOMRIGHT;
+		// }
 	}
 
 
@@ -248,21 +248,9 @@ void take_player_input(platform_window* window) {
 	
 }
 
-void update_players_server() {
+void update_players_client() {
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
-		players[i].sec_since_last_shot += SERVER_TICK_RATE;
-		players[i].sec_since_interact_state_change += SERVER_TICK_RATE;
-
-		gun g = get_gun_by_type(players[i].guntype);
-		if (players[i].interact_state == INTERACT_RELOADING && players[i].sec_since_interact_state_change >= g.reload_time) {
-			int amount_to_reload = g.magazine_size;
-			if (amount_to_reload > players[i].total_ammo) amount_to_reload = players[i].total_ammo;
-			players[i].total_ammo -= amount_to_reload;
-			players[i].ammo_in_mag = amount_to_reload;
-
-			players[i].interact_state = INTERACT_IDLE;
-		}
 
 		if (players[i].direction == DIRECTION_DOWN) {
 			players[i].sprite.frame_start = 374;
@@ -293,6 +281,26 @@ void update_players_server() {
 
 		update_sprite(&players[i].sprite);
 	}
+}
+
+void update_players_server() {
+	for (int i = 0; i < MAX_PLAYERS; i++) {
+		if (!players[i].active) continue;
+		players[i].sec_since_last_shot += SERVER_TICK_RATE;
+		players[i].sec_since_interact_state_change += SERVER_TICK_RATE;
+
+		gun g = get_gun_by_type(players[i].guntype);
+		if (players[i].interact_state == INTERACT_RELOADING && players[i].sec_since_interact_state_change >= g.reload_time) {
+			int amount_to_reload = g.magazine_size;
+			if (amount_to_reload > players[i].total_ammo) amount_to_reload = players[i].total_ammo;
+			players[i].total_ammo -= amount_to_reload;
+			players[i].ammo_in_mag = amount_to_reload;
+
+			players[i].interact_state = INTERACT_IDLE;
+		}
+	}
+
+	update_players_client();
 }
 
 void draw_players(platform_window* window) {

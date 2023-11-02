@@ -316,6 +316,7 @@ void update_client(platform_window* window) {
 	logic_update_time = platform_get_time(TIME_FULL, TIME_NS) - logic_update_time;
 
 	update_zombies_client(window);
+	update_players_client();
 }
 
 void update_game(platform_window* window) {
