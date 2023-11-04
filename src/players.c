@@ -71,7 +71,8 @@ void spawn_player(u32 id, network_client client) {
 
 
 void move_user(platform_window* window, u32 id, protocol_move_type move, float delta) {
-	float speed = 5.5f * delta;
+	float speed_straight = 5.5f;
+	float speed = speed_straight * delta;
 	float pad_between_player_and_obj = 0.01f;
 
 	player* p = get_player_by_id(id);
@@ -80,7 +81,12 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 		return;
 	}
 
-	if (move == MOVE_UP) {
+	if (move == MOVE_UPLEFT || move == MOVE_UPRIGHT || move == MOVE_DOWNLEFT || move == MOVE_DOWNRIGHT) {
+		float diag = (speed_straight * sqrt(2));
+		speed = (speed_straight * (speed_straight / diag)) * delta;
+	}
+
+	if (move == MOVE_UP || move == MOVE_UPRIGHT || move == MOVE_UPLEFT) {
 		float newy = p->playery - speed;
 		p->direction = DIRECTION_UP;
 		if (is_in_bounds(p->playerx, newy)) {
@@ -90,7 +96,7 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 		}
 	}
 
-	if (move == MOVE_DOWN) {
+	if (move == MOVE_DOWN || move == MOVE_DOWNLEFT || move == MOVE_DOWNRIGHT) {
 		float newy = p->playery + speed;
 		p->direction = DIRECTION_DOWN;
 		if (is_in_bounds(p->playerx, newy)) {
@@ -100,7 +106,7 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 		}
 	}
 
-	if (move == MOVE_LEFT) {
+	if (move == MOVE_LEFT || move == MOVE_UPLEFT || move == MOVE_DOWNLEFT) {
 		float newx = p->playerx - speed;	
 		p->direction = DIRECTION_LEFT;
 		if (is_in_bounds(newx, p->playery)) {
@@ -110,7 +116,7 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 		}
 	}
 
-	if (move == MOVE_RIGHT) {
+	if (move == MOVE_RIGHT || move == MOVE_UPRIGHT || move == MOVE_DOWNRIGHT) {
 		float newx = p->playerx + speed;
 		p->direction = DIRECTION_RIGHT;
 		if (is_in_bounds(newx, p->playery)) {
@@ -119,6 +125,8 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 			if (o.active) p->playerx = o.position.x-get_player_size_in_tile() - pad_between_player_and_obj;
 		}
 	}
+
+	
 }
 
 player* get_player_by_id(u32 id) {
@@ -168,24 +176,43 @@ void take_player_input(platform_window* window) {
 #ifdef MODE_DEBUG
 	update_editor(window);
 #endif
-
-	if (keyboard_is_key_down(KEY_A)) {
+	
+	if (keyboard_is_key_down(KEY_W) && keyboard_is_key_down(KEY_D)) {
+		network_message message = create_protocol_user_moved(MOVE_UPRIGHT, player_id);
+		add_message_to_outgoing_queuex(message, *global_state.client);
+		move_user(window, player_id,MOVE_UPRIGHT, update_delta);
+	}
+	else if (keyboard_is_key_down(KEY_W) && keyboard_is_key_down(KEY_A)) {
+		network_message message = create_protocol_user_moved(MOVE_UPLEFT, player_id);
+		add_message_to_outgoing_queuex(message, *global_state.client);
+		move_user(window, player_id,MOVE_UPLEFT, update_delta);
+	}
+	else if (keyboard_is_key_down(KEY_S) && keyboard_is_key_down(KEY_A)) {
+		network_message message = create_protocol_user_moved(MOVE_DOWNLEFT, player_id);
+		add_message_to_outgoing_queuex(message, *global_state.client);
+		move_user(window, player_id,MOVE_DOWNLEFT, update_delta);
+	}
+	else if (keyboard_is_key_down(KEY_S) && keyboard_is_key_down(KEY_D)) {
+		network_message message = create_protocol_user_moved(MOVE_DOWNRIGHT, player_id);
+		add_message_to_outgoing_queuex(message, *global_state.client);
+		move_user(window, player_id,MOVE_DOWNRIGHT, update_delta);
+	}
+	else if (keyboard_is_key_down(KEY_A)) {
 		network_message message = create_protocol_user_moved(MOVE_LEFT, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
 		move_user(window, player_id,MOVE_LEFT, update_delta);
 	}
-	if (keyboard_is_key_down(KEY_D)) {
+	else if (keyboard_is_key_down(KEY_D)) {
 		network_message message = create_protocol_user_moved(MOVE_RIGHT, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
 		move_user(window, player_id,MOVE_RIGHT, update_delta);
 	}
-
-	if (keyboard_is_key_down(KEY_W)) {
+	else if (keyboard_is_key_down(KEY_W)) {
 		network_message message = create_protocol_user_moved(MOVE_UP, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
 		move_user(window, player_id,MOVE_UP, update_delta);
 	}
-	if (keyboard_is_key_down(KEY_S)) {
+	else if (keyboard_is_key_down(KEY_S)) {
 		network_message message = create_protocol_user_moved(MOVE_DOWN, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
 		move_user(window, player_id,MOVE_DOWN, update_delta);

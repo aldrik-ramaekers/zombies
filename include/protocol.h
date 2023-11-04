@@ -87,6 +87,11 @@ typedef enum t_protocol_move_type
 	MOVE_DOWN,
 	MOVE_LEFT,
 	MOVE_RIGHT,
+
+	MOVE_UPRIGHT,
+	MOVE_UPLEFT,
+	MOVE_DOWNRIGHT,
+	MOVE_DOWNLEFT,
 } protocol_move_type;
 
 typedef struct t_protocol_move
