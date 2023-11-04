@@ -358,8 +358,6 @@ static void move_camera(platform_window* window) {
 	_camera_buffer.y += diry*speedy;
 	_global_camera.x = (int)_camera_buffer.x;
 	_global_camera.y = (int)_camera_buffer.y;
-	//_global_camera.x = _next_camera_pos.x;
-	//_global_camera.y = _next_camera_pos.y;
 }
 
 void update_game(platform_window* window) {

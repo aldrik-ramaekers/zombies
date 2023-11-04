@@ -51,6 +51,10 @@ typedef struct t_player {
 	sprite sprite;
 	vec3f velocity;
 	network_state connection_state;
+	struct {
+		int grenades;
+		int molotovs;
+	} throwables;
 } player;
 
 #include "protocol.h"

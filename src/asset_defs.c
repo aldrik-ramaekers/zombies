@@ -1,6 +1,7 @@
 #include "../include/asset_defs.h"
 
 void load_assets() {
+	fnt_32 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 32);
 	fnt_24 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 24);
 	fnt_20 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 20);
 
@@ -15,6 +16,8 @@ void load_assets() {
 	img_tiles = assets_load_image_from_file("data/imgs/icons/tiles.png");
 	img_sunny = assets_load_image_from_file("data/imgs/icons/sunny.png");
 	img_disconnected = assets_load_image_from_file("data/imgs/icons/disconnected.png");
+	img_icon_grenade = assets_load_image_from_file("data/imgs/icons/grenade.png");
+	img_icon_molotov = assets_load_image_from_file("data/imgs/icons/molotov.png");
 
 	// Throwables
 	img_grenade = assets_load_image_from_file("data/imgs/throwables/grenade.png");

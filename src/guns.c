@@ -9,6 +9,7 @@ image* get_image_of_gun(gun_type type) {
 	switch (type)
 	{
 	case GUN_NOVA: return img_icon_nova; break;
+	case GUN_MP5: return img_icon_nova; break;
 	
 	default:
 		break;

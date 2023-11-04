@@ -12,6 +12,7 @@ typedef enum t_throwable_type
 {
 	THROWABLE_NONE = 0,
 	THROWABLE_GRENADE,
+	THROWABLE_MOLOTOV,
 } throwable_type;
 
 typedef enum t_throwable_state

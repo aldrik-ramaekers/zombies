@@ -3,6 +3,7 @@
 
 #include <projectbase/project_base.h>
 
+font* fnt_32;
 font* fnt_24;
 font* fnt_20;
 
@@ -17,6 +18,8 @@ image* img_3d;
 image* img_tiles;
 image* img_sunny;
 image* img_disconnected;
+image* img_icon_grenade;
+image* img_icon_molotov;
 
 // Objects
 image* img_spawner;

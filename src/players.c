@@ -61,6 +61,8 @@ void spawn_player(u32 id, network_client client) {
 		players[i].sprite = create_sprite(img_player_running, 22, 108, 136, 0.02f);
 		players[i].direction = DIRECTION_DOWN;
 		players[i].connection_state = CONNECTED;
+		players[i].throwables.grenades = 3; 
+		players[i].throwables.molotovs = 1;
 
 		gun g = get_gun_by_type(players[i].guntype);
 		players[i].total_ammo = g.max_ammunition;

@@ -11,16 +11,41 @@ static void draw_gun_info(platform_window* window) {
 
 	gun g = get_gun_by_type(p->guntype);
 
-
-	int y = window->height - fnt_24->px_h - EDGE_PADDING;
+	int y = window->height - fnt_32->px_h - EDGE_PADDING;
 	int x = EDGE_PADDING;
+	int icon_h = 26;
 
-	renderer->render_text(fnt_24, (int)_global_camera.x + x, (int)_global_camera.y + y, g.name, rgb(255,255,255));
-	y -= fnt_24->px_h;
+	{ // Ammo
+		char ammo_txt[50];
+		sprintf(ammo_txt, "%d/%d", p->ammo_in_mag, p->total_ammo);
+		renderer->render_text(fnt_32, _global_camera.x + x+1, _global_camera.y + y+1, ammo_txt, rgba(0,0,0,120));
+		renderer->render_text(fnt_32, _global_camera.x + x, _global_camera.y + y, ammo_txt, rgb(255,255,255));
+	}
 
-	char ammo_txt[50];
-	sprintf(ammo_txt, "%d / %d", p->ammo_in_mag, p->total_ammo);
-	renderer->render_text(fnt_20, (int)_global_camera.x + x, (int)_global_camera.y + y, ammo_txt, rgb(255,255,255));
+	y -= icon_h + 5;
+
+	{ // Throwables
+		int offset_x = 0;
+		for (int i = 0; i < p->throwables.grenades; i++)
+		{
+			renderer->render_image_tint(img_icon_grenade, _global_camera.x + x-1 + offset_x, _global_camera.y + y-1, icon_h, icon_h, rgba(0,0,0,100));
+			renderer->render_image(img_icon_grenade, _global_camera.x + x + offset_x, _global_camera.y + y, icon_h, icon_h);
+
+			offset_x += icon_h/3;
+		}
+
+		y -= icon_h + 5;
+
+		offset_x = 0;
+		for (int i = 0; i < p->throwables.molotovs; i++)
+		{
+			renderer->render_image_tint(img_icon_molotov, _global_camera.x + x-1 + offset_x, _global_camera.y + y-1, icon_h, icon_h, rgba(0,0,0,100));
+			renderer->render_image(img_icon_molotov, _global_camera.x + x + offset_x, _global_camera.y + y, icon_h, icon_h);
+
+			offset_x += icon_h/3;
+		}
+	}
+
 }
 
 static void draw_leaderboard_entry(int x, int y, int w, int h, char* name, char* kills, char* deaths, char* ping, bool highlighted, bool disconnected) {
