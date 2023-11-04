@@ -337,6 +337,7 @@ void update_client(platform_window* window) {
 }
 
 static void move_camera(platform_window* window) {
+	static camera _camera_buffer;
 	float speedx = window->width / 1000.0f;
 	float diffx = (_next_camera_pos.x - _global_camera.x);
 	if (abs(diffx) <= speedx) diffx = 0.0f;
@@ -353,8 +354,10 @@ static void move_camera(platform_window* window) {
 	float dirx = diffx/length;
 	float diry = diffy/length;
 
-	_global_camera.x += dirx*speedx;
-	_global_camera.y += diry*speedy;
+	_camera_buffer.x += dirx*speedx;
+	_camera_buffer.y += diry*speedy;
+	_global_camera.x = (int)_camera_buffer.x;
+	_global_camera.y = (int)_camera_buffer.y;
 	//_global_camera.x = _next_camera_pos.x;
 	//_global_camera.y = _next_camera_pos.y;
 }

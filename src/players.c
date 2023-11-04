@@ -210,27 +210,25 @@ void take_player_input(platform_window* window) {
 		add_message_to_outgoing_queuex(create_protocol_user_look(player_id, gun_offset_x, gun_offset_y), *global_state.client);
 	}
 
-	// shooting
-	if (is_left_down()) {
-		float dirx = (_global_mouse.x - (window->width/2));
-		float diry = (_global_mouse.y - (window->height/2));
+	{
+		box box = get_render_box_of_square(window, (vec3f){p->playerx, p->playery, p->height}, (vec3f){1.0,1.0,1.0f});
+		float dirx = (_global_mouse.x - (box.tl_u.x - _global_camera.x));
+		float diry = (_global_mouse.y - (box.tl_u.y - _global_camera.y));
 		double length = sqrt(dirx * dirx + diry * diry);
 		dirx /= length;
 		diry /= length;
 
-		network_message message = create_protocol_user_shoot(player_id, dirx, diry);
-		add_message_to_outgoing_queuex(message, *global_state.client);
-	}
+		// shooting
+		if (is_left_down()) {
+			network_message message = create_protocol_user_shoot(player_id, dirx, diry);
+			add_message_to_outgoing_queuex(message, *global_state.client);
+		}
 
-	// throwing
-	if (is_right_clicked()) {
-		float dirx = (_global_mouse.x - (window->width/2));
-		float diry = (_global_mouse.y - (window->height/2));
-		double length = sqrt(dirx * dirx + diry * diry);
-		dirx /= length;
-		diry /= length;
-		
-		add_message_to_outgoing_queuex(create_protocol_user_throw(player_id, dirx, diry, THROWABLE_GRENADE), *global_state.client);
+		// throwing
+		if (is_right_clicked()) {
+			network_message message = create_protocol_user_throw(player_id, dirx, diry, THROWABLE_GRENADE);
+			add_message_to_outgoing_queuex(message, *global_state.client);
+		}
 	}	
 }
 
