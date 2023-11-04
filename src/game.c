@@ -181,7 +181,7 @@ void update_server(platform_window* window) {
 
 			case MESSAGE_USER_MOVED: {
 				protocol_move* move_msg = (protocol_move*)msg->message;
-				move_user(window,  move_msg->id, move_msg->move, move_msg->delta);
+				if (move_msg->id != player_id) move_user(window,  move_msg->id, move_msg->move, move_msg->delta);
 			} break;
 
 			case MESSAGE_USER_LOOK: {
@@ -215,7 +215,8 @@ void update_server(platform_window* window) {
 		update_spawners_server();
 		update_drops_server();
 		update_wallitems_server();
-		update_throwables_server(); 
+		update_throwables_server();
+		update_zombie_chunks();
 
 		broadcast_players = platform_get_time(TIME_FULL, TIME_NS);
 		update_players_server();
@@ -354,10 +355,8 @@ static void move_camera(platform_window* window) {
 
 	_global_camera.x += dirx*speedx;
 	_global_camera.y += diry*speedy;
-
 	//_global_camera.x = _next_camera_pos.x;
 	//_global_camera.y = _next_camera_pos.y;
-	log_infox("%.1f %.1f", speedx, speedy);
 }
 
 void update_game(platform_window* window) {
@@ -369,12 +368,10 @@ void update_game(platform_window* window) {
 	else {
 		update_client(window);
 	}
-
-	update_zombie_chunks();
 	
 	if (global_state.network_state == CONNECTED) {
 		take_player_input(window);
-
+		
 		draw_grid(window);
 		draw_wallitems(window);
 		draw_zombie_chunks(window);

@@ -172,33 +172,23 @@ void take_player_input(platform_window* window) {
 	if (keyboard_is_key_down(KEY_A)) {
 		network_message message = create_protocol_user_moved(MOVE_LEFT, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
+		move_user(window, player_id,MOVE_LEFT, update_delta);
 	}
 	if (keyboard_is_key_down(KEY_D)) {
 		network_message message = create_protocol_user_moved(MOVE_RIGHT, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
+		move_user(window, player_id,MOVE_RIGHT, update_delta);
 	}
 
 	if (keyboard_is_key_down(KEY_W)) {
 		network_message message = create_protocol_user_moved(MOVE_UP, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
-
-		// if (keyboard_is_key_down(KEY_A)) {
-		// 	p->direction = DIRECTION_TOPLEFT;
-		// }
-		// else if (keyboard_is_key_down(KEY_D)) {
-		// 	p->direction = DIRECTION_TOPRIGHT;
-		// }
+		move_user(window, player_id,MOVE_UP, update_delta);
 	}
 	if (keyboard_is_key_down(KEY_S)) {
 		network_message message = create_protocol_user_moved(MOVE_DOWN, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
-
-		// if (keyboard_is_key_down(KEY_A)) {
-		// 	p->direction = DIRECTION_BOTTOMLEFT;
-		// }
-		// else if (keyboard_is_key_down(KEY_D)) {
-		// 	p->direction = DIRECTION_BOTTOMRIGHT;
-		// }
+		move_user(window, player_id,MOVE_DOWN, update_delta);
 	}
 
 
@@ -301,6 +291,8 @@ void update_players_server() {
 
 void draw_players(platform_window* window) {
 	float size = get_player_size_in_tile();
+	map_info info = get_map_info(window);
+
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
 
@@ -310,7 +302,7 @@ void draw_players(platform_window* window) {
 		players[i].height = height;
 
 		box box = get_render_box_of_square(window, (vec3f){players[i].playerx, players[i].playery, height}, (vec3f){size,size,1.0f});
-
+		
 		/*
 		render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgb(200,150,120));
 		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgb(200,150,120));
@@ -324,18 +316,11 @@ void draw_players(platform_window* window) {
 			box.br_d.x, box.br_d.y, 
 			box.tr_u.x, box.tr_u.y, 
 			frame.tl, frame.tr, frame.bl, frame.br);
-
-		int size = get_tile_width(window) / 2;
-		map_info info = get_map_info(window);
-
-		float player_render_x = box.tl_u.x;//players[i].playerx*info.tile_width + (players[i].playery*info.px_incline);
-		float player_render_y = box.tl_u.y;//players[i].playery*info.tile_height - (height*info.px_raised_per_h);
+			
+		float player_render_x = box.tl_u.x;
+		float player_render_y = box.tl_u.y;
 		
 		players[i].gun_height = height+0.5;
-		//float gun_render_x = players[i].gunx*info.tile_width + (players[i].guny*info.px_incline);
-		//float gun_render_y = players[i].guny*info.tile_height - (players[i].gun_height*info.px_raised_per_h);
-		
-		//renderer->render_rectangle(gun_render_x, gun_render_y, size/4, size/4, rgb(20,255,20));
 
 		if (players[i].connection_state == DISCONNECTED) {
 			float icon_h = (box.tr_u.x - box.tl_u.x)/2;
