@@ -310,6 +310,7 @@ void draw_players(platform_window* window) {
 		players[i].height = height;
 
 		box box = get_render_box_of_square(window, (vec3f){players[i].playerx, players[i].playery, height}, (vec3f){size,size,1.0f});
+
 		/*
 		render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgb(200,150,120));
 		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgb(200,150,120));
@@ -327,8 +328,8 @@ void draw_players(platform_window* window) {
 		int size = get_tile_width(window) / 2;
 		map_info info = get_map_info(window);
 
-		float player_render_x = players[i].playerx*info.tile_width + (players[i].playery*info.px_incline);
-		float player_render_y = players[i].playery*info.tile_height - (height*info.px_raised_per_h);
+		float player_render_x = box.tl_u.x;//players[i].playerx*info.tile_width + (players[i].playery*info.px_incline);
+		float player_render_y = box.tl_u.y;//players[i].playery*info.tile_height - (height*info.px_raised_per_h);
 		
 		players[i].gun_height = height+0.5;
 		//float gun_render_x = players[i].gunx*info.tile_width + (players[i].guny*info.px_incline);
@@ -341,7 +342,7 @@ void draw_players(platform_window* window) {
 			renderer->render_image(img_disconnected, box.tl_u.x + (icon_h/3), box.tr_u.y - icon_h, icon_h, icon_h);
 		}
 
-		if (players[i].id == player_id) {
+		if (players[i].id == player_id) {		
 			_next_camera_pos.x = -(window->width / 2) + player_render_x;
 			_next_camera_pos.y = -(window->height / 2) + player_render_y;
 		}

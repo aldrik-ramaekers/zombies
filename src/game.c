@@ -333,7 +333,31 @@ void update_client(platform_window* window) {
 	logic_update_time = platform_get_time(TIME_FULL, TIME_NS) - logic_update_time;
 
 	update_zombies_client(window);
-	update_players_client();
+}
+
+static void move_camera(platform_window* window) {
+	float speedx = window->width / 1000.0f;
+	float diffx = (_next_camera_pos.x - _global_camera.x);
+	if (abs(diffx) <= speedx) diffx = 0.0f;
+	speedx += (abs(diffx)/200.0f*speedx);
+	
+	float speedy = window->height / 600.0f;
+	float diffy = (_next_camera_pos.y - _global_camera.y);
+	if (abs(diffy) <= speedy) diffy = 0.0f;
+	speedy += (abs(diffy)/200.0f*speedy);
+
+	float length = sqrt(diffx * diffx + diffy * diffy);
+	if (length == 0) length = 1.0f;
+
+	float dirx = diffx/length;
+	float diry = diffy/length;
+
+	_global_camera.x += dirx*speedx;
+	_global_camera.y += diry*speedy;
+
+	//_global_camera.x = _next_camera_pos.x;
+	//_global_camera.y = _next_camera_pos.y;
+	log_infox("%.1f %.1f", speedx, speedy);
 }
 
 void update_game(platform_window* window) {
@@ -365,7 +389,8 @@ void update_game(platform_window* window) {
 		
 		#ifdef MODE_DEBUG 
 			if (!is_editing_map) 
-		#endif 
+		#endif
+
 		draw_players(window);
 		
 		draw_spawners(window);
@@ -375,7 +400,6 @@ void update_game(platform_window* window) {
 		draw_editor(window);
 #endif
 
-		_global_camera.x = (int)_next_camera_pos.x;
-		_global_camera.y = (int)_next_camera_pos.y;
+		move_camera(window);
 	}
 }
