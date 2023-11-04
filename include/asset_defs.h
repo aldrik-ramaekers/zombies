@@ -29,6 +29,7 @@ image* img_obj_wall1;
 // Throwables
 image* img_grenade;
 image* img_grenade_explode;
+image* img_molotov_explode;
 
 // Players
 image* img_player_running;
@@ -45,6 +46,9 @@ image* img_tile_grass1;
 // Sounds
 Mix_Chunk* wav_throwable_bounce;
 Mix_Chunk* wav_grenade_explode;
+Mix_Chunk* wav_molotov_explode;
+
+Mix_Chunk* wav_fire;
 
 Mix_Chunk* wav_shoot_mp5;
 Mix_Chunk* wav_reload_mp5;

@@ -13,10 +13,16 @@ void throw_throwable(u32 id, throwable_type type, float dirx, float diry) {
 		throwable t = {.active = true, .state = THROWABLE_FLYING, .alive_time = 0.0f, .type = type, .direction = (vec3f){.x = dirx*1.5f, .y = diry*1.5f, .z = -0.2f}, 
 			.player_id = id, .position = (vec3f){.x = p->playerx, .y = p->playery, .z = p->height}};
 
-		t.sprite = create_sprite(img_grenade_explode, 12, 96, 96, 0.1f);
-
 		switch(type) {
-			case THROWABLE_GRENADE: t.damage = 1500; break;
+			case THROWABLE_GRENADE: {
+				t.sprite = create_sprite(img_grenade_explode, 12, 96, 96, 0.1f);
+				t.damage = 1500; 
+			} break;
+			case THROWABLE_MOLOTOV: {
+				t.sprite = create_sprite(img_molotov_explode, 32, 66, 119, 0.04f);
+				t.damage = 300; 
+			} break;
+			
 		}
 
 		throwables[i] = t;
@@ -32,11 +38,6 @@ bool check_if_throwable_collided_with_object(throwable* b, vec3f oldpos, vec3f n
 		if (!o.active) continue;
 		if (b->position.z <= o.h + o.size.z && b->position.z >= o.h) {
 			box obj_box = get_box_of_square((vec3f){o.position.x, o.position.y, o.h}, o.size);
-
-			//if (o.type == OBJECT_PLANTBOX1 && oldpos.x < o.position.x && newpos.x > o.position.x) {
-			//	log_infox("intersect {%.2f %.2f}{%.2f %.2f} {%.2f %.2f}{%.2f %.2f}",
-			//		oldpos.x, oldpos.y, newpos.x, newpos.y, o.position.x, o.position.y, o.position.x, o.position.y + o.size.y);
-			//}
 
 			// top
 			if (lines_intersect((vec2f){.x = oldpos.x, .y = oldpos.y}, (vec2f){.x = newpos.x, .y = newpos.y}, 
@@ -99,6 +100,34 @@ void explode_grenade(throwable t) {
 	}
 }
 
+void explode_molotov(throwable b) {
+	add_throwable_audio_event_to_queue(EVENT_FIRE, b.type, b.player_id, b.position);
+}
+
+static image* get_throwable_explosion_from_type(throwable_type type) {
+	switch(type) {
+		case THROWABLE_GRENADE: return img_grenade_explode;
+		case THROWABLE_MOLOTOV: return img_molotov_explode;
+		default: return img_grenade_explode;
+	}
+}
+
+static float get_throwable_explosion_time(throwable_type type) {
+	switch(type) {
+		case THROWABLE_GRENADE: return 3.2f;
+		case THROWABLE_MOLOTOV: return 8.0f;
+		default: return 0.0f;
+	}
+}
+
+static float get_throwable_fly_time(throwable_type type) {
+	switch(type) {
+		case THROWABLE_GRENADE: return 2.0f;
+		case THROWABLE_MOLOTOV: return 0.6f;
+		default: return 0.0f;
+	}
+}
+
 void update_throwables_server() {
 	float speed = 7.0f * SERVER_TICK_RATE;
 	float gravity = 0.015f;
@@ -109,23 +138,25 @@ void update_throwables_server() {
 		if (!b.active) continue;
 
 		throwables[i].rotation += SERVER_TICK_RATE*3.0f*throwables[i].bounces;
-
 		throwables[i].alive_time += SERVER_TICK_RATE;
-		if (throwables[i].alive_time >= 2.0f) {
 
+		if (throwables[i].alive_time >= get_throwable_explosion_time(b.type)) {
+			throwables[i].active = false;
+			continue;
+		}
+
+		if (throwables[i].alive_time >= get_throwable_fly_time(b.type)) {
 			if (throwables[i].state == THROWABLE_FLYING) {
 				add_throwable_audio_event_to_queue(EVENT_EXPLODE_THROWABLE, b.type, b.player_id, b.position);
 
 				switch(b.type) {
 					case THROWABLE_GRENADE: explode_grenade(b); break;
+					case THROWABLE_MOLOTOV: explode_molotov(b); break;
 				}
 			}
 
 			throwables[i].state = THROWABLE_EXPLODED;
 			update_sprite(&throwables[i].sprite);
-		}
-		if (throwables[i].alive_time >= 3.2f) {
-			throwables[i].active = false;
 			continue;
 		}
 
@@ -184,7 +215,7 @@ void draw_throwables(platform_window* window) {
 			
 			sprite_frame frame = sprite_get_frame(&throwables[i].sprite);
 
-			renderer->render_image_quad_partial(img_grenade_explode, 
+			renderer->render_image_quad_partial(get_throwable_explosion_from_type(t.type), 
 				box.tl_u.x, box.tl_u.y,
 				box.bl_d.x, box.bl_d.y, 
 				box.br_d.x, box.br_d.y, 

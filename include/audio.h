@@ -12,6 +12,7 @@
 #define CHANNEL_RELOAD 3
 #define CHANNEL_EXPLODE 4
 #define CHANNEL_COLLECT 5
+#define CHANNEL_FIRE 6
 
 typedef enum t_audio_event_type {
 	EVENT_SHOOT,
@@ -20,6 +21,7 @@ typedef enum t_audio_event_type {
 	EVENT_EXPLODE_THROWABLE,
 	EVENT_IMPACT,
 	EVENT_COLLECT,
+	EVENT_FIRE,
 } audio_event_type;
 
 typedef struct t_audio_event {
