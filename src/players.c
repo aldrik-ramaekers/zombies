@@ -253,9 +253,17 @@ void take_player_input(platform_window* window) {
 			add_message_to_outgoing_queuex(message, *global_state.client);
 		}
 
-		// throwing
-		if (is_right_clicked()) {
+		// grenades
+		if (keyboard_is_key_pressed(KEY_G) && p->throwables.grenades > 0) {
+			p->throwables.grenades--;
 			network_message message = create_protocol_user_throw(player_id, dirx, diry, THROWABLE_GRENADE);
+			add_message_to_outgoing_queuex(message, *global_state.client);
+		}
+
+		// molotovs
+		if (keyboard_is_key_pressed(KEY_F) && p->throwables.molotovs > 0) {
+			p->throwables.molotovs--;
+			network_message message = create_protocol_user_throw(player_id, dirx, diry, THROWABLE_MOLOTOV);
 			add_message_to_outgoing_queuex(message, *global_state.client);
 		}
 	}	
