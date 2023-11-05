@@ -24,5 +24,6 @@ int max_bullets = 500;
 void clear_bullets();
 void shoot(platform_window* window, u32 id, float dirx, float diry);
 void draw_bullets(platform_window* window);
+object_type check_if_bullet_collided_with_object(bullet* b, platform_window* window);
 
 #endif

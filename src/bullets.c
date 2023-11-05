@@ -32,8 +32,8 @@ void shoot(platform_window* window, u32 id, float dirx, float diry) {
 
 		float hh = get_height_of_tile_under_coords(p->playerx, p->playery);
 		float rads = atan2(dirx, diry);
-		float target1 = rads - (g.bullet_spread/2);
-		float target2 = rads + (g.bullet_spread/2);
+		float target1 = rads - (g.bullet_spread/2.0f);
+		float target2 = rads + (g.bullet_spread/2.0f);
 
 		float target_rand = 0.0f;
 		{

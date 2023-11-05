@@ -327,6 +327,7 @@ void update_players_server() {
 static void draw_player_bullet_cone(platform_window* window, player* p) {
 	map_info info = get_map_info(window);
 	float bullet_range = 100.0f;
+	int divisions = 10;
 
 	float bulletx = p->gunx;
 	float bullety = p->guny;
@@ -335,23 +336,42 @@ static void draw_player_bullet_cone(platform_window* window, player* p) {
 	// https://stackoverflow.com/questions/11462239/how-to-move-point-along-circle
 	float rads = -atan2(p->diry, p->dirx);
 	rads += M_PI/2;
-	float target1 = rads - (g.bullet_spread/2);
-	float target2 = rads + (g.bullet_spread/2);
+	float target1 = rads - (g.bullet_spread/2.0f);
+	float target2 = rads + (g.bullet_spread/2.0f);
+	
+	float prev_target = target1;
+	float increase_per_division = g.bullet_spread/divisions;
+	for (int i = 0; i < divisions; i++)
+	{
+		float current_target = prev_target + increase_per_division;
 
-	float cone_end_left_x = bulletx+(sin(target1))*bullet_range;
-	float cone_end_left_y = bullety+(cos(target1))*bullet_range;
+		float cone_end_left_x = bulletx+(sin(prev_target))*bullet_range;
+		float cone_end_left_y = bullety+(cos(prev_target))*bullet_range;
 
-	float cone_end_right_x = bulletx+(sin(target2))*bullet_range;
-	float cone_end_right_y = bullety+(cos(target2))*bullet_range;
+		float cone_end_right_x = bulletx+(sin(current_target))*bullet_range;
+		float cone_end_right_y = bullety+(cos(current_target))*bullet_range;
 
-	float x1 = bulletx*info.tile_width + (bullety*info.px_incline);
-	float y1 = bullety*info.tile_height - (p->height*info.px_raised_per_h);
-	float x2 = cone_end_left_x*info.tile_width + (bullety*info.px_incline);
-	float y2 = cone_end_left_y*info.tile_height - (p->height*info.px_raised_per_h);
-	float x3 = cone_end_right_x*info.tile_width + (bullety*info.px_incline);
-	float y3 = cone_end_right_y*info.tile_height - (p->height*info.px_raised_per_h);
+		bullet b1 = {.active = true, .position = {.x = bulletx, .y = bullety, .z = p->gun_height}, .endx = cone_end_left_x, .endy = cone_end_left_y};
+		check_if_bullet_collided_with_object(&b1, window);
+		cone_end_left_x = b1.endx;
+		cone_end_left_y = b1.endy;
 
-	renderer->render_tri(x1,y1,x2,y2,x3,y3, rgba(255,0,0,40));
+		bullet b2 = {.active = true, .position = {.x = bulletx, .y = bullety, .z = p->gun_height}, .endx = cone_end_right_x, .endy = cone_end_right_y};
+		check_if_bullet_collided_with_object(&b2, window);
+		cone_end_right_x = b2.endx;
+		cone_end_right_y = b2.endy;
+
+		float x1 = bulletx*info.tile_width + (bullety*info.px_incline);
+		float y1 = bullety*info.tile_height - (p->gun_height*info.px_raised_per_h);
+		float x2 = cone_end_left_x*info.tile_width + (bullety*info.px_incline);
+		float y2 = cone_end_left_y*info.tile_height - (p->gun_height*info.px_raised_per_h);
+		float x3 = cone_end_right_x*info.tile_width + (bullety*info.px_incline);
+		float y3 = cone_end_right_y*info.tile_height - (p->gun_height*info.px_raised_per_h);
+
+		renderer->render_tri(x1,y1,x2,y2,x3,y3, rgba(255,0,0,40));
+
+		prev_target = current_target;
+	}
 }
 
 void draw_players(platform_window* window) {
