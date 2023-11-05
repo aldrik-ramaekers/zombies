@@ -102,9 +102,9 @@ void update_spawners_server() {
 	for (int x = 0; x < MAX_SPAWNERS; x++) {
 		spawner spawner = spawner_tiles[x];
 		if (!spawner.active) continue;
-		if (zombies_left_in_current_round() <= 0) continue;
 		update_sprite(&spawner_tiles[x].sprite);
 		spawner_tiles[x].sec_since_last_spawn += SERVER_TICK_RATE;
+		if (zombies_left_in_current_round() <= 0) continue;
 		if (spawner_tiles[x].sec_since_last_spawn >= 1.0f) {
 			spawn_zombie(spawner.position.x, spawner.position.y);
 			spawner_tiles[x].sec_since_last_spawn = 0;

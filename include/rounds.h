@@ -23,5 +23,6 @@ bool current_round_is_done();
 void start_next_round();
 int zombies_left_in_current_round();
 void update_round_server();
+void draw_round();
 
 #endif

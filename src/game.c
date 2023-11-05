@@ -239,6 +239,7 @@ void update_server(platform_window* window) {
 		play_sounds_in_queue();
 		broadcast_to_clients(create_protocol_sound_list());
 		clear_sounds_in_queue();
+		broadcast_stamp = platform_get_time(TIME_FULL, TIME_NS) - broadcast_stamp;
 
 		update_timer = 0.0f;
 	}
@@ -391,7 +392,7 @@ void update_game(platform_window* window) {
 		#endif
 
 		draw_players(window);
-		
+		draw_round(window);
 		draw_spawners(window);
 		draw_overlay(window);
 	
