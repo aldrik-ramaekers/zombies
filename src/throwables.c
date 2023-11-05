@@ -1,6 +1,39 @@
 #include "../include/throwables.h"
 #include "../include/audio.h"
 
+
+static image* get_throwable_explosion_from_type(throwable_type type) {
+	switch(type) {
+		case THROWABLE_GRENADE: return img_grenade_explode;
+		case THROWABLE_MOLOTOV: return img_molotov_explode;
+		default: return img_grenade_explode;
+	}
+}
+
+static float get_throwable_explosion_time(throwable_type type) {
+	switch(type) {
+		case THROWABLE_GRENADE: return 3.2f;
+		case THROWABLE_MOLOTOV: return 8.0f;
+		default: return 0.0f;
+	}
+}
+
+static float get_throwable_fly_time(throwable_type type) {
+	switch(type) {
+		case THROWABLE_GRENADE: return 2.0f;
+		case THROWABLE_MOLOTOV: return 0.6f;
+		default: return 0.0f;
+	}
+}
+
+static vec3f get_throwable_explosionsize(throwable_type type) {
+	switch(type) {
+		case THROWABLE_GRENADE: return (vec3f){2.0f, 2.0f, 2.0f};
+		case THROWABLE_MOLOTOV: return (vec3f){4.0f, 4.0f, 4.0f};
+		default: return (vec3f){1.0f, 1.0f, 1.0f};;
+	}
+}
+
 void throw_throwable(u32 id, throwable_type type, float dirx, float diry) {
 	for (int i = 0; i < max_throwables; i++) {
 		if (throwables[i].active) continue;
@@ -10,17 +43,19 @@ void throw_throwable(u32 id, throwable_type type, float dirx, float diry) {
 			log_info("User with unknown id throwing stuff");
 		}
 
-		throwable t = {.active = true, .state = THROWABLE_FLYING, .alive_time = 0.0f, .type = type, .direction = (vec3f){.x = dirx*1.5f, .y = diry*1.5f, .z = -0.2f}, 
+		throwable t = {.active = true, .state = THROWABLE_FLYING, .alive_time = 0.0f, .type = type, .direction = (vec3f){.x = 0.0f, .y = 0.0f, .z = 0.0f}, 
 			.player_id = id, .position = (vec3f){.x = p->playerx, .y = p->playery, .z = p->height}};
 
 		switch(type) {
 			case THROWABLE_GRENADE: {
 				t.sprite = create_sprite(img_grenade_explode, 12, 96, 96, 0.1f);
 				t.damage = 1500; 
+				t.direction = (vec3f){.x = dirx*1.5f, .y = diry*1.5f, .z = -0.2f};
 			} break;
 			case THROWABLE_MOLOTOV: {
 				t.sprite = create_sprite(img_molotov_explode, 32, 66, 119, 0.04f);
 				t.damage = 300; 
+				t.direction = (vec3f){.x = dirx*2.5f, .y = diry*2.5f, .z = -0.3f};
 			} break;
 			
 		}
@@ -86,7 +121,7 @@ void explode_grenade(throwable t) {
 
 		if (t.position.z <= o.position.z + o.size.z && t.position.z >= t.position.z) {
 			
-			vec3f grenade_center = get_center_of_square(t.position, grenade_explosion_size);
+			vec3f grenade_center = get_center_of_square(t.position, get_throwable_explosionsize(t.type));
 			vec3f zombie_center = get_center_of_square(o.position, o.size);
 			float dist_between_grenade_and_zombie = distance_between_3f(o.position, t.position);
 			if (dist_between_grenade_and_zombie > max_explosion_range) continue;
@@ -104,27 +139,27 @@ void explode_molotov(throwable b) {
 	add_throwable_audio_event_to_queue(EVENT_FIRE, b.type, b.player_id, b.position);
 }
 
-static image* get_throwable_explosion_from_type(throwable_type type) {
-	switch(type) {
-		case THROWABLE_GRENADE: return img_grenade_explode;
-		case THROWABLE_MOLOTOV: return img_molotov_explode;
-		default: return img_grenade_explode;
+void update_molotov(throwable* b) {
+	if (b->sec_since_last_tick <= 0.3f) {
+		return;
 	}
-}
+	b->sec_since_last_tick = 0.0f;
 
-static float get_throwable_explosion_time(throwable_type type) {
-	switch(type) {
-		case THROWABLE_GRENADE: return 3.2f;
-		case THROWABLE_MOLOTOV: return 8.0f;
-		default: return 0.0f;
-	}
-}
+	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
+		zombie o = zombies[i];
+		if (!o.alive) continue;
 
-static float get_throwable_fly_time(throwable_type type) {
-	switch(type) {
-		case THROWABLE_GRENADE: return 2.0f;
-		case THROWABLE_MOLOTOV: return 0.6f;
-		default: return 0.0f;
+		vec3f size = get_throwable_explosionsize(b->type);
+		float max_damage_range = size.x/2.0f;
+		vec3f grenade_center = get_center_of_square(b->position, size);
+		vec3f zombie_center = get_center_of_square(o.position, o.size);
+		float dist_between_grenade_and_zombie = distance_between_3f(o.position, b->position);
+		if (dist_between_grenade_and_zombie > max_damage_range) continue;
+
+		if (hit_zombie(i, b->damage)) {
+			player* p = get_player_by_id(b->player_id);
+			if (p) p->kills++;
+		}
 	}
 }
 
@@ -139,6 +174,7 @@ void update_throwables_server() {
 
 		throwables[i].rotation += SERVER_TICK_RATE*3.0f*throwables[i].bounces;
 		throwables[i].alive_time += SERVER_TICK_RATE;
+		throwables[i].sec_since_last_tick += SERVER_TICK_RATE;
 
 		if (throwables[i].alive_time >= get_throwable_explosion_time(b.type)) {
 			throwables[i].active = false;
@@ -152,6 +188,14 @@ void update_throwables_server() {
 				switch(b.type) {
 					case THROWABLE_GRENADE: explode_grenade(b); break;
 					case THROWABLE_MOLOTOV: explode_molotov(b); break;
+				}
+			}
+			else {
+				// Update explosion.
+
+				switch(b.type) {
+					case THROWABLE_GRENADE: break;
+					case THROWABLE_MOLOTOV: update_molotov(&throwables[i]); break;
 				}
 			}
 
@@ -209,9 +253,10 @@ void draw_throwables(platform_window* window) {
 
 		if (t.state == THROWABLE_EXPLODED) {
 			vec3f explode_location = t.position;
-			explode_location.x -= 0.9f;
-			explode_location.y -= 0.9f;
-			box box = get_render_box_of_square(window, explode_location, grenade_explosion_size);
+			vec3f explosion_size = get_throwable_explosionsize(t.type);
+			explode_location.x -= explosion_size.x/2;
+			explode_location.y -= explosion_size.y/2;
+			box box = get_render_box_of_square(window, explode_location, explosion_size);
 			
 			sprite_frame frame = sprite_get_frame(&throwables[i].sprite);
 

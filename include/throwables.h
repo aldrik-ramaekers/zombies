@@ -33,9 +33,8 @@ typedef struct t_throwable {
 	sprite sprite;
 	int damage;
 	float rotation;
+	float sec_since_last_tick;
 } throwable;
-
-vec3f grenade_explosion_size = (vec3f){2.0f, 2.0f, 2.0f};
 
 throwable throwables[50] = {0};
 int max_throwables = 50;
