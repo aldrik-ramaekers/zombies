@@ -96,7 +96,7 @@ static void draw_leaderboard(platform_window* window) {
 			char deaths[30]; snprintf(deaths, 30, "%d", 0);
 			char ping[30]; snprintf(ping, 30, "%d", players[i].ping);
 			draw_leaderboard_entry(x, y + ((i+1)*height_per_row), actual_width, height_per_row, 
-				players[i].client.ip, kills, deaths, ping, players[i].id == player_id, players[i].connection_state == DISCONNECTED);
+				get_player_name_by_player_index(i), kills, deaths, ping, players[i].id == player_id, players[i].connection_state == DISCONNECTED);
 		}
 	}
 }

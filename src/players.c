@@ -374,9 +374,76 @@ static void draw_player_bullet_cone(platform_window* window, player* p) {
 	}
 }
 
-void draw_players(platform_window* window) {
+char* get_player_name_by_player_index(int index) {
+	char* names[] = {
+		"Everett",
+		"Noble",
+		"Parks",
+		"Hogan",
+		"Blanchard",
+		"Pittman",
+		"Murillo",
+		"Rodgers",
+		"Lang",
+		"Downs",
+	};
+	return names[index];
+}
+
+color get_color_tint_by_player_index(int index) {
+	color colors[] = {
+		rgb(255,0,0),
+		rgb(0,255,0),
+		rgb(0,0,255),
+		rgb(255,255,0),
+		rgb(255,0,255),
+		rgb(0,255,255),
+		rgb(128,0,0),
+		rgb(0,128,0),
+		rgb(0,0,128),
+		rgb(128,0,128),
+	};
+	return colors[index];
+}
+
+void draw_player(platform_window* window, player* p, int index) {
 	float size = get_player_size_in_tile();
 	map_info info = get_map_info(window);
+
+	char* name = get_player_name_by_player_index(index);
+
+	box box = get_render_box_of_square(window, (vec3f){p->playerx, p->playery, p->height}, (vec3f){size,size,1.0f});
+	sprite_frame frame = sprite_get_frame(&p->sprite);
+	renderer->render_image_quad_partial_tint(img_player_running, 
+		box.tl_u.x, box.tl_u.y,
+		box.bl_d.x, box.bl_d.y, 
+		box.br_d.x, box.br_d.y, 
+		box.tr_u.x, box.tr_u.y, 
+		frame.tl, frame.tr, frame.bl, frame.br, get_color_tint_by_player_index(index));
+
+	float player_render_x = box.tl_u.x;
+	float player_render_y = box.tl_u.y;
+
+	int name_x = player_render_x + (info.tile_width*size)/2 - (renderer->calculate_text_width(fnt_20, name))/2;
+	int name_y = player_render_y - fnt_20->px_h - 5;
+	renderer->render_text(fnt_20, name_x+1, name_y+1, name, rgba(0,0,0,120));
+	renderer->render_text(fnt_20, name_x, name_y, name, rgb(255,255,255));
+
+	p->gun_height = p->height+0.5;
+
+	if (p->connection_state == DISCONNECTED) {
+		float icon_h = (box.tr_u.x - box.tl_u.x)/2;
+		renderer->render_image(img_disconnected, box.tl_u.x + (icon_h/3), box.tr_u.y - icon_h, icon_h, icon_h);
+	}
+
+	if (p->id == player_id) {		
+		_next_camera_pos.x = -(window->width / 2) + player_render_x;
+		_next_camera_pos.y = -(window->height / 2) + player_render_y;
+	}
+}
+
+void draw_players(platform_window* window) {
+	float size = get_player_size_in_tile();
 
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
@@ -387,29 +454,6 @@ void draw_players(platform_window* window) {
 		players[i].height = height;
 
 		draw_player_bullet_cone(window, &players[i]);
-
-		box box = get_render_box_of_square(window, (vec3f){players[i].playerx, players[i].playery, height}, (vec3f){size,size,1.0f});
-		sprite_frame frame = sprite_get_frame(&players[i].sprite);
-		renderer->render_image_quad_partial(img_player_running, 
-			box.tl_u.x, box.tl_u.y,
-			box.bl_d.x, box.bl_d.y, 
-			box.br_d.x, box.br_d.y, 
-			box.tr_u.x, box.tr_u.y, 
-			frame.tl, frame.tr, frame.bl, frame.br);
-			
-		float player_render_x = box.tl_u.x;
-		float player_render_y = box.tl_u.y;
-		
-		players[i].gun_height = height+0.5;
-
-		if (players[i].connection_state == DISCONNECTED) {
-			float icon_h = (box.tr_u.x - box.tl_u.x)/2;
-			renderer->render_image(img_disconnected, box.tl_u.x + (icon_h/3), box.tr_u.y - icon_h, icon_h, icon_h);
-		}
-
-		if (players[i].id == player_id) {		
-			_next_camera_pos.x = -(window->width / 2) + player_render_x;
-			_next_camera_pos.y = -(window->height / 2) + player_render_y;
-		}
+		draw_player(window, &players[i], i);	
 	}
 }

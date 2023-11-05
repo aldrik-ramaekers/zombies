@@ -77,5 +77,7 @@ void update_players_server();
 void spawn_player(u32 id, network_client client);
 bool player_has_old_session(u32 id);
 void rejoin_player(u32 id, network_client client);
+char* get_player_name_by_player_index(int index);
+color get_color_tint_by_player_index(int index);
 
 #endif
