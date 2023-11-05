@@ -62,6 +62,17 @@ bool hit_zombie(int index, int damage) {
 	return false;
 }
 
+u32 number_of_zombies_active()
+{
+	u32 res = 0;
+	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
+		zombie o = zombies[i];
+		if (!o.alive) continue;
+		res++;
+	}
+	return res;
+}
+
 void spawn_zombie(int x, int y) {
 	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
@@ -77,6 +88,8 @@ void spawn_zombie(int x, int y) {
 		zombies[i].time_since_last_path = 0.0f;
 		zombies[i].request.to_fill = &zombies[i].next_path;
 		zombies[i].request.mutex = mutex_create();
+
+		_current_round.zombies--;
 		
 		player closest_player = get_closest_player_to_tile(x, y);
 
@@ -89,9 +102,10 @@ void update_spawners_server() {
 	for (int x = 0; x < MAX_SPAWNERS; x++) {
 		spawner spawner = spawner_tiles[x];
 		if (!spawner.active) continue;
+		if (zombies_left_in_current_round() <= 0) continue;
 		update_sprite(&spawner_tiles[x].sprite);
 		spawner_tiles[x].sec_since_last_spawn += SERVER_TICK_RATE;
-		if (spawner_tiles[x].sec_since_last_spawn >= 2.0f) {
+		if (spawner_tiles[x].sec_since_last_spawn >= 1.0f) {
 			spawn_zombie(spawner.position.x, spawner.position.y);
 			spawner_tiles[x].sec_since_last_spawn = 0;
 		}

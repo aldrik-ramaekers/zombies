@@ -35,6 +35,6 @@ zombie_chunk zombie_chunks[MAX_ZOMBIE_CHUNKS] = {0};
 void draw_zombie_chunks(platform_window* window);
 void spawn_zombie_chunk(vec3f center);
 void spawn_zombie_splatter(vec3f center);
-void update_zombie_chunks();
+void update_zombie_chunks_server();
 
 #endif

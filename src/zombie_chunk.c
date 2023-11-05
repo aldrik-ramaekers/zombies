@@ -62,7 +62,7 @@ void spawn_zombie_chunk(vec3f center) {
 	}
 }
 
-void update_zombie_chunks() {
+void update_zombie_chunks_server() {
 	for (int i = 0; i < MAX_ZOMBIE_CHUNKS; i++)
 	{
 		if (!zombie_chunks[i].active) continue;

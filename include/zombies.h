@@ -44,5 +44,6 @@ void create_spawner(vec2 position);
 void draw_spawners(platform_window* window);
 void draw_zombies(platform_window* window);
 void spawn_zombie(int x, int y);
+u32 number_of_zombies_active();
 
 #endif

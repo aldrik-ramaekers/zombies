@@ -216,7 +216,8 @@ void update_server(platform_window* window) {
 		update_drops_server();
 		update_wallitems_server();
 		update_throwables_server();
-		update_zombie_chunks();
+		update_zombie_chunks_server();
+		update_round_server();
 
 		broadcast_players = platform_get_time(TIME_FULL, TIME_NS);
 		update_players_server();
