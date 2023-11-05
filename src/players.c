@@ -225,10 +225,11 @@ void take_player_input(platform_window* window) {
 	if (is_editing_map) return;
 #endif
 
+	box box = get_render_box_of_square(window, (vec3f){p->playerx, p->playery, p->height}, (vec3f){1.0,1.0,1.0f});
 	// Send gun position
 	{
-		float dirx = (_global_mouse.x - (window->width/2));
-		float diry = (_global_mouse.y - (window->height/2));
+		float dirx = (_global_mouse.x - (box.tl_u.x - _global_camera.x));
+		float diry = (_global_mouse.y - (box.tl_u.y - _global_camera.y));
 		double length = sqrt(dirx * dirx + diry * diry);
 		dirx /= length;
 		diry /= length;
@@ -236,11 +237,10 @@ void take_player_input(platform_window* window) {
 		float gun_offset_x = (get_player_size_in_tile()/2) + (dirx/4);
 		float gun_offset_y = (get_player_size_in_tile()/2) + (diry/4);
 
-		add_message_to_outgoing_queuex(create_protocol_user_look(player_id, gun_offset_x, gun_offset_y), *global_state.client);
+		add_message_to_outgoing_queuex(create_protocol_user_look(player_id, gun_offset_x, gun_offset_y, dirx, diry), *global_state.client);
 	}
 
-	{
-		box box = get_render_box_of_square(window, (vec3f){p->playerx, p->playery, p->height}, (vec3f){1.0,1.0,1.0f});
+	{	
 		float dirx = (_global_mouse.x - (box.tl_u.x - _global_camera.x));
 		float diry = (_global_mouse.y - (box.tl_u.y - _global_camera.y));
 		double length = sqrt(dirx * dirx + diry * diry);
@@ -324,6 +324,36 @@ void update_players_server() {
 	update_players_client();
 }
 
+static void draw_player_bullet_cone(platform_window* window, player* p) {
+	map_info info = get_map_info(window);
+	float bullet_range = 100.0f;
+
+	float bulletx = p->gunx;
+	float bullety = p->guny;
+	gun g = get_gun_by_type(p->guntype);
+
+	// https://stackoverflow.com/questions/11462239/how-to-move-point-along-circle
+	float rads = -atan2(p->diry, p->dirx);
+	rads += M_PI/2;
+	float target1 = rads - (g.bullet_spread/2);
+	float target2 = rads + (g.bullet_spread/2);
+
+	float cone_end_left_x = bulletx+(sin(target1))*bullet_range;
+	float cone_end_left_y = bullety+(cos(target1))*bullet_range;
+
+	float cone_end_right_x = bulletx+(sin(target2))*bullet_range;
+	float cone_end_right_y = bullety+(cos(target2))*bullet_range;
+
+	float x1 = bulletx*info.tile_width + (bullety*info.px_incline);
+	float y1 = bullety*info.tile_height - (p->height*info.px_raised_per_h);
+	float x2 = cone_end_left_x*info.tile_width + (bullety*info.px_incline);
+	float y2 = cone_end_left_y*info.tile_height - (p->height*info.px_raised_per_h);
+	float x3 = cone_end_right_x*info.tile_width + (bullety*info.px_incline);
+	float y3 = cone_end_right_y*info.tile_height - (p->height*info.px_raised_per_h);
+
+	renderer->render_tri(x1,y1,x2,y2,x3,y3, rgba(255,0,0,40));
+}
+
 void draw_players(platform_window* window) {
 	float size = get_player_size_in_tile();
 	map_info info = get_map_info(window);
@@ -336,14 +366,9 @@ void draw_players(platform_window* window) {
 		float height = get_height_of_tile_under_coords(players[i].playerx, players[i].playery);
 		players[i].height = height;
 
+		draw_player_bullet_cone(window, &players[i]);
+
 		box box = get_render_box_of_square(window, (vec3f){players[i].playerx, players[i].playery, height}, (vec3f){size,size,1.0f});
-		
-		/*
-		render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgb(200,150,120));
-		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgb(200,150,120));
-		render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, rgb(200,150,120));
-		render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgb(200,150,120));
-		*/
 		sprite_frame frame = sprite_get_frame(&players[i].sprite);
 		renderer->render_image_quad_partial(img_player_running, 
 			box.tl_u.x, box.tl_u.y,

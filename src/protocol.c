@@ -107,13 +107,15 @@ network_message create_protocol_user_shoot(u32 id, float dirx, float diry)
 	return network_create_message((u8*)buf, sizeof(protocol_user_shoot), MAX_NETWORK_BUFFER_SIZE);
 }
 
-network_message create_protocol_user_look(u32 id, float gunx, float guny)
+network_message create_protocol_user_look(u32 id, float gunx, float guny, float dirx, float diry)
 {
 	protocol_user_look *buf = alloc_network_message(protocol_user_look);
 	buf->type = MESSAGE_USER_LOOK;
 	buf->id = id;
 	buf->gunx = gunx;
 	buf->guny = guny;
+	buf->dirx = dirx;
+	buf->diry = diry;
 	return network_create_message((u8*)buf, sizeof(protocol_user_look), MAX_NETWORK_BUFFER_SIZE);
 }
 

@@ -39,6 +39,8 @@ typedef struct t_player {
 	float playery;
 	float gunx;
 	float guny;
+	float dirx;
+	float diry;
 	float gun_height;
 	player_direction direction;
 	int total_ammo;
@@ -49,7 +51,6 @@ typedef struct t_player {
 	int kills;
 	u64 ping;
 	sprite sprite;
-	vec3f velocity;
 	network_state connection_state;
 	struct {
 		int grenades;

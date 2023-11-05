@@ -116,6 +116,8 @@ static void rotate_user(platform_window* window, protocol_user_look *message) {
 
 	p->gunx = p->playerx + message->gunx;
 	p->guny = p->playery + message->guny;
+	p->dirx = message->dirx;
+	p->diry = message->diry;
 }
 
 static void set_ping_for_player(protocol_generic_message* msg) {

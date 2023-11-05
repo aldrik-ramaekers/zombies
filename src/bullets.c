@@ -31,13 +31,22 @@ void shoot(platform_window* window, u32 id, float dirx, float diry) {
 		float bullet_range = 100.0f;
 
 		float hh = get_height_of_tile_under_coords(p->playerx, p->playery);
-		dirx += ((float)rand()/(float)(RAND_MAX/g.bullet_spread)-(g.bullet_spread/2));
-		diry += ((float)rand()/(float)(RAND_MAX/g.bullet_spread)-(g.bullet_spread/2));
+		float rads = atan2(dirx, diry);
+		float target1 = rads - (g.bullet_spread/2);
+		float target2 = rads + (g.bullet_spread/2);
+
+		float target_rand = 0.0f;
+		{
+			float random = ((float) rand()) / (float) RAND_MAX;
+			float diff = target2 - target1;
+			float r = random * diff;
+			target_rand = target1 + r;
+		}
 
 		float bulletx = p->gunx;
 		float bullety = p->guny;
-		float bullet_end_point_x = bulletx+dirx*bullet_range;
-		float bullet_end_point_y = bullety+diry*bullet_range;
+		float bullet_end_point_x = bulletx+(sin(target_rand))*bullet_range;
+		float bullet_end_point_y = bullety+(cos(target_rand))*bullet_range;
 
 		for (int i = 0; i < max_bullets; i++) {
 			bullet b = bullets[i];

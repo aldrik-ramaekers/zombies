@@ -117,6 +117,8 @@ typedef struct t_protocol_user_look
 	u32 id;
 	float gunx;
 	float guny;
+	float dirx;
+	float diry;
 } protocol_user_look;
 
 #include "bullets.h"
@@ -159,7 +161,7 @@ network_message create_protocol_get_id_down(u32 id);
 network_message create_protocol_sound_list();
 network_message create_protocol_user_list();
 network_message create_protocol_user_moved(protocol_move_type move, u32 id);
-network_message create_protocol_user_look(u32 id, float gunx, float guny);
+network_message create_protocol_user_look(u32 id, float gunx, float guny, float dirx, float diry);
 network_message create_protocol_user_shoot(u32 id, float dirx, float diry);
 network_message create_protocol_user_throw(u32 id, float dirx, float diry, throwable_type type);
 network_message create_protocol_zombie_list();
