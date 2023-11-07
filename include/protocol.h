@@ -21,6 +21,7 @@ typedef enum t_network_message_type
 	MESSAGE_DROP_LIST,
 	MESSAGE_SOUND_LIST,
 	MESSAGE_THROWABLES_LIST,
+	MESSAGE_ROUND_DATA,
 } network_message_type;
 
 typedef struct t_protocol_generic_client_message
@@ -80,6 +81,13 @@ typedef struct t_protocol_drop_list
 	network_message_type type;
 	drop drops[MAX_DROPS];
 } protocol_drop_list;
+
+#include "rounds.h"
+typedef struct t_protocol_round
+{
+	network_message_type type;
+	zombie_round round;
+} protocol_round;
 
 typedef enum t_protocol_move_type
 {
@@ -169,6 +177,7 @@ network_message create_protocol_zombie_chunk_list();
 network_message create_protocol_bullets_list();
 network_message create_protocol_drop_list();
 network_message create_protocol_throwables_list();
+network_message create_protocol_round_data(zombie_round round);
 
 array messages_received_on_server;
 array messages_received_on_client;

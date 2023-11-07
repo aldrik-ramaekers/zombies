@@ -236,6 +236,7 @@ void update_server(platform_window* window) {
 		broadcast_to_clients(create_protocol_drop_list());
 		broadcast_to_clients(create_protocol_throwables_list());
 		broadcast_to_clients(create_protocol_zombie_chunk_list());
+		broadcast_to_clients(create_protocol_round_data(_current_round));
 
 		// play sounds locally and send them to clients.
 		play_sounds_in_queue();
@@ -252,7 +253,6 @@ void update_server(platform_window* window) {
 	handle_messages = handle_messages  - logic_update_time;
 	logic_update_time = platform_get_time(TIME_FULL, TIME_NS) - logic_update_time;
 	u64 server_tick = platform_get_time(TIME_FULL, TIME_NS) - handle_messages2;
-	broadcast_stamp = platform_get_time(TIME_FULL, TIME_NS) - broadcast_stamp;
 	if ((logic_update_time/1000000.0f) > 10.0f) {
 		log_infox("Server update took %.2fms:\n\tmessages: %.2fms\n\ttick: %.2fms\n\t\tbroadcast: %.2fms\n\t\tplayers: %.2fms\n\t\tzombies: %.2fms\n",
 			(logic_update_time/1000000.0f), (handle_messages/1000000.0f), (server_tick/1000000.0f), 
@@ -291,6 +291,11 @@ void update_client(platform_window* window) {
 		case MESSAGE_USER_LIST: {
 			protocol_user_list* msg_players = (protocol_user_list*)msg;
 			memcpy(players, msg_players->players, sizeof(players));
+		} break;
+
+		case MESSAGE_ROUND_DATA: {
+			protocol_round* msg_round = (protocol_round*)msg;
+			_current_round = msg_round->round;
 		} break;
 
 		case MESSAGE_ZOMBIE_LIST: {

@@ -75,6 +75,13 @@ network_message create_protocol_drop_list()
 	return network_create_message((u8*)buf, sizeof(protocol_drop_list), MAX_NETWORK_BUFFER_SIZE);
 }
 
+network_message create_protocol_round_data(zombie_round round)
+{
+	protocol_round *buf = alloc_network_message(protocol_round);
+	buf->type = MESSAGE_ROUND_DATA;
+	buf->round = round;
+	return network_create_message((u8*)buf, sizeof(protocol_round), MAX_NETWORK_BUFFER_SIZE);
+}
 
 network_message create_protocol_user_moved(protocol_move_type move, u32 id)
 {
