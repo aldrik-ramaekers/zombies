@@ -63,10 +63,48 @@ void spawn_player(u32 id, network_client client) {
 		players[i].connection_state = CONNECTED;
 		players[i].throwables.grenades = 3; 
 		players[i].throwables.molotovs = 1;
+		players[i].points = 800;
 
 		gun g = get_gun_by_type(players[i].guntype);
 		players[i].total_ammo = g.max_ammunition;
 		players[i].ammo_in_mag = g.magazine_size;
+		return;
+	}
+}
+
+void update_points_animation_server() {
+	float speed = 15.0f;
+	float alive_time = 1.0f;
+	for (int i = 0; i < MAX_PLAYERS; i++) {
+		for (int x = 0; x < MAX_POINT_ANIMATIONS; x++) {
+			if (!players[i].point_animations[x].active) continue;
+		
+			players[i].point_animations[x].sec_alive += SERVER_TICK_RATE;
+			players[i].point_animations[x].position.x -= speed * SERVER_TICK_RATE;
+			players[i].point_animations[x].position.y -= players[i].point_animations[x].diry * speed * SERVER_TICK_RATE;
+			players[i].point_animations[x].opacity = 1.0f - (players[i].point_animations[x].sec_alive/alive_time);
+
+			if (players[i].point_animations[x].sec_alive >= alive_time) {
+				players[i].point_animations[x].active = false;
+			}
+		}
+	}
+}
+
+void add_points_to_player(player* p, u32 points) {
+	p->points += points;
+	float rand_dirs[MAX_POINT_ANIMATIONS] = {0.0f, -1.0f, 1.0f, 0.3f, -0.1f, 0.5f, 0.2f, -0.8f, 0.3f, -0.6f};
+
+	for (int i = 0; i < MAX_POINT_ANIMATIONS; i++) {
+		if (p->point_animations[i].active) continue;
+
+		p->point_animations[i].active = true;
+		p->point_animations[i].points = points;
+		p->point_animations[i].diry = rand_dirs[i];
+		p->point_animations[i].sec_alive = 0.0f;
+		p->point_animations[i].position.x = 0.0f;
+		p->point_animations[i].position.y = 0.0f;
+		p->point_animations[i].opacity = 1.0f;
 		return;
 	}
 }

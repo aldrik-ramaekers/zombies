@@ -87,7 +87,7 @@ void handle_args(int argc, char **argv) {
 }
 
 int main(int argc, char **argv)
-{    
+{
     platform_init(argc, argv, CONFIG_DIRECTORY);
 
 	settings_set_number("USE_GPU", 1);

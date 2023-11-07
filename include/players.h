@@ -12,6 +12,7 @@
 #include "../include/players.h"
 
 #define MAX_PLAYERS 10
+#define MAX_POINT_ANIMATIONS 10
 
 typedef enum t_player_interact_state {
 	INTERACT_IDLE,
@@ -28,6 +29,16 @@ typedef enum t_player_direction {
 	DIRECTION_BOTTOMLEFT,
 	DIRECTION_BOTTOMRIGHT,
 } player_direction;
+
+typedef struct t_point_animation
+{
+	bool active;
+	u32 points;
+	float diry;
+	vec2f position;
+	float sec_alive;
+	float opacity;
+} point_animation;
 
 typedef struct t_player {
 	u32 id;
@@ -52,11 +63,15 @@ typedef struct t_player {
 	u64 ping;
 	sprite sprite;
 	network_state connection_state;
+	u32 points;
 	struct {
 		int grenades;
 		int molotovs;
 	} throwables;
+	point_animation point_animations[MAX_POINT_ANIMATIONS];
 } player;
+
+
 
 #include "protocol.h"
 
@@ -79,5 +94,7 @@ bool player_has_old_session(u32 id);
 void rejoin_player(u32 id, network_client client);
 char* get_player_name_by_player_index(int index);
 color get_color_tint_by_player_index(int index);
+void add_points_to_player(player* p, u32 points);
+void update_points_animation_server();
 
 #endif

@@ -8,6 +8,8 @@
 #include "map.h"
 #include "guns.h"
 
+#define POINTS_PER_HIT 10
+
 typedef struct t_bullet {
 	u32 player_id;
 	bool active;

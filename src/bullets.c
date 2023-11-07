@@ -246,6 +246,7 @@ void update_bullets_server(platform_window* window) {
 			bullets[i].damage = b.damage;
 			b = bullets[i];
 
+			add_points_to_player(p, POINTS_PER_HIT);
 			add_zombie_audio_event_to_queue(EVENT_IMPACT, ZOMBIE_TYPE_NORMAL, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
 		}
 	}
