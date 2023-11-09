@@ -3,9 +3,17 @@
 
 #include <projectbase/project_base.h>
 
+font* fnt_52;
+font* fnt_48;
+font* fnt_44;
+font* fnt_40;
+font* fnt_36;
 font* fnt_32;
+font* fnt_28;
 font* fnt_24;
 font* fnt_20;
+font* fnt_16;
+font* fnt_12;
 
 // Icons
 image* img_icon_bullets;
@@ -63,5 +71,6 @@ Mix_Chunk* wav_collect;
 
 
 void load_assets();
+font* get_font(platform_window* window, float scale);
 
 #endif

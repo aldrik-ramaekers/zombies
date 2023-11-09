@@ -1,6 +1,6 @@
 #define ASSET_IMAGE_COUNT 50
 #define ASSET_QUEUE_COUNT 50
-#define ASSET_FONT_COUNT 10
+#define ASSET_FONT_COUNT 20
 
 #include <projectbase/project_base.h>
 

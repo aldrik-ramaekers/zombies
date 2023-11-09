@@ -126,28 +126,30 @@ void draw_points(platform_window* window) {
 	int y = (int)_global_camera.y + window->height - EDGE_PADDING;
 	char points_txt[20];
 
+	font* score_font = get_font(window, 1.0f);
+	font* sub_score_font = get_font(window, 0.2f);
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
 
 		sprintf(points_txt, "%d", players[i].points);
 
-		y -= fnt_20->px_h;
-		int x1 = renderer->calculate_text_width(fnt_24, points_txt);
-		renderer->render_text(fnt_24, x - x1+1, y+1, points_txt, rgba(0,0,0,120));
-		renderer->render_text(fnt_24, x - x1, y, points_txt, get_color_tint_by_player_index(i));
+		y -= score_font->px_h;
+		int x1 = renderer->calculate_text_width(score_font, points_txt);
+		renderer->render_text(score_font, x - x1+1, y+1, points_txt, rgba(0,0,0,120));
+		renderer->render_text(score_font, x - x1, y, points_txt, get_color_tint_by_player_index(i));
 
 		for (int t = 0; t < MAX_POINT_ANIMATIONS; t++) {
 			if (!players[i].point_animations[t].active) continue;
 			point_animation animation = players[i].point_animations[t];
 			sprintf(points_txt, "%d", animation.points);
-			int textw = renderer->calculate_text_width(fnt_20, points_txt);
+			int textw = renderer->calculate_text_width(sub_score_font, points_txt);
 			int py = y - animation.position.y;
 			int px = x1 - animation.position.x;
 			px += textw+2;
 			color c = get_color_tint_by_player_index(i);
 			c.a = 255*animation.opacity;
-			renderer->render_text(fnt_20, x - px+1, py+1, points_txt, rgba(0,0,0,120*animation.opacity));
-			renderer->render_text(fnt_20, x - px, py, points_txt, c);
+			renderer->render_text(sub_score_font, x - px+1, py+1, points_txt, rgba(0,0,0,120*animation.opacity));
+			renderer->render_text(sub_score_font, x - px, py, points_txt, c);
 		}
 
 		y -= 8;

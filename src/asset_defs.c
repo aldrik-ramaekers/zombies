@@ -1,9 +1,17 @@
 #include "../include/asset_defs.h"
 
 void load_assets() {
+	fnt_52 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 52);
+	fnt_48 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 48);
+	fnt_44 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 44);
+	fnt_40 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 40);
+	fnt_36 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 36);
 	fnt_32 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 32);
+	fnt_28 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 28);
 	fnt_24 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 24);
 	fnt_20 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 20);
+	fnt_16 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 16);
+	fnt_12 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 12);
 
 	// Icons
 	img_icon_bullets = assets_load_image_from_file("data/imgs/bullets.png");
@@ -54,4 +62,33 @@ void load_assets() {
 	wav_error = Mix_LoadWAV("data/sounds/error.wav");
 	wav_impact_zombie = Mix_LoadWAV("data/sounds/impact_zombie.wav");
 	wav_collect = Mix_LoadWAV("data/sounds/collect.wav");
+}
+
+font* get_font(platform_window* window, float scale) {
+	log_assert(scale >= 0.2f && scale <= 2.2f, "scale must be a multiple of 0.2");
+	float window_scale = window->width / 800.0f;
+	float diff = window_scale - 1.0f;
+
+	int index_of_original = (int)(scale / 0.2f);
+	int index_to_return = index_of_original + (int)(diff/0.2f);
+	
+	if (index_to_return < 0) index_to_return = 0;
+	if (index_to_return > 10) index_to_return = 10;
+
+	log_infox("%d %d", (int)(diff/0.2f), index_to_return);
+	font* arr[] = {
+		fnt_12, // scale = 0.2
+		fnt_16,
+		fnt_20,
+		fnt_24,
+		fnt_28, // scale = 1.0
+		fnt_32,
+		fnt_36,
+		fnt_40,
+		fnt_44,
+		fnt_48, // scale = 2.0
+		fnt_52,
+	};
+
+	return arr[index_to_return];
 }
