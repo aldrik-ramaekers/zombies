@@ -69,6 +69,8 @@ Mix_Chunk* wav_impact_wood;
 Mix_Chunk* wav_error;
 Mix_Chunk* wav_collect;
 
+Mix_Chunk* round_change;
+
 
 void load_assets();
 font* get_font(platform_window* window, float scale);

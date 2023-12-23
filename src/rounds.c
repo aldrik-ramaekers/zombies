@@ -21,6 +21,8 @@ void start_next_round()
 	_current_round.state = ROUND_SWITCHING;
 	_current_round.round_timer = 0.0f;
 
+	add_ui_audio_event_to_queue(EVENT_ROUND_CHANGE);
+
 	log_infox("Next round: %d", _current_round.round_nr);
 }
 
@@ -41,7 +43,7 @@ void draw_round(platform_window* window) {
 
 	char round_text[30];
 	int window_center_x = _global_camera.x + window->width / 2;	
-	sprintf(round_text, "ROUND: %d", _current_round.round_nr);
+	sprintf(round_text, "ROUND %d", _current_round.round_nr);
 	int text_w = renderer->calculate_text_width(fnt_24, round_text);
 	int final_text_y = _global_camera.y + 20;
 
@@ -62,11 +64,17 @@ void draw_round(platform_window* window) {
 		renderer->render_text(fnt_20, window_center_x - (time_text_w/2), final_text_y, time_text, rgb(189, 39, 19));
 	}
 	else if (_current_round.state == ROUND_SWITCHING) {
-		float opacity = get_round_text_opacity();
+		//float opacity = get_round_text_opacity();
 		text_w = renderer->calculate_text_width(fnt_32, round_text);
 		final_text_y = _global_camera.y + window->height/4.0f;
-		renderer->render_text(fnt_32, window_center_x - (text_w/2)+1, final_text_y+1, round_text, rgba(0,0,0,120*opacity));
-		renderer->render_text(fnt_32, window_center_x - (text_w/2), final_text_y, round_text, rgba(189, 39, 19,255*opacity));
+		int box_pad = 10;
+		int box_x = window_center_x - (text_w/2)+1 - box_pad;
+		int box_y = final_text_y - box_pad;
+		int box_w = text_w + box_pad*2;
+		int box_h = fnt_32->px_h + box_pad*2;
+		renderer->render_rectangle(box_x, box_y, box_w, box_h, rgba(255,0,0,100));
+		renderer->render_text(fnt_32, window_center_x - (text_w/2)+1, final_text_y+1, round_text, rgba(0,0,0,120));
+		renderer->render_text(fnt_32, window_center_x - (text_w/2), final_text_y, round_text, rgba(255,255,255,255));
 	}
 }
 

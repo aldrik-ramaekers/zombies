@@ -312,7 +312,7 @@ void draw_zombies(platform_window* window) {
 		render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, rgb(200,200,0));
 		render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgb(200,200,0));
 
-		//if (global_state.server) draw_path_of_zombie(window, o);
+		if (global_state.server) draw_path_of_zombie(window, o);
 	}
 }
 

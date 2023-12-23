@@ -1,6 +1,7 @@
 #define ASSET_IMAGE_COUNT 50
 #define ASSET_QUEUE_COUNT 50
 #define ASSET_FONT_COUNT 20
+#define NUM_AUDIO_CHANNELS 64
 
 #include <projectbase/project_base.h>
 
@@ -98,9 +99,10 @@ int main(int argc, char **argv)
 	settings_set_number("USE_GPU", 1);
 
 	if (Mix_OpenAudio(48000, AUDIO_F32SYS, 2, 2048) == 0) {
-		if (Mix_AllocateChannels(NUMBER_OF_AUDIO_CHANNELS) == 64) {
+		if (Mix_AllocateChannels(NUMBER_OF_AUDIO_CHANNELS) == NUM_AUDIO_CHANNELS) {
 			log_info("Audio system initialized.");
 			Mix_MasterVolume(MIX_MAX_VOLUME/4);
+			Mix_ChannelFinished(audio_channel_finished);
 		}
 		else {
 			log_info("Channel allocation failed.");

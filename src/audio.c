@@ -31,18 +31,18 @@ void add_audio_event_to_queue(audio_event_type event, u32 playerid, vec3f positi
 	add_object_audio_event_to_queue(event, OBJECT_NONE, playerid, position);
 }
 
-static int get_channel_from_audio_event_type(audio_event_type event) {
-	switch (event)
-	{
-		case EVENT_BOUNCE_THROWABLE: return CHANNEL_THROWABLES;
-		case EVENT_SHOOT: return CHANNEL_SHOOTING;
-		case EVENT_RELOAD: return CHANNEL_RELOAD;
-		case EVENT_IMPACT: return CHANNEL_IMPACT;
-		case EVENT_EXPLODE_THROWABLE: return CHANNEL_EXPLODE;
-		case EVENT_COLLECT: return CHANNEL_COLLECT;
+void add_ui_audio_event_to_queue(audio_event_type event) {
+	add_object_audio_event_to_queue(event, OBJECT_NONE, -1, (vec3f){-1,-1,-1});
+}
 
-		default: return 0;
+static int get_channel_from_audio_event_type(audio_event_type event) {
+	for (int i = 0; i < NUM_AUDIO_CHANNELS; i++) {
+		if (!audio_channel_usage[i]) {
+			audio_channel_usage[i] = true;
+			return i;
+		}
 	}
+	return 0;
 }
 
 static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
@@ -51,6 +51,7 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 
 	switch (event.type)
 	{
+		case EVENT_ROUND_CHANGE: return round_change;
 		case EVENT_COLLECT: return wav_collect;
 		case EVENT_BOUNCE_THROWABLE: return wav_throwable_bounce;
 		case EVENT_FIRE: return wav_fire;
@@ -123,6 +124,10 @@ void clear_sounds_in_queue() {
 
 void play_sound(int channel, Mix_Chunk* wav) {
 	Mix_PlayChannel(channel, wav, 0);
+}
+
+void audio_channel_finished(int channel) {
+	audio_channel_usage[channel] = false;
 }
 
 void play_positioned_sound(int channel, Mix_Chunk* wav, vec3f pos, float max_audible_dist) {

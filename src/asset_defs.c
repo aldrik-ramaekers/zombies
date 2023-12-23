@@ -62,6 +62,7 @@ void load_assets() {
 	wav_error = Mix_LoadWAV("data/sounds/error.wav");
 	wav_impact_zombie = Mix_LoadWAV("data/sounds/impact_zombie.wav");
 	wav_collect = Mix_LoadWAV("data/sounds/collect.wav");
+	round_change = Mix_LoadWAV("data/sounds/round_change.wav");
 }
 
 font* get_font(platform_window* window, float scale) {
@@ -75,7 +76,6 @@ font* get_font(platform_window* window, float scale) {
 	if (index_to_return < 0) index_to_return = 0;
 	if (index_to_return > 10) index_to_return = 10;
 
-	log_infox("%d %d", (int)(diff/0.2f), index_to_return);
 	font* arr[] = {
 		fnt_12, // scale = 0.2
 		fnt_16,
