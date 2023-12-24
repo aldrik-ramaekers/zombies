@@ -69,7 +69,9 @@ Mix_Chunk* wav_impact_wood;
 Mix_Chunk* wav_error;
 Mix_Chunk* wav_collect;
 
-Mix_Chunk* round_change;
+Mix_Chunk* wav_character;
+Mix_Chunk* wav_round_change;
+Mix_Chunk* wav_step;
 
 
 void load_assets();

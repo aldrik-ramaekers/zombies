@@ -1,17 +1,21 @@
 #include "../include/asset_defs.h"
 
+//#include "../data/fonts/oxanium.h"
+#include "../data/fonts/aleo.h"
+
 void load_assets() {
-	fnt_52 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 52);
-	fnt_48 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 48);
-	fnt_44 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 44);
-	fnt_40 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 40);
-	fnt_36 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 36);
-	fnt_32 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 32);
-	fnt_28 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 28);
-	fnt_24 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 24);
-	fnt_20 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 20);
-	fnt_16 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 16);
-	fnt_12 = assets_load_font(noto_regular_ttf, noto_regular_ttf+noto_regular_ttf_len, 12);
+
+	fnt_52 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 52);
+	fnt_48 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 48);
+	fnt_44 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 44);
+	fnt_40 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 40);
+	fnt_36 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 36);
+	fnt_32 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 32);
+	fnt_28 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 28);
+	fnt_24 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 24);
+	fnt_20 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 20);
+	fnt_16 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 16);
+	fnt_12 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 12);
 
 	// Icons
 	img_icon_bullets = assets_load_image_from_file("data/imgs/bullets.png");
@@ -62,7 +66,9 @@ void load_assets() {
 	wav_error = Mix_LoadWAV("data/sounds/error.wav");
 	wav_impact_zombie = Mix_LoadWAV("data/sounds/impact_zombie.wav");
 	wav_collect = Mix_LoadWAV("data/sounds/collect.wav");
-	round_change = Mix_LoadWAV("data/sounds/round_change.wav");
+	wav_round_change = Mix_LoadWAV("data/sounds/round_change.wav");
+	wav_character = Mix_LoadWAV("data/sounds/character.wav");
+	wav_step = Mix_LoadWAV("data/sounds/step.wav");
 }
 
 font* get_font(platform_window* window, float scale) {

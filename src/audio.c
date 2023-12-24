@@ -51,7 +51,9 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 
 	switch (event.type)
 	{
-		case EVENT_ROUND_CHANGE: return round_change;
+		case EVENT_FOOTSTEP: return wav_step;
+		case EVENT_CHARACTER_TYPE: return wav_character;
+		case EVENT_ROUND_CHANGE: return wav_round_change;
 		case EVENT_COLLECT: return wav_collect;
 		case EVENT_BOUNCE_THROWABLE: return wav_throwable_bounce;
 		case EVENT_FIRE: return wav_fire;
@@ -149,6 +151,6 @@ void play_positioned_sound(int channel, Mix_Chunk* wav, vec3f pos, float max_aud
 	if (rads > 360) rads -= 360;
 	*/
 
-	Mix_SetPosition(0, 0, volume*255);
+	//Mix_SetPosition(0, 0, volume*255);
 	Mix_PlayChannel(channel, wav, 0);
 }

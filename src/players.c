@@ -64,6 +64,7 @@ void spawn_player(u32 id, network_client client) {
 		players[i].throwables.grenades = 3; 
 		players[i].throwables.molotovs = 1;
 		players[i].points = 800;
+		players[i].sec_since_last_step = 0.0f;
 
 		gun g = get_gun_by_type(players[i].guntype);
 		players[i].total_ammo = g.max_ammunition;
@@ -119,6 +120,11 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 	if (p == 0) {
 		log_info("Unknown user moved");
 		return;
+	}
+
+	if (p->sec_since_last_step > 0.2f) {
+		add_audio_event_to_queue(EVENT_FOOTSTEP, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
+		p->sec_since_last_step = 0.0f;
 	}
 
 	if (move == MOVE_UPLEFT || move == MOVE_UPRIGHT || move == MOVE_DOWNLEFT || move == MOVE_DOWNRIGHT) {
@@ -347,6 +353,7 @@ void update_players_server() {
 		if (!players[i].active) continue;
 		players[i].sec_since_last_shot += SERVER_TICK_RATE;
 		players[i].sec_since_interact_state_change += SERVER_TICK_RATE;
+		players[i].sec_since_last_step += SERVER_TICK_RATE;
 
 		gun g = get_gun_by_type(players[i].guntype);
 		if (players[i].interact_state == INTERACT_RELOADING && players[i].sec_since_interact_state_change >= g.reload_time) {

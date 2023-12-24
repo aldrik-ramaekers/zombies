@@ -23,6 +23,8 @@ typedef enum t_audio_event_type {
 	EVENT_COLLECT,
 	EVENT_FIRE,
 	EVENT_ROUND_CHANGE,
+	EVENT_CHARACTER_TYPE,
+	EVENT_FOOTSTEP,
 } audio_event_type;
 
 typedef struct t_audio_event {

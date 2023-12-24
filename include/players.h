@@ -53,6 +53,7 @@ typedef struct t_player {
 	float dirx;
 	float diry;
 	float gun_height;
+	float sec_since_last_step;
 	player_direction direction;
 	int total_ammo;
 	int ammo_in_mag;
