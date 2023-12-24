@@ -25,6 +25,7 @@ typedef enum t_audio_event_type {
 	EVENT_ROUND_CHANGE,
 	EVENT_CHARACTER_TYPE,
 	EVENT_FOOTSTEP,
+	EVENT_ZOMBIESCREECH,
 } audio_event_type;
 
 typedef struct t_audio_event {
@@ -45,7 +46,7 @@ int max_audio_events = MAX_AUDIO_EVENTS;
 void play_music(Mix_Music* music);
 void audio_channel_finished(int channel);
 void add_throwable_audio_event_to_queue(audio_event_type event, throwable_type throwable, u32 playerid, vec3f position);
-void add_zombie_audio_event_to_queue(audio_event_type event, zombie_type zombie, u32 playerid, vec3f position);
+void add_zombie_audio_event_to_queue(audio_event_type event, zombie_type zombie, vec3f position);
 void add_object_audio_event_to_queue(audio_event_type event, object_type obj, u32 playerid, vec3f position);
 void add_audio_event_to_queue(audio_event_type event, u32 playerid, vec3f position);
 void add_ui_audio_event_to_queue(audio_event_type event);

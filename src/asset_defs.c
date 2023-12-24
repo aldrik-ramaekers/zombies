@@ -70,6 +70,12 @@ void load_assets() {
 	wav_character = Mix_LoadWAV("data/sounds/character.wav");
 	wav_step = Mix_LoadWAV("data/sounds/step.wav");
 
+	for (int i = 1; i <= NUM_SCREECHES; i++) {
+		char path[100];
+		sprintf(path, "data/sounds/screech%d.wav", i);
+		wav_screech[i] = Mix_LoadWAV(path);
+	}
+
 	// music
 	music_inside1 = Mix_LoadMUS("data/sounds/music_inside1.mp3");
 }

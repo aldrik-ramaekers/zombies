@@ -9,11 +9,11 @@ void add_throwable_audio_event_to_queue(audio_event_type event, throwable_type t
 	}
 }
 
-void add_zombie_audio_event_to_queue(audio_event_type event, zombie_type zombie, u32 playerid, vec3f position) {
+void add_zombie_audio_event_to_queue(audio_event_type event, zombie_type zombie, vec3f position) {
 	for (int i = 0; i < max_audio_events; i++) {
 		if (audio_events[i].active) continue;
 
-		audio_events[i] = (audio_event){.active = true, .throwable = THROWABLE_NONE, .obj = OBJECT_NONE, .zombie = zombie, .playerid = playerid, .position = position, .type = event};
+		audio_events[i] = (audio_event){.active = true, .throwable = THROWABLE_NONE, .obj = OBJECT_NONE, .zombie = zombie, .playerid = -1, .position = position, .type = event};
 		return;
 	}
 }
@@ -96,6 +96,10 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 					default: return wav_error;
 				}
 			}
+		}
+		case EVENT_ZOMBIESCREECH: {
+			int random_screech_index = rand() % NUM_SCREECHES;
+			return wav_screech[random_screech_index];
 		}
 
 		default: return wav_error;

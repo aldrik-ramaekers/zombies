@@ -73,6 +73,9 @@ Mix_Chunk* wav_character;
 Mix_Chunk* wav_round_change;
 Mix_Chunk* wav_step;
 
+#define NUM_SCREECHES 11
+Mix_Chunk* wav_screech[NUM_SCREECHES];
+
 Mix_Music* music_inside1;
 
 void load_assets();

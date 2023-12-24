@@ -54,6 +54,8 @@ bool hit_zombie(int index, int damage) {
 		int chunk_count = rand() % 4 + 1;
 		for (int c = 0; c < chunk_count; c++) spawn_zombie_chunk(center);
 
+		add_zombie_audio_event_to_queue(EVENT_ZOMBIESCREECH, zombies[index].type, zombies[index].position);
+
 		zombies[index].alive = false;
 		spawn_drop(zombies[index].position);
 		return true;
