@@ -247,6 +247,45 @@ void draw_lighting_panel(platform_window* window) {
 	}
 }
 
+platform_window* window_ptr;
+int cmpfunc_sortobjects (const void * a, const void * b) {
+   	object* obj1 = (object*)a;
+	object* obj2 = (object*)b;
+
+	vec2 cursor_world_pos = screen_pos_to_world_pos(window_ptr, _global_mouse.x, _global_mouse.y);
+
+	float dist1 = distance_between_3f(obj1->position, (vec3f){.x = cursor_world_pos.x, .y = cursor_world_pos.y, .z = 0});
+	float dist2 = distance_between_3f(obj2->position, (vec3f){.x = cursor_world_pos.x, .y = cursor_world_pos.y, .z = 0});
+	return dist1 - dist2;
+}
+
+void draw_object_panel(platform_window* window) {
+	int row_h = 20;
+	int offsety = 0;
+	window_ptr = window;
+
+	//qsort(loaded_map.objects, MAX_OBJECTS, sizeof(object), cmpfunc_sortobjects);
+
+	for (int i = 0; i < MAX_OBJECTS; i++) {
+		object obj = loaded_map.objects[i];
+		if (!obj.active) continue;
+
+		renderer->render_rectangle(_global_camera.x, _global_camera.y + offset_y + row_h + offsety, editor_width, row_h, rgba(255,0,0,40));
+
+		char buf[50];
+		sprintf(buf, "{x: %.0f y: %.0f, z: %.0f}", obj.position.x, obj.position.y, 0);
+		renderer->render_text(fnt_20, _global_camera.x, _global_camera.y + offset_y + row_h + offsety + 5, buf, rgb(0,0,0));
+
+		//vec2f pos = world_pos_to_screen_pos(window, emitter.position.x, emitter.position.y, emitter.position.z);
+		//renderer->render_rectangle(pos.x-3, pos.y-3, 36, 36, rgb(100,0,0));
+		//renderer->render_rectangle(pos.x, pos.y, 30, 30, rgb(255,0,0));
+		//renderer->render_image(img_sunny, pos.x, pos.y, 30, 30);
+
+		offsety+=row_h+1;
+	}
+}
+
+
 void draw_editor(platform_window* window)
 {
 	if (is_editing_map) {
@@ -269,7 +308,7 @@ void draw_editor(platform_window* window)
 		switch (edit_state)
 		{
 			case EDITING_TILES: draw_tile_panel(window); break;
-			case EDITING_OBJECTS:  break;
+			case EDITING_OBJECTS: draw_object_panel(window); break;
 			case EDITING_LIGHTING: draw_lighting_panel(window); break;
 		}
 		

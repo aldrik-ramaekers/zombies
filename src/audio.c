@@ -138,7 +138,7 @@ void audio_channel_finished(int channel) {
 
 void play_music(Mix_Music* music) {
 	Mix_FadeInMusic(music, -1, 2000);
-	Mix_VolumeMusic(MIX_MAX_VOLUME/4);
+	Mix_VolumeMusic(MIX_MAX_VOLUME/6);
 }
 
 void play_positioned_sound(int channel, Mix_Chunk* wav, vec3f pos, float max_audible_dist) {

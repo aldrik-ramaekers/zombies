@@ -2,7 +2,7 @@
 #include "../include/wall_item.h"
 
 box get_box_of_object(platform_window* window, object o) {
-	return get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, o.h}, o.size);
+	return get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, o.position.z}, o.size);
 }
 
 void render_box_with_outline(box box, color c) {

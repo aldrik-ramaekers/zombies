@@ -26,9 +26,8 @@ typedef enum t_object_type {
 
 typedef struct t_object {
 	bool active;
-	vec2f position;
+	vec3f position;
 	vec3f size;
-	float h;
 	object_type type;
 } object;
 

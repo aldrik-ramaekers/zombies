@@ -199,7 +199,7 @@ object check_if_player_collided_with_object(player p) {
 		object o = loaded_map.objects[i];
 		if (!o.active) continue;
 
-		if (check_if_player_collided_with_box(p, get_box_of_square((vec3f){o.position.x, o.position.y, o.h}, o.size))) {
+		if (check_if_player_collided_with_box(p, get_box_of_square((vec3f){o.position.x, o.position.y, o.position.z}, o.size))) {
 			return o;
 		}
 	}

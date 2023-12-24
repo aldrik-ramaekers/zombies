@@ -207,16 +207,16 @@ void create_empty_map() {
 		}
 	}
 
-	map_to_load.objects[0] = (object){.active = true, .h = 0, .position = (vec2f){16, 8}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
+	map_to_load.objects[0] = (object){.active = true, .position = (vec3f){16, 8, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
 
-	map_to_load.objects[1] = (object){.active = true, .h = 0, .position = (vec2f){0, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
-	map_to_load.objects[2] = (object){.active = true, .h = 0, .position = (vec2f){0, 1}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
-	map_to_load.objects[3] = (object){.active = true, .h = 0, .position = (vec2f){0, 2}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
+	map_to_load.objects[1] = (object){.active = true, .position = (vec3f){0, 0, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
+	map_to_load.objects[2] = (object){.active = true, .position = (vec3f){0, 1, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
+	map_to_load.objects[3] = (object){.active = true, .position = (vec3f){0, 2, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
 
-	map_to_load.objects[4] = (object){.active = true, .h = 0, .position = (vec2f){14, 8}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
-	map_to_load.objects[5] = (object){.active = true, .h = 0, .position = (vec2f){14, 12}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
-	map_to_load.objects[6] = (object){.active = true, .h = 0, .position = (vec2f){16, 10}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
-	map_to_load.objects[7] = (object){.active = true, .h = 0, .position = (vec2f){14, 14}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
+	map_to_load.objects[4] = (object){.active = true, .position = (vec3f){14, 8, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
+	map_to_load.objects[5] = (object){.active = true, .position = (vec3f){14, 12, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
+	map_to_load.objects[6] = (object){.active = true, .position = (vec3f){16, 10, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
+	map_to_load.objects[7] = (object){.active = true, .position = (vec3f){14, 14, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
 
 	map_to_load.light_emitters[0] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 0, 10}, .range = 20.0f, .active = true};
 	map_to_load.light_emitters[1] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 30, 10}, .range = 20.0f, .active = true};

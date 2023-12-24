@@ -70,16 +70,17 @@ void draw_round(platform_window* window) {
 		int characters_visible_count = _current_round.round_timer/delay_per_char;
 		if (characters_visible_count > round_text_len) characters_visible_count = round_text_len;
 		round_text[characters_visible_count] = 0;
+		font* round_text_fnt = get_font(window, 1.0f);
 
-		text_w = renderer->calculate_text_width(fnt_32, round_text);
+		text_w = renderer->calculate_text_width(round_text_fnt, round_text);
 		final_text_y = _global_camera.y + window->height/4.0f;
 		int box_pad = 10;
 		int box_x = window_center_x - (text_w/2)+1 - box_pad;
 		int box_y = final_text_y - box_pad;
 		int box_w = text_w + box_pad*2;
-		int box_h = fnt_32->px_h + box_pad*2;
+		int box_h = round_text_fnt->px_h + box_pad*2;
 		renderer->render_rectangle(box_x, box_y, box_w, box_h, rgba(255,0,0,100));
-		renderer->render_text(fnt_32, window_center_x - (text_w/2), final_text_y, round_text, rgba(255,255,255,255));
+		renderer->render_text(round_text_fnt, window_center_x - (text_w/2), final_text_y, round_text, rgba(255,255,255,255));
 	}
 }
 
