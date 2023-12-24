@@ -100,7 +100,6 @@ void update_round_server()
 		if (characters_visible_count > round_text_len) characters_visible_count = round_text_len;
 		if (visible_previously_count < characters_visible_count) {
 			add_ui_audio_event_to_queue(EVENT_CHARACTER_TYPE);
-			log_info("CHARACTER!");
 			visible_previously_count = characters_visible_count;
 		}
 	}

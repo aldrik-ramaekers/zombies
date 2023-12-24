@@ -85,6 +85,8 @@ void handle_args(int argc, char **argv) {
 
 	log_info("STATE: GAMESTATE_PLAYING");
 	global_state.state = GAMESTATE_PLAYING;
+
+	play_music(music_inside1);
 }
 
 int main(int argc, char **argv)

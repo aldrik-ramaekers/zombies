@@ -73,6 +73,7 @@ Mix_Chunk* wav_character;
 Mix_Chunk* wav_round_change;
 Mix_Chunk* wav_step;
 
+Mix_Music* music_inside1;
 
 void load_assets();
 font* get_font(platform_window* window, float scale);

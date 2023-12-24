@@ -42,6 +42,7 @@ audio_event audio_events[MAX_AUDIO_EVENTS] = {0};
 bool audio_channel_usage[NUM_AUDIO_CHANNELS] = {0};
 int max_audio_events = MAX_AUDIO_EVENTS;
 
+void play_music(Mix_Music* music);
 void audio_channel_finished(int channel);
 void add_throwable_audio_event_to_queue(audio_event_type event, throwable_type throwable, u32 playerid, vec3f position);
 void add_zombie_audio_event_to_queue(audio_event_type event, zombie_type zombie, u32 playerid, vec3f position);

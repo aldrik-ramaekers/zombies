@@ -69,6 +69,9 @@ void load_assets() {
 	wav_round_change = Mix_LoadWAV("data/sounds/round_change.wav");
 	wav_character = Mix_LoadWAV("data/sounds/character.wav");
 	wav_step = Mix_LoadWAV("data/sounds/step.wav");
+
+	// music
+	music_inside1 = Mix_LoadMUS("data/sounds/music_inside1.mp3");
 }
 
 font* get_font(platform_window* window, float scale) {
