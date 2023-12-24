@@ -31,8 +31,8 @@ typedef struct t_tile {
 	vec2f br;
 } tile;
 
-#define MAP_SIZE_X 40
-#define MAP_SIZE_Y 40
+#define MAP_SIZE_X 1000
+#define MAP_SIZE_Y 1000
 #define MAX_LIGHT_EMITTERS 100
 
 typedef struct t_map_info {
@@ -61,7 +61,7 @@ typedef struct t_light_data {
 typedef struct t_extracted_map_data {
 	int width;
 	int height;
-	tile heightmap[MAP_SIZE_Y][MAP_SIZE_X];
+	tile heightmap[MAP_SIZE_Y][MAP_SIZE_X]; // tilemap
 	object objects[MAX_OBJECTS];
 	light_data lightmap[MAP_SIZE_Y][MAP_SIZE_X];
 	light_emitter light_emitters[MAX_LIGHT_EMITTERS];

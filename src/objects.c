@@ -52,15 +52,14 @@ image* get_image_from_objecttype(object_type tile) {
 	}
 }
 
-void draw_objects_at_row(platform_window* window, int row) {
+void draw_objects(platform_window* window) {
 	map_info info = get_map_info(window);
 
-	for (int i = MAP_SIZE_X-1; i >= 0; i--) {
-		object o = get_object_at_tile(i, row);
-
+	for (int i = 0; i < MAX_OBJECTS; i++) {
+		if (!loaded_map.objects[i].active) continue;
+		object o = loaded_map.objects[i];
 		OBJECT_RENDER_DEPTH((int)o.position.y);
 		
-		if (!o.active) continue;
 		box box = get_box_of_object(window, o);
 
 		image* img = get_image_from_objecttype(o.type);

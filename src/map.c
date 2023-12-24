@@ -154,6 +154,10 @@ void load_mapdata_into_world() {
 				float dist_bl = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].bottomleft});
 				float dist_br = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].bottomright});
 
+				if (dist_tl > emitter.range) {
+					continue;
+				}
+
 				float p_tl = 1.0f - dist_tl / emitter.range;
 				float p_tr = 1.0f - dist_tr / emitter.range;
 				float p_bl = 1.0f - dist_bl / emitter.range;
@@ -277,16 +281,27 @@ float get_height_of_tile_under_coords(float tocheckx, float tochecky) {
 	return playerline;
 }
 
+static int round_up(int numToRound, int multiple)
+{
+    if (multiple == 0)
+        return numToRound;
+
+    int remainder = numToRound % multiple;
+    if (remainder == 0)
+        return numToRound;
+
+    return numToRound + multiple - remainder;
+}
+
 inline int get_tile_width(platform_window* window) {
 	int tile_width = window->height / 30;
 	if (window->width > window->height) tile_width = window->width / 30;
-	return tile_width;
+	return round_up(tile_width, 8);
 }
 
 inline int get_tile_height(platform_window* window) {
 	int tile_width = get_tile_width(window);
-	int tile_height = tile_width * 1;
-	return tile_height;
+	return tile_width;
 }
 
 bool is_in_bounds(float x, float y) {
@@ -328,9 +343,23 @@ void draw_grid(platform_window* window) {
 
 	map_info info = get_map_info(window);
 
+	int tilemap_render_min_y = (_global_camera.y / info.tile_height);
+	int tilemap_render_max_y = tilemap_render_min_y + (window->height/ info.tile_height) + 1;
+
+	int tilemap_render_min_x = (_global_camera.x / info.tile_width);
+	int tilemap_render_max_x = tilemap_render_min_x + (window->width/ info.tile_width) + 1;
+
 	for (int y = 0; y < MAP_SIZE_Y; y++) {
-		for (int x = MAP_SIZE_X-1; x >= 0; x--) {
+
+		if (y < tilemap_render_min_y) continue;
+		if (y > tilemap_render_max_y) continue;
+
+		for (int x = 0; x < MAP_SIZE_X; x++) {
 			MAP_RENDER_DEPTH;
+
+			if (x < tilemap_render_min_x) continue;
+			if (x > tilemap_render_max_x) continue;
+
 			tile tile = loaded_map.heightmap[y][x];
 
 			float xdiff_between_bottom_and_top = info.px_incline;
@@ -397,9 +426,9 @@ void draw_grid(platform_window* window) {
 			loaded_map.heightmap[y][x].bl = bottomleft;
 			loaded_map.heightmap[y][x].br = bottomright;
 		}
-
-		draw_objects_at_row(window, y);
 	}
+
+	draw_objects(window);
 }
 
 inline map_info get_map_info(platform_window* window) {
