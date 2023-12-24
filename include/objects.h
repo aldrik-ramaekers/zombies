@@ -19,9 +19,10 @@ typedef struct t_light_emitter {
 } light_emitter;
 
 typedef enum t_object_type {
-	OBJECT_NONE = 0,
-	OBJECT_COBBLESTONEWALL1 = 1,
-	OBJECT_PLANTBOX1 = 2,
+	OBJECT_NONE,
+	OBJECT_COBBLESTONEWALL1,
+	OBJECT_PLANTBOX1,
+	OBJECT_METAL_WALL_FRONT,
 } object_type;
 
 typedef struct t_object {

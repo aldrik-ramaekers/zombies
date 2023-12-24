@@ -40,6 +40,7 @@ void load_assets() {
 	img_spawner = assets_load_image_from_file("data/imgs/spawner.png");
 	img_obj_plants = assets_load_image_from_file("data/imgs/plants.png");
 	img_obj_wall1 = assets_load_image_from_file("data/imgs/wall1.png");
+	img_metal_wall_front = assets_load_image_from_file("data/imgs/objects/metal_wall_front.png");
 
 	// Players
 	img_player_running = assets_load_image_from_file("data/imgs/players/player1_running.png");

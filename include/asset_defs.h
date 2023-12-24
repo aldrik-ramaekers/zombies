@@ -33,6 +33,7 @@ image* img_icon_molotov;
 image* img_spawner;
 image* img_obj_plants;
 image* img_obj_wall1;
+image* img_metal_wall_front;
 
 // Throwables
 image* img_grenade;

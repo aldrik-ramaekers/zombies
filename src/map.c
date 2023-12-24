@@ -207,6 +207,10 @@ void create_empty_map() {
 		}
 	}
 
+	for (int x = 0; x < MAP_SIZE_X; x++) {
+		map_to_load.objects[50+x] = (object){.active = true, .position = (vec3f){x, 0, 0}, .size = (vec3f){1,1,1}, .type = OBJECT_METAL_WALL_FRONT};
+	}
+
 	map_to_load.objects[0] = (object){.active = true, .position = (vec3f){16, 8, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
 
 	map_to_load.objects[1] = (object){.active = true, .position = (vec3f){0, 0, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
