@@ -144,11 +144,23 @@ void load_mapdata_into_world() {
 	}
 
 	// Load lightmap
-	for (int y = 0; y < MAP_SIZE_Y; y++) {
-		for (int x = 0; x < MAP_SIZE_X; x++) {
-			for (int l = 0; l < MAX_LIGHT_EMITTERS; l++) {
-				light_emitter emitter = loaded_map.light_emitters[l];
-				if (!emitter.active) continue;
+	for (int l = 0; l < MAX_LIGHT_EMITTERS; l++) {
+		light_emitter emitter = loaded_map.light_emitters[l];
+		if (!emitter.active) continue;
+
+		int ystart = emitter.position.y - emitter.range-2;
+		int xstart = emitter.position.x - emitter.range-2;
+		int yend = ystart + emitter.range*2 + 4;
+		int xend = xstart + emitter.range*2 + 4;
+
+		if (ystart >= MAP_SIZE_Y) ystart = MAP_SIZE_Y-1;
+		if (xstart >= MAP_SIZE_X) xstart = MAP_SIZE_X-1;
+		if (yend >= MAP_SIZE_Y) yend = MAP_SIZE_Y-1;
+		if (xend >= MAP_SIZE_X) xend = MAP_SIZE_X-1;
+
+		for (int y = ystart; y <= yend; y++) {
+			for (int x = xstart; x <= xend; x++) {
+							
 				float dist_tl = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].topleft});
 				float dist_tr = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].topright});
 				float dist_bl = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].bottomleft});
