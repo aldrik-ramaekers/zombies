@@ -255,13 +255,19 @@ typedef enum t_object_editor_state {
 	OBJECT_EDITOR_PLACING,
 } object_editor_state;
 
-object_editor_state object_edit_state = OBJECT_EDITOR_PLACING;
+object_editor_state object_edit_state = OBJECT_EDITOR_SELECTING;
 object_type object_to_place = OBJECT_NONE;
-
+vec2 select_start = {0,0};
+vec2 select_end = {0,0};
+static bool is_selecting = false;
 
 void update_object_editor(platform_window* window) {
 	map_info info = get_map_info(window);
 	vec2 pos = screen_pos_to_world_pos(window, _global_mouse.x, _global_mouse.y);
+
+	if (keyboard_is_key_down(KEY_ESCAPE)) {
+		object_edit_state = OBJECT_EDITOR_SELECTING;
+	}
 
 	if (pos.x < 0 || pos.y < 0) return;
 	if (pos.x >= loaded_map.width || pos.y >= loaded_map.height) return;
@@ -269,7 +275,7 @@ void update_object_editor(platform_window* window) {
 	switch (object_edit_state)
 	{
 		case OBJECT_EDITOR_PLACING:
-			if (is_left_down()) {
+			if (is_left_clicked()) {
 				object obj = object_dict[object_to_place-1];
 				obj.position.x = pos.x;
 				obj.position.y = pos.y;
@@ -287,7 +293,16 @@ void update_object_editor(platform_window* window) {
 
 		case OBJECT_EDITOR_SELECTING:
 			if (is_left_clicked()) {
-				
+				select_start = pos;
+				select_end = pos;
+				is_selecting = true;
+			}
+			if (is_selecting && is_left_down()) {
+				select_end = pos;
+			}
+			if (is_selecting && is_left_released()) {
+				select_end = pos;
+				is_selecting = false;
 			}
 			break;
 		
@@ -314,6 +329,13 @@ void draw_object_panel(platform_window* window) {
 			object_to_place = (object_type)i;
 			object_edit_state = OBJECT_EDITOR_PLACING;
 		}
+	}
+
+	if (object_edit_state == OBJECT_EDITOR_SELECTING)
+	{
+		vec2f start = world_pos_to_screen_pos(window, select_start.x, select_start.y, 0);
+		vec2f end = world_pos_to_screen_pos(window, select_end.x - select_start.x, select_end.y - select_start.y, 0);
+		renderer->render_rectangle(start.x, start.y, end.x, end.y, rgba(255,0,0,100));
 	}
 }
 

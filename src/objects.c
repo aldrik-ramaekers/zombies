@@ -39,6 +39,12 @@ object get_object_at_tile(float x, float y) {
 }
 
 void add_object(object obj) {
+	object existing_obj = get_object_at_tile(obj.position.x, obj.position.y);
+	if (existing_obj.active) {
+		log_info("Space occupied, cannot place object.");
+		return;
+	}
+
 	for (int i = 0; i < MAX_OBJECTS; i++) {
 		object o = map_to_load.objects[i];
 		if (o.active) continue;	
@@ -46,7 +52,7 @@ void add_object(object obj) {
 		map_to_load.objects[i].active = true;
 		return;
 	}
-	log_info("OBJECT LIMIT REACHED!");
+	log_info("Object limit reached.");
 }
 
 image* get_image_from_objecttype(object_type tile) {

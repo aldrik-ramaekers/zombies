@@ -5,7 +5,7 @@
 
 #include "map.h"
 
-#define MAX_OBJECTS 1000
+#define MAX_OBJECTS 10000
 
 typedef struct t_vec3f {
 	float x,y,z;
