@@ -53,6 +53,8 @@ object object_dict[OBJECT_END] = {
 };
 
 object get_object_at_tile(float x, float y);
+object* get_pobject_at_tile(float x, float y);
+object* get_object_at_tile_from_mapfile(float x, float y);
 void create_objects();
 void add_object(object obj);
 void draw_objects(platform_window* window);

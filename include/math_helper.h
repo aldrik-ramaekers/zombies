@@ -22,5 +22,6 @@ vec2f get_intersection_point(vec2f A, vec2f B, vec2f C, vec2f D);
 box get_render_box_of_square(platform_window* window, vec3f position, vec3f size);
 box get_box_of_square(vec3f position, vec3f size);
 vec3f get_center_of_square(vec3f position, vec3f size);
+bool rect_contains_point(vec2 point, vec2 tl, vec2 br);
 
 #endif

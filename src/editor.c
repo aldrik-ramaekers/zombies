@@ -251,7 +251,6 @@ void draw_lighting_panel(platform_window* window) {
 
 typedef enum t_object_editor_state {
 	OBJECT_EDITOR_SELECTING,
-	OBJECT_EDITOR_MOVING,
 	OBJECT_EDITOR_PLACING,
 } object_editor_state;
 
@@ -260,6 +259,98 @@ object_type object_to_place = OBJECT_NONE;
 vec2 select_start = {0,0};
 vec2 select_end = {0,0};
 static bool is_selecting = false;
+static bool is_dragging = false;
+
+void update_object_selection(platform_window* window, vec2 cursor_pos) {
+	static int drag_start_x = 0;
+	static int drag_start_y = 0;
+	static vec2 drag_select_start = {0,0};
+	static vec2 drag_select_end = {0,0};
+
+	if (is_left_clicked()) {
+		if (rect_contains_point(cursor_pos, select_start, select_end)) {
+			is_dragging = true;
+			drag_start_x = cursor_pos.x;
+			drag_start_y = cursor_pos.y;
+			drag_select_start = select_start;
+			drag_select_end = select_end;
+		}
+		else {
+			select_start = cursor_pos;
+			select_end = cursor_pos;
+			is_selecting = true;
+		}	
+	}
+
+	if (is_selecting) {
+		if (is_left_down()) {
+			select_end = cursor_pos;
+		}
+		if (is_left_released()) {
+			select_end = cursor_pos;
+			is_selecting = false;
+		}
+	}
+	if (is_dragging) {
+		if (is_left_down()) {
+			vec2 newpos = cursor_pos;
+			int diffx = newpos.x - drag_start_x;
+			int diffy = newpos.y - drag_start_y;
+
+			select_start.x += diffx;
+			select_start.y += diffy;
+			select_end.x += diffx;
+			select_end.y += diffy;
+
+			array l = array_create(sizeof(object*));
+			array_reserve(&l, 200);
+			for (int y = select_start.y; y <= select_end.y; y++)
+			{
+				for (int x = select_start.x; x <= select_end.x; x++)
+				{
+					object* obj = get_pobject_at_tile(x, y);
+					if (obj) {
+						bool already_moved = false;
+						for (int i = 0; i < l.length; i++) {
+							object* existing_obj = *(object**)array_at(&l, i);
+							if (existing_obj == obj) already_moved = true;
+						}
+						if (already_moved) continue;
+
+						array_push(&l, (void*)obj);
+						obj->position.x += diffx;
+						obj->position.y += diffy;
+					}
+				}
+			}
+
+			array_destroy(&l);
+
+			drag_start_x = newpos.x;
+			drag_start_y = newpos.y;
+		}
+		else {
+			
+			load_mapdata_into_world();
+			is_dragging = false;
+		}
+	}
+	
+
+	if (!is_selecting) {
+		if (keyboard_is_key_down(KEY_DELETE)) {
+			for (int y = select_start.y; y <= select_end.y; y++)
+			{
+				for (int x = select_start.x; x <= select_end.x; x++)
+				{
+					object* obj = get_object_at_tile_from_mapfile(x, y);
+					if (obj) obj->active = false;
+				}
+			}
+			load_mapdata_into_world();
+		}
+	}
+}
 
 void update_object_editor(platform_window* window) {
 	map_info info = get_map_info(window);
@@ -285,25 +376,8 @@ void update_object_editor(platform_window* window) {
 			}
 			break;
 
-		case OBJECT_EDITOR_MOVING:
-			if (is_left_clicked()) {
-				
-			}
-			break;
-
 		case OBJECT_EDITOR_SELECTING:
-			if (is_left_clicked()) {
-				select_start = pos;
-				select_end = pos;
-				is_selecting = true;
-			}
-			if (is_selecting && is_left_down()) {
-				select_end = pos;
-			}
-			if (is_selecting && is_left_released()) {
-				select_end = pos;
-				is_selecting = false;
-			}
+			update_object_selection(window, pos);
 			break;
 		
 		default:
@@ -334,7 +408,7 @@ void draw_object_panel(platform_window* window) {
 	if (object_edit_state == OBJECT_EDITOR_SELECTING)
 	{
 		vec2f start = world_pos_to_screen_pos(window, select_start.x, select_start.y, 0);
-		vec2f end = world_pos_to_screen_pos(window, select_end.x - select_start.x, select_end.y - select_start.y, 0);
+		vec2f end = world_pos_to_screen_pos(window, select_end.x - select_start.x+1, select_end.y - select_start.y+1, 0);
 		renderer->render_rectangle(start.x, start.y, end.x, end.y, rgba(255,0,0,100));
 	}
 }

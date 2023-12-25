@@ -141,3 +141,7 @@ box get_render_box_of_square(platform_window* window, vec3f position, vec3f size
 
 	return (box){rendertl, rendertr, renderbl, renderbr, rendertl2, rendertr2, renderbl2, renderbr2};
 }
+
+bool rect_contains_point(vec2 point, vec2 tl, vec2 br) {
+	return (point.x >= tl.x && point.y >= tl.y && point.x <= br.x && point.y <= br.y);
+}

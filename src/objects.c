@@ -29,6 +29,24 @@ void render_quad_with_outline(vec2f tl, vec2f tr, vec2f bl, vec2f br, color c) {
 	renderer->render_line(bl.x, bl.y, br.x, br.y, 1, rgba(0,0,255, c.a)); // bottom
 }
 
+object* get_object_at_tile_from_mapfile(float x, float y) {
+	for (int i = 0; i < MAX_OBJECTS; i++) {
+		object o = map_to_load.objects[i];
+		if (!o.active) continue;
+		if (x >= o.position.x && x < o.position.x + o.size.x && y >= o.position.y && y < o.position.y + o.size.y) return &map_to_load.objects[i];
+	}
+	return 0;
+}
+
+object* get_pobject_at_tile(float x, float y) {
+	for (int i = 0; i < MAX_OBJECTS; i++) {
+		object o = loaded_map.objects[i];
+		if (!o.active) continue;	
+		if (x >= o.position.x && x < o.position.x + o.size.x && y >= o.position.y && y < o.position.y + o.size.y) return &loaded_map.objects[i];
+	}
+	return 0;
+}
+
 object get_object_at_tile(float x, float y) {
 	for (int i = 0; i < MAX_OBJECTS; i++) {
 		object o = loaded_map.objects[i];
