@@ -25,6 +25,8 @@ int editor_width = 200;
 int borderw = 8;
 int offset_y = 50;
 
+static void update_object_editor(platform_window* window);
+
 static void update_tile_editor(platform_window* window) {
 	map_info info = get_map_info(window);
 	vec2 pos = screen_pos_to_world_pos(window, _global_mouse.x, _global_mouse.y);
@@ -89,7 +91,7 @@ void update_editor(platform_window* window)
 	switch (edit_state)
 	{
 		case EDITING_TILES: update_tile_editor(window); break;
-		case EDITING_OBJECTS: break;
+		case EDITING_OBJECTS: update_object_editor(window); break;
 		case EDITING_LIGHTING: break;
 	}
 
@@ -247,41 +249,71 @@ void draw_lighting_panel(platform_window* window) {
 	}
 }
 
-platform_window* window_ptr;
-int cmpfunc_sortobjects (const void * a, const void * b) {
-   	object* obj1 = (object*)a;
-	object* obj2 = (object*)b;
+typedef enum t_object_editor_state {
+	OBJECT_EDITOR_SELECTING,
+	OBJECT_EDITOR_MOVING,
+	OBJECT_EDITOR_PLACING,
+} object_editor_state;
 
-	vec2 cursor_world_pos = screen_pos_to_world_pos(window_ptr, _global_mouse.x, _global_mouse.y);
+object_editor_state object_edit_state = OBJECT_EDITOR_PLACING;
+object_type object_to_place = OBJECT_NONE;
 
-	float dist1 = distance_between_3f(obj1->position, (vec3f){.x = cursor_world_pos.x, .y = cursor_world_pos.y, .z = 0});
-	float dist2 = distance_between_3f(obj2->position, (vec3f){.x = cursor_world_pos.x, .y = cursor_world_pos.y, .z = 0});
-	return dist1 - dist2;
+
+void update_object_editor(platform_window* window) {
+	map_info info = get_map_info(window);
+	vec2 pos = screen_pos_to_world_pos(window, _global_mouse.x, _global_mouse.y);
+
+	if (pos.x < 0 || pos.y < 0) return;
+	if (pos.x >= loaded_map.width || pos.y >= loaded_map.height) return;
+
+	switch (object_edit_state)
+	{
+		case OBJECT_EDITOR_PLACING:
+			if (is_left_down()) {
+				object obj = object_dict[object_to_place-1];
+				obj.position.x = pos.x;
+				obj.position.y = pos.y;
+				obj.active = true;
+				add_object(obj);
+				load_mapdata_into_world();
+			}
+			break;
+
+		case OBJECT_EDITOR_MOVING:
+			if (is_left_clicked()) {
+				
+			}
+			break;
+
+		case OBJECT_EDITOR_SELECTING:
+			if (is_left_clicked()) {
+				
+			}
+			break;
+		
+		default:
+			break;
+	}
 }
 
+
 void draw_object_panel(platform_window* window) {
-	int row_h = 20;
-	int offsety = 0;
-	window_ptr = window;
+	int start_y = 1; // rows to skip
+	int cols = 4;
+	int tile_w = editor_width / cols;
 
-	//qsort(loaded_map.objects, MAX_OBJECTS, sizeof(object), cmpfunc_sortobjects);
+	int tile_start = OBJECT_NONE+1;
+	for (int i = tile_start; i < OBJECT_END; i++) {
+		int x = ((i-tile_start) % cols) * tile_w;
+		int y = (start_y + ((i-tile_start) / cols)) * tile_w;
 
-	for (int i = 0; i < MAX_OBJECTS; i++) {
-		object obj = loaded_map.objects[i];
-		if (!obj.active) continue;
+		y += offset_y;
 
-		renderer->render_rectangle(_global_camera.x, _global_camera.y + offset_y + row_h + offsety, editor_width, row_h, rgba(255,0,0,40));
-
-		char buf[50];
-		sprintf(buf, "{x: %.0f y: %.0f, z: %.0f}", obj.position.x, obj.position.y, 0);
-		renderer->render_text(fnt_20, _global_camera.x, _global_camera.y + offset_y + row_h + offsety + 5, buf, rgb(0,0,0));
-
-		//vec2f pos = world_pos_to_screen_pos(window, emitter.position.x, emitter.position.y, emitter.position.z);
-		//renderer->render_rectangle(pos.x-3, pos.y-3, 36, 36, rgb(100,0,0));
-		//renderer->render_rectangle(pos.x, pos.y, 30, 30, rgb(255,0,0));
-		//renderer->render_image(img_sunny, pos.x, pos.y, 30, 30);
-
-		offsety+=row_h+1;
+		image* img = get_image_from_objecttype((object_type)i);
+		if (push_icon_button(x, y, tile_w, img, object_to_place == (object_type)i && object_edit_state == OBJECT_EDITOR_PLACING)) {
+			object_to_place = (object_type)i;
+			object_edit_state = OBJECT_EDITOR_PLACING;
+		}
 	}
 }
 

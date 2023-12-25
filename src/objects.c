@@ -38,6 +38,17 @@ object get_object_at_tile(float x, float y) {
 	return (object){0};
 }
 
+void add_object(object obj) {
+	for (int i = 0; i < MAX_OBJECTS; i++) {
+		object o = map_to_load.objects[i];
+		if (o.active) continue;	
+		map_to_load.objects[i] = obj;
+		map_to_load.objects[i].active = true;
+		return;
+	}
+	log_info("OBJECT LIMIT REACHED!");
+}
+
 image* get_image_from_objecttype(object_type tile) {
 	switch (tile)
 	{
