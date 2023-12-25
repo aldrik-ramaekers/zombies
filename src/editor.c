@@ -304,22 +304,26 @@ void update_object_selection(platform_window* window, vec2 cursor_pos) {
 
 			array l = array_create(sizeof(object*));
 			array_reserve(&l, 200);
-			for (int y = select_start.y; y <= select_end.y; y++)
+			for (int y = drag_select_start.y; y <= drag_select_end.y; y++)
 			{
-				for (int x = select_start.x; x <= select_end.x; x++)
+				for (int x = drag_select_start.x; x <= drag_select_end.x; x++)
 				{
-					object* obj = get_pobject_at_tile(x, y);
+					object* obj = get_object_at_tile_from_mapfile(x, y);
 					if (obj) {
 						bool already_moved = false;
 						for (int i = 0; i < l.length; i++) {
 							object* existing_obj = *(object**)array_at(&l, i);
 							if (existing_obj == obj) already_moved = true;
 						}
-						if (already_moved) continue;
+						if (already_moved) {
+							continue;
+						}
 
-						array_push(&l, (void*)obj);
-						obj->position.x += diffx;
-						obj->position.y += diffy;
+						array_push(&l, (void*)&obj);
+
+						int index = (obj-map_to_load.objects);
+						loaded_map.objects[index].position.x += diffx;
+						loaded_map.objects[index].position.y += diffy;
 					}
 				}
 			}
@@ -330,7 +334,19 @@ void update_object_selection(platform_window* window, vec2 cursor_pos) {
 			drag_start_y = newpos.y;
 		}
 		else {
-			
+			for (int y = drag_select_start.y; y <= drag_select_end.y; y++)
+			{
+				for (int x = drag_select_start.x; x <= drag_select_end.x; x++)
+				{
+					object* obj = get_object_at_tile_from_mapfile(x, y);
+					if (obj) {
+						int index = (obj-map_to_load.objects);
+						map_to_load.objects[index].position.x = loaded_map.objects[index].position.x;
+						map_to_load.objects[index].position.y = loaded_map.objects[index].position.y;
+					}
+				}
+			}
+
 			load_mapdata_into_world();
 			is_dragging = false;
 		}
