@@ -30,7 +30,7 @@ void load_assets() {
 	img_disconnected = assets_load_image_from_file("data/imgs/icons/disconnected.png");
 	img_icon_grenade = assets_load_image_from_file("data/imgs/icons/grenade.png");
 	img_icon_molotov = assets_load_image_from_file("data/imgs/icons/molotov.png");
-	img_test = assets_load_image_from_file("data/imgs/players/body.png");
+	
 
 	// Throwables
 	img_grenade = assets_load_image_from_file("data/imgs/throwables/grenade.png");
@@ -76,11 +76,12 @@ void load_assets() {
 	for (int i = 1; i <= NUM_SCREECHES; i++) {
 		char path[100];
 		sprintf(path, "data/sounds/screech%d.wav", i);
-		wav_screech[i] = Mix_LoadWAV(path);
+		wav_screech[i-1] = Mix_LoadWAV(path);
 	}
 
 	// music
 	music_inside1 = Mix_LoadMUS("data/sounds/music_inside1.mp3");
+
 }
 
 font* get_font(platform_window* window, float scale) {

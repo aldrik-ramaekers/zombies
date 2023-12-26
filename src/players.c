@@ -279,8 +279,8 @@ void take_player_input(platform_window* window) {
 		dirx /= length;
 		diry /= length;
 
-		float gun_offset_x = (get_player_size_in_tile()/2) + (dirx/4);
-		float gun_offset_y = (get_player_size_in_tile()/2) + (diry/4);
+		float gun_offset_x = (get_player_size_in_tile()/2) + (dirx);
+		float gun_offset_y = (get_player_size_in_tile()/2) + (diry);
 
 		add_message_to_outgoing_queuex(create_protocol_user_look(player_id, gun_offset_x, gun_offset_y, dirx, diry), *global_state.client);
 	}
@@ -466,15 +466,15 @@ void draw_player(platform_window* window, player* p, int index) {
 
 	// Body
 	{
-		sprite_frame frame = sprite_get_frame(img_test, &p->sprite);
-		renderer->render_image_quad_partial(img_test, 
+		sprite_frame frame = sprite_get_frame(img_body, &p->sprite);
+		renderer->render_image_quad_partial(img_body, 
 		player_render_x, player_render_y,
 		player_render_x, player_render_y + size, 
 		player_render_x + size, player_render_y + size, 
 		player_render_x + size, player_render_y, 
 		frame.tl, frame.tr, frame.bl, frame.br);
 
-		renderer->render_image_quad_partial_tint(img_test, 
+		renderer->render_image_quad_partial_tint(img_body, 
 		player_render_x, player_render_y,
 		player_render_x, player_render_y + size, 
 		player_render_x + size, player_render_y + size, 
