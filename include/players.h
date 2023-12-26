@@ -14,6 +14,8 @@
 #define MAX_PLAYERS 10
 #define MAX_POINT_ANIMATIONS 10
 
+#define GUN_OFFSET_FROM_PLAYER 0.8f
+
 typedef enum t_player_interact_state {
 	INTERACT_IDLE,
 	INTERACT_RELOADING,
