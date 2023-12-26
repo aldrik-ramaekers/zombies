@@ -137,6 +137,6 @@ void create_objects() {
 	create_spawner((vec2){15, 5});
 	create_spawner((vec2){3, 8});
 	*/
-	create_spawner((vec2){11, 18});
+	//create_spawner((vec2){11, 18});
 	create_wallitem((vec3f){14, 1, 0}, WALLITEM_GUN, (wall_item_data){.gun = GUN_NOVA});
 }

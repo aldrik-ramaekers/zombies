@@ -16,6 +16,7 @@ sprite create_sprite(image* img, int frame_count, int fwidth, int fheight, float
 
 void update_sprite(sprite* sprite) {
 	sprite->time += SERVER_TICK_RATE;
+	if (sprite->sec_per_frame == 0.0f) return; // sprite does not play.
 	int frame = sprite->time / sprite->sec_per_frame;
 	sprite->current_frame = frame;
 	if (frame >= sprite->frame_count) {
@@ -24,7 +25,14 @@ void update_sprite(sprite* sprite) {
 	}
 }
 
-sprite_frame sprite_get_frame(sprite* sprite) {
+void sprite_set_current_frame(sprite* sprite, int index) {
+	sprite->current_frame = index;
+}
+
+sprite_frame sprite_get_frame(image* img, sprite* sprite) {
+	sprite->img_width = img->width;
+	sprite->img_height = img->height;
+
 	sprite_frame frame = {0};
 	int columns = sprite->img_width / sprite->frame_width;
 	int rows = sprite->img_height/ sprite->frame_height;

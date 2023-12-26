@@ -258,9 +258,10 @@ void draw_throwables(platform_window* window) {
 			explode_location.y -= explosion_size.y/2;
 			box box = get_render_box_of_square(window, explode_location, explosion_size);
 			
-			sprite_frame frame = sprite_get_frame(&throwables[i].sprite);
+			image* img = get_throwable_explosion_from_type(t.type);
+			sprite_frame frame = sprite_get_frame(img, &throwables[i].sprite);
 
-			renderer->render_image_quad_partial(get_throwable_explosion_from_type(t.type), 
+			renderer->render_image_quad_partial(img, 
 				box.tl_u.x, box.tl_u.y,
 				box.bl_d.x, box.bl_d.y, 
 				box.br_d.x, box.br_d.y, 

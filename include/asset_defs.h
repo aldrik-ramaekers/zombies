@@ -15,6 +15,8 @@ font* fnt_20;
 font* fnt_16;
 font* fnt_12;
 
+image* img_test;
+
 // Icons
 image* img_icon_bullets;
 image* img_icon_nova;
@@ -41,8 +43,8 @@ image* img_grenade_explode;
 image* img_molotov_explode;
 
 // Players
-image* img_player_running;
 image* img_helmet;
+image* img_body;
 
 // Other
 image* img_zombie_chunk_hand;

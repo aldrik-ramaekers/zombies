@@ -24,6 +24,7 @@ typedef struct t_sprite_frame {
 
 sprite create_sprite(image* img, int frame_count, int fwidth, int fheight, float sec_per_frame);
 void update_sprite(sprite* sprite);
-sprite_frame sprite_get_frame(sprite* sprite);
+void sprite_set_current_frame(sprite* sprite, int index);
+sprite_frame sprite_get_frame(image* img, sprite* sprite);
 
 #endif

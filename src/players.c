@@ -59,7 +59,7 @@ void spawn_player(u32 id, network_client client) {
 		players[i].guntype = GUN_MP5;
 		players[i].height = 0.0f;
 		players[i].client = client;
-		players[i].sprite = create_sprite(img_player_running, 22, 108, 136, 0.02f);
+		players[i].sprite = create_sprite(img_body, 4, 256, 256, 0.0f);
 		players[i].direction = DIRECTION_DOWN;
 		players[i].connection_state = CONNECTED;
 		players[i].throwables.grenades = 3; 
@@ -319,29 +319,29 @@ void update_players_client() {
 		if (!players[i].active) continue;
 
 		if (players[i].direction == DIRECTION_DOWN) {
-			players[i].sprite.frame_start = 374;
+			sprite_set_current_frame(&players[i].sprite, 0);
 		}
 		if (players[i].direction == DIRECTION_UP) {
-			players[i].sprite.frame_start = 0;
+			sprite_set_current_frame(&players[i].sprite, 1);
 		}
 		if (players[i].direction == DIRECTION_LEFT) {
-			players[i].sprite.frame_start = 660;
+			sprite_set_current_frame(&players[i].sprite, 2);
 		}
 		if (players[i].direction == DIRECTION_RIGHT) {
-			players[i].sprite.frame_start = 198;
+			sprite_set_current_frame(&players[i].sprite, 3);
 		}
 
 		if (players[i].direction == DIRECTION_TOPRIGHT) {
-			players[i].sprite.frame_start = 110;
+			sprite_set_current_frame(&players[i].sprite, 1);
 		}
 		if (players[i].direction == DIRECTION_TOPLEFT) {
-			players[i].sprite.frame_start = 506;
+			sprite_set_current_frame(&players[i].sprite, 1);
 		}
 		if (players[i].direction == DIRECTION_BOTTOMRIGHT) {
-			players[i].sprite.frame_start = 286;
+			sprite_set_current_frame(&players[i].sprite, 0);
 		}
 		if (players[i].direction == DIRECTION_BOTTOMLEFT) {
-			players[i].sprite.frame_start = 682;
+			sprite_set_current_frame(&players[i].sprite, 0);
 		}
 		
 
@@ -464,13 +464,36 @@ void draw_player(platform_window* window, player* p, int index) {
 	float player_render_x = player_pos.x;
 	float player_render_y = player_pos.y;
 
-	float rads = -atan2(p->diry, p->dirx);
-	renderer->render_set_rotation(rads + M_PI);
-	renderer->render_image(img_helmet, player_render_x, player_render_y, size, size);
-	renderer->render_image_tint(img_helmet, 
+	// Body
+	{
+		sprite_frame frame = sprite_get_frame(img_test, &p->sprite);
+		renderer->render_image_quad_partial(img_test, 
 		player_render_x, player_render_y,
-		size, size, get_color_tint_by_player_index(index));
-	renderer->render_set_rotation(0.0f);
+		player_render_x, player_render_y + size, 
+		player_render_x + size, player_render_y + size, 
+		player_render_x + size, player_render_y, 
+		frame.tl, frame.tr, frame.bl, frame.br);
+
+		renderer->render_image_quad_partial_tint(img_test, 
+		player_render_x, player_render_y,
+		player_render_x, player_render_y + size, 
+		player_render_x + size, player_render_y + size, 
+		player_render_x + size, player_render_y, 
+		frame.tl, frame.tr, frame.bl, frame.br, get_color_tint_by_player_index(index));
+	}
+
+	player_render_y -= size*0.7;
+
+	// Helmet
+	{
+		float rads = -atan2(p->diry, p->dirx);
+		renderer->render_set_rotation(rads + M_PI);
+		renderer->render_image(img_helmet, player_render_x, player_render_y, size, size);
+		renderer->render_image_tint(img_helmet, 
+			player_render_x, player_render_y,
+			size, size, get_color_tint_by_player_index(index));
+		renderer->render_set_rotation(0.0f);
+	}
 
 	int name_x = player_render_x + (size)/2 - (renderer->calculate_text_width(fnt_20, name))/2;
 	int name_y = player_render_y - fnt_20->px_h - 5;

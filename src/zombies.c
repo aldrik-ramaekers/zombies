@@ -125,7 +125,7 @@ void draw_spawners(platform_window* window) {
 
 		tile tile = loaded_map.heightmap[spawner.position.y][spawner.position.x];
 
-		sprite_frame frame = sprite_get_frame(&spawner.sprite);
+		sprite_frame frame = sprite_get_frame(img_spawner, &spawner.sprite);
 		renderer->render_image_quad_partial(img_spawner, 
 			tile.tl.x, tile.tl.y,
 			tile.bl.x, tile.bl.y, 

@@ -30,6 +30,7 @@ void load_assets() {
 	img_disconnected = assets_load_image_from_file("data/imgs/icons/disconnected.png");
 	img_icon_grenade = assets_load_image_from_file("data/imgs/icons/grenade.png");
 	img_icon_molotov = assets_load_image_from_file("data/imgs/icons/molotov.png");
+	img_test = assets_load_image_from_file("data/imgs/players/body.png");
 
 	// Throwables
 	img_grenade = assets_load_image_from_file("data/imgs/throwables/grenade.png");
@@ -43,8 +44,8 @@ void load_assets() {
 	img_metal_wall_front = assets_load_image_from_file("data/imgs/objects/metal_wall_front.png");
 
 	// Players
-	img_player_running = assets_load_image_from_file("data/imgs/players/player1_running.png");
 	img_helmet = assets_load_image_from_file("data/imgs/players/helmet.png");
+	img_body = assets_load_image_from_file("data/imgs/players/body.png");
 
 	// Other
 	img_zombie_chunk_hand = assets_load_image_from_file("data/imgs/zombie_chunk_hand.png");
