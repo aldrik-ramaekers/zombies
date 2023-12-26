@@ -47,6 +47,9 @@ void load_assets() {
 	img_helmet = assets_load_image_from_file("data/imgs/players/helmet.png");
 	img_body = assets_load_image_from_file("data/imgs/players/body.png");
 
+	// Guns
+	img_gun_mp5 = assets_load_image_from_file("data/imgs/guns/mp5.png");
+
 	// Other
 	img_zombie_chunk_hand = assets_load_image_from_file("data/imgs/zombie_chunk_hand.png");
 	img_zombie_chunk_foot = assets_load_image_from_file("data/imgs/zombie_chunk_foot.png");

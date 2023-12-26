@@ -5,7 +5,7 @@
 
 static image* get_wallitem_img(wall_item_type item, wall_item_data data) {
 	switch(item) {
-		case WALLITEM_GUN: return get_image_of_gun(data.gun);
+		case WALLITEM_GUN: return get_icon_of_gun(data.gun);
 	}
 
 	return 0;

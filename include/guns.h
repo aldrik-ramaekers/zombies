@@ -27,7 +27,9 @@ gun guns[GUN_ALL] = {
 	{GUN_NOVA, "Nova", 12, 80, 0.1f, 3, 1.2f, 600, 1.0f},
 };
 
+float get_gun_size(gun_type type);
 image* get_image_of_gun(gun_type type);
+image* get_icon_of_gun(gun_type type);
 gun get_gun_by_type(gun_type type);
 
 #endif

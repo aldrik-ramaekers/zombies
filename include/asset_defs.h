@@ -43,7 +43,9 @@ image* img_molotov_explode;
 // Players
 image* img_helmet;
 image* img_body;
-image* img_body2;
+
+// Guns
+image* img_gun_mp5;
 
 // Other
 image* img_zombie_chunk_hand;

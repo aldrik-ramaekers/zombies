@@ -63,6 +63,7 @@ typedef struct t_player {
 	int kills;
 	u64 ping;
 	sprite sprite;
+	sprite gun_sprite;
 	network_state connection_state;
 	u32 points;
 	struct {
