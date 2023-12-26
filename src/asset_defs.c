@@ -44,6 +44,7 @@ void load_assets() {
 
 	// Players
 	img_player_running = assets_load_image_from_file("data/imgs/players/player1_running.png");
+	img_helmet = assets_load_image_from_file("data/imgs/players/helmet.png");
 
 	// Other
 	img_zombie_chunk_hand = assets_load_image_from_file("data/imgs/zombie_chunk_hand.png");
