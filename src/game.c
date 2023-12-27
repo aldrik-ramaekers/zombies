@@ -66,8 +66,8 @@ void load_map() {
 		thread_detach(&send_thread);
 	}
 
-	create_empty_map();
-	//load_map_from_file();
+	//create_empty_map();
+	load_map_from_file();
 	create_objects();
 
 	pathfinding_init();

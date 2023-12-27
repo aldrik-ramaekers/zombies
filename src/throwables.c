@@ -48,11 +48,13 @@ void throw_throwable(u32 id, throwable_type type, float dirx, float diry) {
 
 		switch(type) {
 			case THROWABLE_GRENADE: {
+				p->throwables.grenades--;
 				t.sprite = create_sprite(img_grenade_explode, 12, 96, 96, 0.1f);
 				t.damage = 1500; 
 				t.direction = (vec3f){.x = dirx*1.5f, .y = diry*1.5f, .z = -0.2f};
 			} break;
 			case THROWABLE_MOLOTOV: {
+				p->throwables.molotovs--;
 				t.sprite = create_sprite(img_molotov_explode, 32, 66, 119, 0.04f);
 				t.damage = 300; 
 				t.direction = (vec3f){.x = dirx*2.5f, .y = diry*2.5f, .z = -0.3f};

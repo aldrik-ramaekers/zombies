@@ -224,19 +224,8 @@ void create_empty_map() {
 	}
 
 	for (int x = 0; x < MAP_SIZE_X; x++) {
-		map_to_load.objects[50+x] = (object){.active = true, .position = (vec3f){x, 0, 0}, .size = (vec3f){1,1,1}, .type = OBJECT_METAL_WALL_FRONT};
+		map_to_load.objects[x] = (object){.active = true, .position = (vec3f){x, 0, 0}, .size = (vec3f){1,1,1}, .type = OBJECT_METAL_WALL_FRONT};
 	}
-
-	map_to_load.objects[0] = (object){.active = true, .position = (vec3f){16, 8, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
-
-	map_to_load.objects[1] = (object){.active = true, .position = (vec3f){0, 0, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
-	map_to_load.objects[2] = (object){.active = true, .position = (vec3f){0, 1, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
-	map_to_load.objects[3] = (object){.active = true, .position = (vec3f){0, 2, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_COBBLESTONEWALL1};
-
-	map_to_load.objects[4] = (object){.active = true, .position = (vec3f){14, 8, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
-	map_to_load.objects[5] = (object){.active = true, .position = (vec3f){14, 12, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
-	map_to_load.objects[6] = (object){.active = true, .position = (vec3f){16, 10, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
-	map_to_load.objects[7] = (object){.active = true, .position = (vec3f){14, 14, 0}, .size = (vec3f){1,1,2}, .type = OBJECT_PLANTBOX1};
 
 	map_to_load.light_emitters[0] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 0, 10}, .range = 20.0f, .active = true};
 	map_to_load.light_emitters[1] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 30, 10}, .range = 20.0f, .active = true};
@@ -448,6 +437,6 @@ inline map_info get_map_info(platform_window* window) {
 	info.tile_width = get_tile_width(window);
 	info.tile_height = get_tile_height(window);
 	info.px_incline = 0.0f; //info.tile_width/3; // info.tile_width/3; // offset*info.tile_width;
-	info.px_raised_per_h = info.tile_height/5.0f;
+	info.px_raised_per_h = info.tile_height;
 	return info;
 }
