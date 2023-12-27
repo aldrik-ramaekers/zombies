@@ -475,7 +475,7 @@ void draw_player(platform_window* window, player* p, int index) {
 		gun_pos.y -= gun_size/2;
 
 		float rads = -atan2(p->diry, p->dirx);
-		renderer->render_set_rotation(rads);
+		renderer->render_set_rotation(-rads);
 		
 		vec2f tl = (vec2f){0.0f, 0.0f}, tr = (vec2f){1.0f, 0.0f}, bl = (vec2f){0.0f, 1.0f}, br = (vec2f){1.0f, 1.0f};
 		if (rads > M_PI/2 || rads < -M_PI/2) {
@@ -520,7 +520,7 @@ void draw_player(platform_window* window, player* p, int index) {
 
 	// Helmet
 	{
-		float rads = -atan2(p->diry, p->dirx);
+		float rads = atan2(p->diry, p->dirx);
 		renderer->render_set_rotation(rads + M_PI);
 		renderer->render_image(img_helmet, player_render_x, player_render_y, size, size);
 		renderer->render_image_tint(img_helmet, 

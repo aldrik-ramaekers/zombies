@@ -28,7 +28,7 @@ void create_spawner(vec2 position) {
 	s.active = true;
 	s.position = position;
 	s.sec_since_last_spawn = 999.0f;
-	s.sprite = create_sprite(img_spawner, 14, 64, 64, 0.1f);
+	s.sprite = create_sprite(img_spawner, 14, 64, 64, 1.0f);
 
 	for (int i = 0; i < MAX_SPAWNERS; i++) {
 		spawner o = spawner_tiles[i];
@@ -126,12 +126,16 @@ void draw_spawners(platform_window* window) {
 		tile tile = loaded_map.heightmap[spawner.position.y][spawner.position.x];
 
 		sprite_frame frame = sprite_get_frame(img_spawner, &spawner.sprite);
+
+		renderer->render_set_rotation(spawner.sec_since_last_spawn*10.0f);
 		renderer->render_image_quad_partial(img_spawner, 
 			tile.tl.x, tile.tl.y,
 			tile.bl.x, tile.bl.y, 
 			tile.br.x, tile.br.y, 
 			tile.tr.x, tile.tr.y, 
 			frame.tl, frame.tr, frame.bl, frame.br);
+
+		renderer->render_set_rotation(0.0f);
 
 		/*
 		renderer->render_quad(
