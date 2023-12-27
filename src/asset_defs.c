@@ -41,7 +41,8 @@ void load_assets() {
 	img_spawner = assets_load_image_from_file("data/imgs/spawner.png");
 	img_obj_plants = assets_load_image_from_file("data/imgs/plants.png");
 	img_obj_wall1 = assets_load_image_from_file("data/imgs/wall1.png");
-	img_metal_wall_front = assets_load_image_from_file("data/imgs/objects/metal_wall_front.png");
+	img_metal_wall = assets_load_image_from_file("data/imgs/objects/metal_wall.png");
+	img_metal_wall2 = assets_load_image_from_file("data/imgs/objects/metal_wall2.png");
 
 	// Players
 	img_helmet = assets_load_image_from_file("data/imgs/players/helmet.png");

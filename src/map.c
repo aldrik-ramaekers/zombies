@@ -224,7 +224,7 @@ void create_empty_map() {
 	}
 
 	for (int x = 0; x < MAP_SIZE_X; x++) {
-		map_to_load.objects[x] = (object){.active = true, .position = (vec3f){x, 0, 0}, .size = (vec3f){1,1,1}, .type = OBJECT_METAL_WALL_FRONT};
+		map_to_load.objects[x] = (object){.active = true, .position = (vec3f){x, 0, 0}, .size = (vec3f){1,1,1}, .type = OBJECT_METAL_WALL};
 	}
 
 	map_to_load.light_emitters[0] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 0, 10}, .range = 20.0f, .active = true};

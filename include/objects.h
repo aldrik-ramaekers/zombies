@@ -22,7 +22,8 @@ typedef enum t_object_type {
 	OBJECT_NONE,
 	OBJECT_COBBLESTONEWALL1,
 	OBJECT_PLANTBOX1,
-	OBJECT_METAL_WALL_FRONT,
+	OBJECT_METAL_WALL,
+	OBJECT_METAL_WALL2,
 
 	OBJECT_END,
 } object_type;
@@ -49,7 +50,8 @@ typedef struct t_box {
 object object_dict[OBJECT_END] = {
 	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_COBBLESTONEWALL1},
 	{0,(vec3f){0, 0, 0},{1,1,2},OBJECT_PLANTBOX1},
-	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL_FRONT},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL2},
 };
 
 object get_object_at_tile(float x, float y);

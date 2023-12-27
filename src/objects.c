@@ -80,8 +80,10 @@ image* get_image_from_objecttype(object_type tile) {
 		return img_obj_wall1;
 	case OBJECT_PLANTBOX1:
 		return img_obj_plants;
-	case OBJECT_METAL_WALL_FRONT:
-		return img_metal_wall_front;
+	case OBJECT_METAL_WALL:
+		return img_metal_wall;
+	case OBJECT_METAL_WALL2:
+		return img_metal_wall2;
 	default:
 		return 0;
 	}
