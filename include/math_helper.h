@@ -7,14 +7,10 @@
 #include "objects.h"
 #include "map.h"
 
-#define MAP_RENDER_DEPTH renderer->set_render_depth(1);
-
-#define DROP_RENDER_DEPTH(_h) //renderer->set_render_depth(4 + ceil(_h));
-#define BULLET_RENDER_DEPTH(_h) //renderer->set_render_depth(5 + ceil(_h));
-#define THROWABLE_RENDER_DEPTH(_h) //renderer->set_render_depth(3 + ceil(_h));
-#define PLAYER_RENDER_DEPTH(_h) //renderer->set_render_depth(20 + ceil(_h));
-#define OBJECT_RENDER_DEPTH(_h) //renderer->set_render_depth(50 + ceil(_h));
-#define OVERLAY_RENDER_DEPTH() //renderer->set_render_depth(100);
+#define RENDER_DEPTH_MAP 0
+#define RENDER_DEPTH_BEHIND_PLAYER 1
+#define RENDER_DEPTH_PLAYER 2
+#define RENDER_DEPTH_INFRONT_PLAYER 3
 
 bool onSegment(vec2f p, vec2f q, vec2f r);
 int orientation(vec2f p, vec2f q, vec2f r);

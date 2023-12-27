@@ -56,6 +56,10 @@ object get_object_at_tile(float x, float y) {
 	return (object){0};
 }
 
+int sort_objects(const void * obj1, const void* obj2) {
+	return (((object*)obj1)->position.y - ((object*)obj2)->position.y);
+}
+
 void add_object(object obj) {
 	object existing_obj = get_object_at_tile(obj.position.x, obj.position.y);
 	if (existing_obj.active) {
@@ -70,6 +74,10 @@ void add_object(object obj) {
 		map_to_load.objects[i].active = true;
 		return;
 	}
+
+	// sort y-axis
+	qsort(map_to_load.objects, MAX_OBJECTS, sizeof(object), sort_objects);
+
 	log_info("Object limit reached.");
 }
 
@@ -95,7 +103,6 @@ void draw_objects(platform_window* window) {
 	for (int i = 0; i < MAX_OBJECTS; i++) {
 		if (!loaded_map.objects[i].active) continue;
 		object o = loaded_map.objects[i];
-		OBJECT_RENDER_DEPTH((int)o.position.y);
 		
 		box box = get_box_of_object(window, o);
 
@@ -104,41 +111,10 @@ void draw_objects(platform_window* window) {
 			renderer->render_image(img, box.tl_u.x, box.tl_u.y, 
 				box.br_d.x - box.tl_d.x, box.br_d.y - box.tr_u.y);
 		}
-			/*
-		render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgb(200,200,0));
-		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgb(200,200,0));
-		render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, rgb(200,200,0));
-		render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgb(200,200,0));
-		*/
 	}
 }
 
 void create_objects() {
-	/*
-	// rechts naar links op map.
-	for (int i = MAP_SIZE_X-1; i >= 0; i--) {
-		create_box(i, 0, 0, OBJECT_COBBLESTONEWALL1);
-		create_box(i, MAP_SIZE_Y-1, 0, OBJECT_COBBLESTONEWALL1);
-	}
-
-	for (int i = MAP_SIZE_Y-1; i >= 0; i--) {
-		create_box(0, i, 0, OBJECT_COBBLESTONEWALL1);
-		create_box(MAP_SIZE_X-1, i, 0, OBJECT_COBBLESTONEWALL1);
-	}
-
-	create_box(16, 8, 0, OBJECT_PLANTBOX1);
-	create_box(14, 8, 0, OBJECT_PLANTBOX1);
-	create_box(11, 8, 0, OBJECT_PLANTBOX1);
-	create_box(10, 8, 0, OBJECT_PLANTBOX1);
-
-	create_box(15, 10, 0, OBJECT_PLANTBOX1);
-	create_box(14, 10, 0, OBJECT_PLANTBOX1);
-	create_box(13, 10, 0, OBJECT_PLANTBOX1);
-	create_box(11, 10, 0, OBJECT_PLANTBOX1);
-
-	create_spawner((vec2){15, 5});
-	create_spawner((vec2){3, 8});
-	*/
 	create_spawner((vec2){11, 18});
 	create_wallitem((vec3f){14, 1, 0}, WALLITEM_GUN, (wall_item_data){.gun = GUN_NOVA});
 }

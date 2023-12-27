@@ -248,8 +248,6 @@ void draw_throwables(platform_window* window) {
 		throwable t = throwables[i];
 		if (!t.active) continue;
 
-		THROWABLE_RENDER_DEPTH((int)t.position.y);
-
 		float throwable_render_x = t.position.x*info.tile_width + (t.position.y*info.px_incline);
 		float throwable_render_y = t.position.y*info.tile_height - (t.position.z*info.px_raised_per_h);
 

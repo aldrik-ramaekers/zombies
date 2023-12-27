@@ -93,8 +93,6 @@ void draw_zombie_chunks(platform_window* window) {
 	for (int i = 0; i < MAX_ZOMBIE_CHUNKS; i++)
 	{
 		if (!zombie_chunks[i].active) continue;
-
-		DROP_RENDER_DEPTH((int)(zombie_chunks[i].position.y));
 		
 		int alpha = 255;
 		if (zombie_chunks[i].duration >= CHUNK_MAX_DURATION - CHUNK_FADE_TIME) {

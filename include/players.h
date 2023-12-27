@@ -9,7 +9,6 @@
 #include "math_helper.h"
 #include "guns.h"
 #include "sprite.h"
-#include "../include/players.h"
 
 #define MAX_PLAYERS 10
 #define MAX_POINT_ANIMATIONS 10

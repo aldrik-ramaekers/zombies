@@ -60,8 +60,6 @@ void update_wallitems_server() {
 
 static float wallspace_entry_time = 0.0f;
 void draw_keybinding_for_wallitem_purchase(platform_window* window, wall_item item) {
-	OVERLAY_RENDER_DEPTH();
-
 	map_info info = get_map_info(window);
 
 	char purchase_text[50];
@@ -108,7 +106,6 @@ void draw_wallitems(platform_window* window) {
 		if (!item.active) continue;
 
 		{
-			OBJECT_RENDER_DEPTH((int)item.position.y);
 			box box = get_render_box_of_square(window, item.position, (vec3f){1,1,2});
 			renderer->render_image(item.img, box.tl_u.x, box.tl_u.y, box.tr_u.x - box.tl_u.x, box.br_u.y - box.tr_u.y);
 		}

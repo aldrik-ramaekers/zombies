@@ -157,7 +157,6 @@ void draw_points(platform_window* window) {
 }
 
 void draw_overlay(platform_window* window) {
-	OVERLAY_RENDER_DEPTH();
 	draw_gun_info(window);
 	draw_points(window);
 	draw_leaderboard(window);

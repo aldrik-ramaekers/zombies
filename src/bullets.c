@@ -267,8 +267,6 @@ void draw_bullets(platform_window* window) {
 			b.position.z = p->gun_height;
 		}
 
-		BULLET_RENDER_DEPTH((int)bullets[i].position.y);
-
 		float bullet_render_x = b.position.x*info.tile_width + (b.position.y*info.px_incline);
 		float bullet_render_y = b.position.y*info.tile_height - (b.position.z*info.px_raised_per_h);
 

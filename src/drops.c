@@ -44,8 +44,6 @@ void draw_drops(platform_window* window) {
 	for (int i = 0; i < MAX_DROPS; i++) {
 		drop b = drops[i];
 		if (!b.active) continue;
-
-		DROP_RENDER_DEPTH((int)(b.position.y));
 		
 		int alpha = 255;
 		if (b.time_active >= DROP_MAX_DURATION - DROP_FADE_TIME) {

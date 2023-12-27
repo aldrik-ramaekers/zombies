@@ -356,7 +356,6 @@ void draw_grid(platform_window* window) {
 		if (y > tilemap_render_max_y) continue;
 
 		for (int x = 0; x < MAP_SIZE_X; x++) {
-			MAP_RENDER_DEPTH;
 
 			if (x < tilemap_render_min_x) continue;
 			if (x > tilemap_render_max_x) continue;

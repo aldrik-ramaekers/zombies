@@ -310,8 +310,6 @@ void draw_zombies(platform_window* window) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
 
-		OBJECT_RENDER_DEPTH((int)o.position.y);
-
 		box box = get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, o.position.z}, o.size);
 		render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgb(200,200,0));
 		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgb(200,200,0));

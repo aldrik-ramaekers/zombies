@@ -553,14 +553,10 @@ void draw_players(platform_window* window) {
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
 
-
 		float height = get_height_of_tile_under_coords(players[i].playerx, players[i].playery);
 		players[i].height = height;
 
-		BULLET_RENDER_DEPTH((int)(players[i].playery+size));
 		draw_player_bullet_cone(window, &players[i]);
-
-		PLAYER_RENDER_DEPTH((int)(players[i].playery+size));
 		draw_player(window, &players[i], i);	
 	}
 }
