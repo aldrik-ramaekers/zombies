@@ -56,10 +56,6 @@ object get_object_at_tile(float x, float y) {
 	return (object){0};
 }
 
-int sort_objects(const void * obj1, const void* obj2) {
-	return (((object*)obj1)->position.y - ((object*)obj2)->position.y);
-}
-
 void add_object(object obj) {
 	object existing_obj = get_object_at_tile(obj.position.x, obj.position.y);
 	if (existing_obj.active) {
@@ -72,11 +68,11 @@ void add_object(object obj) {
 		if (o.active) continue;	
 		map_to_load.objects[i] = obj;
 		map_to_load.objects[i].active = true;
+
+		// sort y-axis
+		qsort(map_to_load.objects, MAX_OBJECTS, sizeof(object), sort_objects);
 		return;
 	}
-
-	// sort y-axis
-	qsort(map_to_load.objects, MAX_OBJECTS, sizeof(object), sort_objects);
 
 	log_info("Object limit reached.");
 }

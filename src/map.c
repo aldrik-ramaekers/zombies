@@ -121,6 +121,10 @@ static bool ray_intersects_with_ground(vec3f begin, vec3f end) {
 	return false;
 }
 
+int sort_objects(const void * obj1, const void* obj2) {
+	return (((object*)obj1)->position.y - ((object*)obj2)->position.y);
+}
+
 void load_mapdata_into_world() {
 	loaded_map.width = map_to_load.width;
 	loaded_map.height = map_to_load.height;
