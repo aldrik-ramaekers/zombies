@@ -14,6 +14,8 @@ font* fnt_24;
 font* fnt_20;
 font* fnt_16;
 font* fnt_12;
+font* fnt_8;
+font* fnt_4;
 
 // Icons
 image* img_icon_bullets;
@@ -42,8 +44,8 @@ image* img_grenade_explode;
 image* img_molotov_explode;
 
 // Players
-image* img_helmet;
-image* img_body;
+image* img_gunner_blue_run;
+image* img_gunner_blue_idle;
 image* img_alien_run;
 
 // Guns

@@ -6,16 +6,7 @@ gun get_gun_by_type(gun_type type) {
 }
 
 float get_gun_size(gun_type type) {
-	switch (type)
-	{
-		case GUN_NOVA: return 1.5f; break;
-		case GUN_MP5: return 1.5f; break;
-		
-		default:
-			break;
-	}
-
-	return 0;
+	return 0.5f;
 }
 
 image* get_image_of_gun(gun_type type) {

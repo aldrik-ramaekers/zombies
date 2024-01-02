@@ -10,7 +10,7 @@ float get_bullet_size(platform_window* window) {
 }
 
 float get_player_size_in_tile() {
-	return 0.8f;
+	return 1.5f;
 }
 
 float get_player_size(platform_window* window) {
@@ -59,7 +59,9 @@ void spawn_player(u32 id, network_client client) {
 		players[i].guntype = GUN_MP5;
 		players[i].height = 0.0f;
 		players[i].client = client;
-		players[i].sprite = create_sprite(img_body, 4, 256, 256, 0.0f);
+		players[i].sprite = create_sprite(img_gunner_blue_run, 6, 48, 48, 0.1f);
+		players[i].sprite.zoom = 1.1f;
+
 		players[i].gun_sprite = create_sprite(img_gun_mp5, 4, 256, 256, 0.0f);
 		players[i].direction = DIRECTION_DOWN;
 		players[i].connection_state = CONNECTED;
@@ -466,75 +468,29 @@ void draw_player(platform_window* window, player* p, int index) {
 	float player_render_x = player_pos.x;
 	float player_render_y = player_pos.y;
 
-	vec2f gun_pos = world_pos_to_screen_pos(window, p->gunx - (p->dirx*GUN_OFFSET_FROM_PLAYER), p->guny - (p->diry*GUN_OFFSET_FROM_PLAYER), p->gun_height);
-	float gun_size = info.tile_width * get_gun_size(p->guntype);
-
-	// Gun
-	{
-		gun_pos.x -= gun_size/2;
-		gun_pos.y -= gun_size/2;
-
-		float rads = -atan2(p->diry, p->dirx);
-		renderer->render_set_rotation(-rads);
-		
-		vec2f tl = (vec2f){0.0f, 0.0f}, tr = (vec2f){1.0f, 0.0f}, bl = (vec2f){0.0f, 1.0f}, br = (vec2f){1.0f, 1.0f};
-		if (rads > M_PI/2 || rads < -M_PI/2) {
-			tl = (vec2f){1.0f, 0.0f};
-			tr = (vec2f){0.0f, 0.0f};
-			bl = (vec2f){1.0f, 1.0f};
-			br = (vec2f){0.0f, 1.0f};
-
-			renderer->render_set_rotation(-rads+M_PI);
-		}
-
-		image* gun_img = get_image_of_gun(p->guntype);
-		renderer->render_image_quad_partial(gun_img, 
-		gun_pos.x, gun_pos.y,
-		gun_pos.x, gun_pos.y + gun_size, 
-		gun_pos.x + gun_size, gun_pos.y + gun_size, 
-		gun_pos.x + gun_size, gun_pos.y, 
-		tl, tr, bl, br);
-
-		renderer->render_set_rotation(0.0f);
-	}
-
 	// Body
 	{
-		sprite_frame frame = sprite_get_frame(img_body, &p->sprite);
-		renderer->render_image_quad_partial(img_body, 
+		sprite_frame frame = sprite_get_frame(img_gunner_blue_run, &p->sprite);
+		float rads = -atan2(p->diry, p->dirx);
+		if (rads > M_PI/2 || rads < -M_PI/2) {
+			frame = sprite_swap_frame_horizontally(frame);
+		}
+		
+		renderer->render_image_quad_partial(img_gunner_blue_run, 
 		player_render_x, player_render_y,
 		player_render_x, player_render_y + size, 
 		player_render_x + size, player_render_y + size, 
 		player_render_x + size, player_render_y, 
 		frame.tl, frame.tr, frame.bl, frame.br);
-
-		renderer->render_image_quad_partial_tint(img_body, 
-		player_render_x, player_render_y,
-		player_render_x, player_render_y + size, 
-		player_render_x + size, player_render_y + size, 
-		player_render_x + size, player_render_y, 
-		frame.tl, frame.tr, frame.bl, frame.br, get_color_tint_by_player_index(index));
 	}
 
-	player_render_y -= size*0.7;
+	font* name_fnt = get_font(window, 0.2f);
+	int name_x = player_render_x + (size)/2 - (renderer->calculate_text_width(name_fnt, name))/2;
+	int name_y = player_render_y - name_fnt->px_h - 5;
+	renderer->render_text(name_fnt, name_x+1, name_y+1, name, rgba(0,0,0,120));
+	renderer->render_text(name_fnt, name_x, name_y, name, rgb(255,255,255));
 
-	// Helmet
-	{
-		float rads = atan2(p->diry, p->dirx);
-		renderer->render_set_rotation(rads + M_PI);
-		renderer->render_image(img_helmet, player_render_x, player_render_y, size, size);
-		renderer->render_image_tint(img_helmet, 
-			player_render_x, player_render_y,
-			size, size, get_color_tint_by_player_index(index));
-		renderer->render_set_rotation(0.0f);
-	}
-
-	int name_x = player_render_x + (size)/2 - (renderer->calculate_text_width(fnt_20, name))/2;
-	int name_y = player_render_y - fnt_20->px_h - 5;
-	renderer->render_text(fnt_20, name_x+1, name_y+1, name, rgba(0,0,0,120));
-	renderer->render_text(fnt_20, name_x, name_y, name, rgb(255,255,255));
-
-	p->gun_height = p->height+0.5;
+	p->gun_height = p->height+0.2;
 
 	if (p->connection_state == DISCONNECTED) {
 		float icon_h = (size)/2;

@@ -16,6 +16,8 @@ void load_assets() {
 	fnt_20 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 20);
 	fnt_16 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 16);
 	fnt_12 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 12);
+	fnt_8 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 8);
+	fnt_4 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 4);
 
 	// Icons
 	img_icon_bullets = assets_load_image_from_file("data/imgs/bullets.png");
@@ -45,8 +47,8 @@ void load_assets() {
 	img_metal_wall2 = assets_load_image_from_file("data/imgs/objects/metal_wall2.png");
 
 	// Players
-	img_helmet = assets_load_image_from_file("data/imgs/players/helmet.png");
-	img_body = assets_load_image_from_file("data/imgs/players/body.png");
+	img_gunner_blue_run = assets_load_image_from_file("data/imgs/players/Blue/Gunner_Blue_Run.png");
+	img_gunner_blue_idle = assets_load_image_from_file("data/imgs/players/Blue/Gunner_Blue_Idle.png");
 	img_alien_run = assets_load_image_from_file("data/imgs/players/alien_run.png");
 
 	// Guns
@@ -94,13 +96,17 @@ font* get_font(platform_window* window, float scale) {
 	float window_scale = window->width / 800.0f;
 	float diff = window_scale - 1.0f;
 
-	int index_of_original = (int)(scale / 0.2f);
-	int index_to_return = index_of_original + (int)(diff/0.2f);
+	float step = 1/5.0f;
+
+	int index_of_original = (int)(scale / step);
+	int index_to_return = index_of_original + (int)(diff/step);
 	
 	if (index_to_return < 0) index_to_return = 0;
-	if (index_to_return > 10) index_to_return = 10;
+	if (index_to_return > 12) index_to_return = 12;
 
 	font* arr[] = {
+		fnt_4,
+		fnt_8,
 		fnt_12, // scale = 0.2
 		fnt_16,
 		fnt_20,
