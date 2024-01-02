@@ -86,10 +86,12 @@ void spawn_zombie(int x, int y) {
 		zombies[i].type = ZOMBIE_TYPE_NORMAL;
 		zombies[i].health = 1000.0f;
 		zombies[i].position = (vec3f){x,y, 0};
-		zombies[i].size = (vec3f){0.4, 0.4, 1};
+		zombies[i].size = (vec3f){1.5f, 1.5f, 1.5f};
 		zombies[i].time_since_last_path = 0.0f;
 		zombies[i].request.to_fill = &zombies[i].next_path;
 		zombies[i].request.mutex = mutex_create();
+		zombies[i].sprite_run = create_sprite(img_alien_run, 6, 32, 32, 0.1f);
+		zombies[i].sprite_run.zoom = 1.20f;
 
 		_current_round.zombies--;
 		
@@ -252,6 +254,8 @@ void update_zombies_server(platform_window* window) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
 
+		update_sprite(&zombies[i].sprite_run);
+
 		zombies[i].time_since_last_path += SERVER_TICK_RATE;
 		if (zombies[i].time_since_last_path > SERVER_PATHFINDING_INTERVAL) {
 			player closest_player = get_closest_player_to_tile((int)o.position.x, (int)o.position.y);
@@ -290,6 +294,7 @@ void update_zombies_server(platform_window* window) {
 		zombies[i].position.x += dir.x*speed;
 		zombies[i].position.y += dir.y*speed;
 		zombies[i].position.z = height;
+		zombies[i].dir = dir;
 
 		zombies[i].next2tiles[0] = (vec2f){-1,-1};
 		zombies[i].next2tiles[1] = (vec2f){-1,-1};
@@ -310,11 +315,22 @@ void draw_zombies(platform_window* window) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
 
+		sprite_frame frame = sprite_get_frame(img_alien_run, &o.sprite_run);
 		box box = get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, o.position.z}, o.size);
-		render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgb(200,200,0));
-		render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgb(200,200,0));
-		render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, rgb(200,200,0));
-		render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgb(200,200,0));
+		vec2f zombie_pos = world_pos_to_screen_pos(window, o.position.x, o.position.y, o.position.z);
+		float zombie_size = o.size.x * get_tile_width(window);
+
+		float rads = -atan2(o.dir.x, o.dir.y);
+		if (rads >= 0.0f) {
+			frame = sprite_swap_frame_horizontally(frame);
+		}
+
+		renderer->render_image_quad_partial(img_alien_run, 
+			zombie_pos.x, zombie_pos.y,
+			zombie_pos.x, zombie_pos.y + zombie_size,
+			zombie_pos.x + zombie_size, zombie_pos.y + zombie_size,
+			zombie_pos.x + zombie_size, zombie_pos.y,
+			frame.tl, frame.tr, frame.bl, frame.br);
 
 		if (global_state.server) draw_path_of_zombie(window, o);
 	}

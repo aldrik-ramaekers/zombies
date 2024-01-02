@@ -24,6 +24,8 @@ typedef struct t_zombie {
 	pathfinding_request request;
 	vec2f next2tiles[2];
 	zombie_type type;
+	sprite sprite_run;
+	vec2f dir;
 } zombie;
 
 typedef struct t_spawner {

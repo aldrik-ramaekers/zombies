@@ -44,6 +44,7 @@ image* img_molotov_explode;
 // Players
 image* img_helmet;
 image* img_body;
+image* img_alien_run;
 
 // Guns
 image* img_gun_mp5;

@@ -47,6 +47,7 @@ void load_assets() {
 	// Players
 	img_helmet = assets_load_image_from_file("data/imgs/players/helmet.png");
 	img_body = assets_load_image_from_file("data/imgs/players/body.png");
+	img_alien_run = assets_load_image_from_file("data/imgs/players/alien_run.png");
 
 	// Guns
 	img_gun_mp5 = assets_load_image_from_file("data/imgs/guns/mp5.png");

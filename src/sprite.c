@@ -11,6 +11,7 @@ sprite create_sprite(image* img, int frame_count, int fwidth, int fheight, float
 	s.sec_per_frame = sec_per_frame;
 	s.time = 0.0f;
 	s.frame_start = 0;
+	s.zoom = 1.0f;
 	return s;
 }
 
@@ -42,10 +43,13 @@ sprite_frame sprite_get_frame(image* img, sprite* sprite) {
 	int column = (sprite->frame_start + sprite->current_frame) % columns;
 	int row = (sprite->frame_start + sprite->current_frame) / columns;
 
-	frame.tl = (vec2f){column * column_percentage, row * row_percentage};
-	frame.tr = (vec2f){column * column_percentage + column_percentage, row * row_percentage};
-	frame.bl = (vec2f){column * column_percentage, row * row_percentage + row_percentage};
-	frame.br = (vec2f){column * column_percentage + column_percentage, row * row_percentage + row_percentage};
+	float offsetx = column_percentage * (sprite->zoom-1.0f);
+	float offsety = row_percentage * (sprite->zoom-1.0f);
+
+	frame.tl = (vec2f){column * column_percentage + offsetx, row * row_percentage + offsety};
+	frame.tr = (vec2f){column * column_percentage + column_percentage - offsetx, row * row_percentage + offsety};
+	frame.bl = (vec2f){column * column_percentage + offsetx, row * row_percentage + row_percentage - offsety};
+	frame.br = (vec2f){column * column_percentage + column_percentage - offsetx, row * row_percentage + row_percentage - offsety};
 
 	/*
 	frame.tl = (vec2f){0,0};
@@ -53,5 +57,17 @@ sprite_frame sprite_get_frame(image* img, sprite* sprite) {
 	frame.bl = (vec2f){0,0.25f};
 	frame.br = (vec2f){0.25f,0.25f};
 	*/
+	return frame;
+}
+
+sprite_frame sprite_swap_frame_horizontally(sprite_frame frame) {
+	vec2f tl = frame.tr;
+	vec2f tr = frame.tl;
+	vec2f bl = frame.br;
+	vec2f br = frame.bl;
+	frame.tl = tl;
+	frame.tr = tr;
+	frame.bl = bl;
+	frame.br = br;
 	return frame;
 }
