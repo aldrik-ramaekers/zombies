@@ -458,6 +458,17 @@ color get_color_tint_by_player_index(int index) {
 	return c;
 }
 
+image* get_player_run_sprite_from_index(int index) {
+	image* imgs[] = {
+		img_gunner_blue_run,
+		img_gunner_black_run,
+		img_gunner_green_run,
+		img_gunner_yellow_run,
+		img_gunner_red_run,
+	};
+	return imgs[index];
+}
+
 void draw_player(platform_window* window, player* p, int index) {
 	float size = get_player_size(window);
 	map_info info = get_map_info(window);
@@ -476,7 +487,7 @@ void draw_player(platform_window* window, player* p, int index) {
 			frame = sprite_swap_frame_horizontally(frame);
 		}
 		
-		renderer->render_image_quad_partial(img_gunner_blue_run, 
+		renderer->render_image_quad_partial(get_player_run_sprite_from_index(index), 
 		player_render_x, player_render_y,
 		player_render_x, player_render_y + size, 
 		player_render_x + size, player_render_y + size, 

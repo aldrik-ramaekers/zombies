@@ -46,6 +46,19 @@ image* img_molotov_explode;
 // Players
 image* img_gunner_blue_run;
 image* img_gunner_blue_idle;
+
+image* img_gunner_black_run;
+image* img_gunner_black_idle;
+
+image* img_gunner_green_run;
+image* img_gunner_green_idle;
+
+image* img_gunner_yellow_run;
+image* img_gunner_yellow_idle;
+
+image* img_gunner_red_run;
+image* img_gunner_red_idle;
+
 image* img_alien_run;
 
 // Guns

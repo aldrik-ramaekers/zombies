@@ -10,7 +10,7 @@
 #include "guns.h"
 #include "sprite.h"
 
-#define MAX_PLAYERS 10
+#define MAX_PLAYERS 5
 #define MAX_POINT_ANIMATIONS 10
 
 #define GUN_OFFSET_FROM_PLAYER 0.8f
