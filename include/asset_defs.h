@@ -59,6 +59,8 @@ image* img_gunner_yellow_idle;
 image* img_gunner_red_run;
 image* img_gunner_red_idle;
 
+image* img_bullet_stream;
+image* img_muzzle_flash;
 image* img_alien_run;
 
 // Guns

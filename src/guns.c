@@ -6,7 +6,7 @@ gun get_gun_by_type(gun_type type) {
 }
 
 float get_gun_size(gun_type type) {
-	return 0.5f;
+	return 0.6f;
 }
 
 image* get_image_of_gun(gun_type type) {

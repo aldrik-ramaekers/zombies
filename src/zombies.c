@@ -85,6 +85,7 @@ void spawn_zombie(int x, int y) {
 		zombies[i].alive = true;
 		zombies[i].type = ZOMBIE_TYPE_NORMAL;
 		zombies[i].health = 1000.0f;
+		zombies[i].max_health = 1000.0f;
 		zombies[i].position = (vec3f){x,y, 0};
 		zombies[i].size = (vec3f){1.5f, 1.5f, 1.5f};
 		zombies[i].time_since_last_path = 0.0f;
@@ -331,6 +332,15 @@ void draw_zombies(platform_window* window) {
 			zombie_pos.x + zombie_size, zombie_pos.y + zombie_size,
 			zombie_pos.x + zombie_size, zombie_pos.y,
 			frame.tl, frame.tr, frame.bl, frame.br);
+
+		// health bar
+		if (o.health < o.max_health) {
+			int bar_h = zombie_size/8;
+			int bar_w = zombie_size/2;
+			float percentage = o.health/o.max_health;
+			renderer->render_rectangle(zombie_pos.x + (zombie_size/2) - (bar_w/2), zombie_pos.y - bar_h, bar_w, bar_h, rgb(0,0,0));
+			renderer->render_rectangle(zombie_pos.x + (zombie_size/2) - (bar_w/2), zombie_pos.y - bar_h, bar_w*percentage, bar_h, rgb(100,0,0));
+		}
 
 		if (global_state.server) draw_path_of_zombie(window, o);
 	}

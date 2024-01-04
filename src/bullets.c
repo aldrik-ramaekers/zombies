@@ -260,12 +260,7 @@ void draw_bullets(platform_window* window) {
 		bullet b = bullets[i];
 		if (!b.active) continue;
 
-		if (b.player_id == player_id) {
-			player *p = get_player_by_id(b.player_id);
-			b.position.x = p->gunx;
-			b.position.y = p->guny;
-			b.position.z = p->gun_height;
-		}
+		player *p = get_player_by_id(b.player_id);
 
 		float bullet_render_x = b.position.x*info.tile_width + (b.position.y*info.px_incline);
 		float bullet_render_y = b.position.y*info.tile_height - (b.position.z*info.px_raised_per_h);
@@ -274,5 +269,10 @@ void draw_bullets(platform_window* window) {
 		float bullet_render_y_end = b.endy*info.tile_height - (b.position.z*info.px_raised_per_h);
 
 		renderer->render_line(bullet_render_x, bullet_render_y, bullet_render_x_end, bullet_render_y_end, 1, rgba(255, 221, 97, 100));
+
+		//float rads = atan2(p->diry, p->dirx);
+		//renderer->render_set_rotation(rads);
+		//renderer->render_image(img_bullet_stream, bullet_render_x, bullet_render_y, 80, 16);
+		//renderer->render_set_rotation(0.0f);
 	}
 }

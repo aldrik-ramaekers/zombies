@@ -61,6 +61,9 @@ void load_assets() {
 
 	img_gunner_yellow_run = assets_load_image_from_file("data/imgs/players/Yellow/Gunner_Yellow_Run.png");
 	img_gunner_yellow_idle = assets_load_image_from_file("data/imgs/players/Yellow/Gunner_Yellow_Idle.png");
+
+	img_muzzle_flash = assets_load_image_from_file("data/imgs/players/MuzzleFlash.png");
+	img_bullet_stream = assets_load_image_from_file("data/imgs/players/BulletStream.png");
 	img_alien_run = assets_load_image_from_file("data/imgs/players/alien_run.png");
 
 	// Guns
