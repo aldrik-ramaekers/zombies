@@ -237,7 +237,7 @@ void update_bullets_server(platform_window* window) {
 			bullets[i].endx = b.endx;
 			b = bullets[i];
 			
-			add_object_audio_event_to_queue(EVENT_IMPACT, obj_collision, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
+			add_object_audio_event_to_queue(EVENT_IMPACT, obj_collision, p->id, (vec3f){.x = bullets[i].endx, .y = bullets[i].endy, .z = p->height});
 		}
 		
 		if (check_if_bullet_collided_with_zombie(&b, window, p)) {
@@ -247,7 +247,7 @@ void update_bullets_server(platform_window* window) {
 			b = bullets[i];
 
 			add_points_to_player(p, POINTS_PER_HIT);
-			add_zombie_audio_event_to_queue(EVENT_IMPACT, ZOMBIE_TYPE_NORMAL, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
+			add_zombie_audio_event_to_queue(EVENT_IMPACT, ZOMBIE_TYPE_NORMAL, (vec3f){.x = bullets[i].endx, .y = bullets[i].endy, .z = p->height});
 		}
 	}
 }

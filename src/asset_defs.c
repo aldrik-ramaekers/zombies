@@ -90,6 +90,7 @@ void load_assets() {
 	wav_impact_wood = Mix_LoadWAV("data/sounds/impact_wood.wav");
 	wav_error = Mix_LoadWAV("data/sounds/error.wav");
 	wav_impact_zombie = Mix_LoadWAV("data/sounds/impact_zombie.wav");
+	wav_impact_metal = Mix_LoadWAV("data/sounds/impact_metal.wav"); 
 	wav_collect = Mix_LoadWAV("data/sounds/collect.wav");
 	wav_round_change = Mix_LoadWAV("data/sounds/round_change.wav");
 	wav_character = Mix_LoadWAV("data/sounds/character.wav");

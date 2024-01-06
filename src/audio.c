@@ -99,7 +99,9 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 			else if (event.obj != OBJECT_NONE)  {
 				switch (event.obj)
 				{
-					case OBJECT_PLANTBOX1: return wav_impact_wood;		
+					case OBJECT_PLANTBOX1: return wav_impact_wood;
+					case OBJECT_METAL_WALL:
+					case OBJECT_METAL_WALL2: return wav_impact_metal;
 					default: return wav_error;
 				}
 			}
