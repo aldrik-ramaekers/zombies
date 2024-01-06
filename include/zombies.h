@@ -11,6 +11,7 @@
 typedef enum t_zombie_type {
 	ZOMBIE_TYPE_NONE,
 	ZOMBIE_TYPE_NORMAL,
+	ZOMBIE_TYPE_ENRAGED,
 } zombie_type;
 
 typedef struct t_zombie {
@@ -20,6 +21,7 @@ typedef struct t_zombie {
 	vec3f position;
 	vec3f size;
 	array path;
+	float speed;
 	array next_path;
 	float time_since_last_path;
 	pathfinding_request request;

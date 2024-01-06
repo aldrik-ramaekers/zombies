@@ -75,7 +75,34 @@ u32 number_of_zombies_active()
 	return res;
 }
 
+static void set_enraged_zombie_stats(zombie *zombie) {
+	zombie->health = 1500.0f;
+	zombie->max_health = 1500.0f;
+	zombie->size = (vec3f){1.8f, 1.8f, 1.8f};
+	zombie->time_since_last_path = 0.0f;
+	zombie->request.to_fill = &zombie->next_path;
+	zombie->request.mutex = mutex_create();
+	zombie->sprite_run = create_sprite(img_alien_run, 6, 32, 32, 0.1f);
+	zombie->sprite_run.zoom = 1.20f;
+	zombie->speed = 5.0f;
+}
+
+static void set_normal_zombie_stats(zombie *zombie) {
+	zombie->health = 1000.0f;
+	zombie->max_health = 1000.0f;
+	zombie->size = (vec3f){1.5f, 1.5f, 1.5f};
+	zombie->time_since_last_path = 0.0f;
+	zombie->request.to_fill = &zombie->next_path;
+	zombie->request.mutex = mutex_create();
+	zombie->sprite_run = create_sprite(img_alien_run, 6, 32, 32, 0.1f);
+	zombie->sprite_run.zoom = 1.20f;
+	zombie->speed = 4.0f;
+}
+
+int normal_zombie_spawn_counter = 0;
 void spawn_zombie(int x, int y) {
+	normal_zombie_spawn_counter++;
+
 	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (o.alive) continue;
@@ -83,16 +110,12 @@ void spawn_zombie(int x, int y) {
 		zombies[i].path = array_create(sizeof(vec2f));
 		zombies[i].next_path = array_create(sizeof(vec2f));
 		zombies[i].alive = true;
-		zombies[i].type = ZOMBIE_TYPE_NORMAL;
-		zombies[i].health = 1000.0f;
-		zombies[i].max_health = 1000.0f;
+		zombies[i].type = (normal_zombie_spawn_counter % 5 == 0) ? ZOMBIE_TYPE_ENRAGED : ZOMBIE_TYPE_NORMAL;	
 		zombies[i].position = (vec3f){x,y, 0};
-		zombies[i].size = (vec3f){1.5f, 1.5f, 1.5f};
-		zombies[i].time_since_last_path = 0.0f;
-		zombies[i].request.to_fill = &zombies[i].next_path;
-		zombies[i].request.mutex = mutex_create();
-		zombies[i].sprite_run = create_sprite(img_alien_run, 6, 32, 32, 0.1f);
-		zombies[i].sprite_run.zoom = 1.20f;
+		switch(zombies[i].type) {
+			case ZOMBIE_TYPE_NORMAL: set_normal_zombie_stats(&zombies[i]); break;
+			case ZOMBIE_TYPE_ENRAGED: set_enraged_zombie_stats(&zombies[i]); break;
+		}
 
 		_current_round.zombies--;
 		
@@ -249,8 +272,6 @@ static vec2f get_random_point_around_player(player p, zombie o) {
 }
 
 void update_zombies_server(platform_window* window) {
-	float speed = 4.0f * SERVER_TICK_RATE;
-
 	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
@@ -290,6 +311,7 @@ void update_zombies_server(platform_window* window) {
 			array_remove_at(&zombies[i].path, zombies[i].path.length-1);
 		}
 
+		float speed = zombies[i].speed * SERVER_TICK_RATE;
 		vec2f dir = get_direction_to_next_tile(o);
 		float height = get_height_of_tile_under_coords(zombies[i].position.x, zombies[i].position.y);
 		zombies[i].position.x += dir.x*speed;
@@ -332,6 +354,15 @@ void draw_zombies(platform_window* window) {
 			zombie_pos.x + zombie_size, zombie_pos.y + zombie_size,
 			zombie_pos.x + zombie_size, zombie_pos.y,
 			frame.tl, frame.tr, frame.bl, frame.br);
+
+		if (o.type == ZOMBIE_TYPE_ENRAGED) {
+			renderer->render_image_quad_partial_tint(img_alien_run, 
+				zombie_pos.x, zombie_pos.y,
+				zombie_pos.x, zombie_pos.y + zombie_size,
+				zombie_pos.x + zombie_size, zombie_pos.y + zombie_size,
+				zombie_pos.x + zombie_size, zombie_pos.y,
+				frame.tl, frame.tr, frame.bl, frame.br, rgba(255,0,0,150));
+		}
 
 		// health bar
 		if (o.health < o.max_health) {

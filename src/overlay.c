@@ -44,7 +44,7 @@ static void draw_gun_info(platform_window* window) {
 
 			offset_x += icon_h/3;
 		}
-	}
+	}	
 
 }
 
