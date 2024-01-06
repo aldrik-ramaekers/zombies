@@ -81,6 +81,13 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 			}
 		}
 
+		case EVENT_ZOMBIEROAR: {
+			switch (event.zombie)
+			{
+				case ZOMBIE_TYPE_ENRAGED: return wav_roar_enraged;
+				default: return wav_error;
+			}
+		}
 		case EVENT_IMPACT: {
 			if (event.zombie != ZOMBIE_TYPE_NONE) {
 				switch (event.zombie)
@@ -149,6 +156,7 @@ void play_positioned_sound(int channel, Mix_Chunk* wav, vec3f pos, float max_aud
 	int tiles_between_throwable_and_player = distance_between_3f((vec3f){.x = p->playerx, .y = p->playery, .z = p->height}, pos);
 	float volume = (tiles_between_throwable_and_player / max_audible_dist);
 	if (volume > 1.0f) volume = 1.0f;
+	if (volume < 0.0f) volume = 0.0f;
 
 	// calculate angle
 	/*
@@ -160,6 +168,6 @@ void play_positioned_sound(int channel, Mix_Chunk* wav, vec3f pos, float max_aud
 	if (rads > 360) rads -= 360;
 	*/
 
-	//Mix_SetPosition(0, 0, volume*255);
+	Mix_SetPosition(channel, 0, (int)(volume*255));
 	Mix_PlayChannel(channel, wav, 0);
 }

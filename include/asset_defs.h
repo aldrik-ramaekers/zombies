@@ -94,6 +94,7 @@ Mix_Chunk* wav_error;
 Mix_Chunk* wav_collect;
 
 Mix_Chunk* wav_character;
+Mix_Chunk* wav_roar_enraged;
 Mix_Chunk* wav_round_change;
 Mix_Chunk* wav_step;
 

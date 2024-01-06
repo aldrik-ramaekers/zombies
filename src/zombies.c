@@ -85,6 +85,8 @@ static void set_enraged_zombie_stats(zombie *zombie) {
 	zombie->sprite_run = create_sprite(img_alien_run, 6, 32, 32, 0.1f);
 	zombie->sprite_run.zoom = 1.20f;
 	zombie->speed = 5.0f;
+
+	add_zombie_audio_event_to_queue(EVENT_ZOMBIEROAR, ZOMBIE_TYPE_ENRAGED, zombie->position);
 }
 
 static void set_normal_zombie_stats(zombie *zombie) {
