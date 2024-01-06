@@ -98,6 +98,7 @@ Mix_Chunk* wav_character;
 Mix_Chunk* wav_roar_enraged;
 Mix_Chunk* wav_round_change;
 Mix_Chunk* wav_step;
+Mix_Chunk* wav_step_enraged;
 
 #define NUM_SCREECHES 11
 Mix_Chunk* wav_screech[NUM_SCREECHES];

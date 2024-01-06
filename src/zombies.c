@@ -114,6 +114,7 @@ void spawn_zombie(int x, int y) {
 		zombies[i].alive = true;
 		zombies[i].type = (normal_zombie_spawn_counter % 5 == 0) ? ZOMBIE_TYPE_ENRAGED : ZOMBIE_TYPE_NORMAL;	
 		zombies[i].position = (vec3f){x,y, 0};
+		zombies[i].sec_since_last_step = 0.0f;
 		switch(zombies[i].type) {
 			case ZOMBIE_TYPE_NORMAL: set_normal_zombie_stats(&zombies[i]); break;
 			case ZOMBIE_TYPE_ENRAGED: set_enraged_zombie_stats(&zombies[i]); break;
@@ -280,6 +281,13 @@ void update_zombies_server(platform_window* window) {
 
 		update_sprite(&zombies[i].sprite_run);
 
+		if (zombies[i].type == ZOMBIE_TYPE_ENRAGED && zombies[i].sec_since_last_step > 0.2f) {
+			add_zombie_audio_event_to_queue(EVENT_FOOTSTEP, o.type, o.position);
+			zombies[i].sec_since_last_step = 0.0f;
+		}
+		zombies[i].sec_since_last_step += SERVER_TICK_RATE;
+
+		// Update pathfinding
 		zombies[i].time_since_last_path += SERVER_TICK_RATE;
 		if (zombies[i].time_since_last_path > SERVER_PATHFINDING_INTERVAL) {
 			player closest_player = get_closest_player_to_tile((int)o.position.x, (int)o.position.y);
@@ -313,21 +321,24 @@ void update_zombies_server(platform_window* window) {
 			array_remove_at(&zombies[i].path, zombies[i].path.length-1);
 		}
 
-		float speed = zombies[i].speed * SERVER_TICK_RATE;
-		vec2f dir = get_direction_to_next_tile(o);
-		float height = get_height_of_tile_under_coords(zombies[i].position.x, zombies[i].position.y);
-		zombies[i].position.x += dir.x*speed;
-		zombies[i].position.y += dir.y*speed;
-		zombies[i].position.z = height;
-		zombies[i].dir = dir;
+		// Update position
+		{
+			float speed = zombies[i].speed * SERVER_TICK_RATE;
+			vec2f dir = get_direction_to_next_tile(o);
+			float height = get_height_of_tile_under_coords(zombies[i].position.x, zombies[i].position.y);
+			zombies[i].position.x += dir.x*speed;
+			zombies[i].position.y += dir.y*speed;
+			zombies[i].position.z = height;
+			zombies[i].dir = dir;
 
-		zombies[i].next2tiles[0] = (vec2f){-1,-1};
-		zombies[i].next2tiles[1] = (vec2f){-1,-1};
-		if (o.path.length > 0) {
-			zombies[i].next2tiles[0] = *(vec2f*)array_at(&o.path, o.path.length-1);
-			zombies[i].next2tiles[1] = zombies[i].next2tiles[0];
-			if (o.path.length > 1) {
-				zombies[i].next2tiles[1] = *(vec2f*)array_at(&o.path, o.path.length-2);
+			zombies[i].next2tiles[0] = (vec2f){-1,-1};
+			zombies[i].next2tiles[1] = (vec2f){-1,-1};
+			if (o.path.length > 0) {
+				zombies[i].next2tiles[0] = *(vec2f*)array_at(&o.path, o.path.length-1);
+				zombies[i].next2tiles[1] = zombies[i].next2tiles[0];
+				if (o.path.length > 1) {
+					zombies[i].next2tiles[1] = *(vec2f*)array_at(&o.path, o.path.length-2);
+				}
 			}
 		}
 	}

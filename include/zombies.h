@@ -22,6 +22,7 @@ typedef struct t_zombie {
 	vec3f size;
 	array path;
 	float speed;
+	float sec_since_last_step;
 	array next_path;
 	float time_since_last_path;
 	pathfinding_request request;

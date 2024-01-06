@@ -95,6 +95,7 @@ void load_assets() {
 	wav_round_change = Mix_LoadWAV("data/sounds/round_change.wav");
 	wav_character = Mix_LoadWAV("data/sounds/character.wav");
 	wav_step = Mix_LoadWAV("data/sounds/step.wav");
+	wav_step_enraged = Mix_LoadWAV("data/sounds/step_enraged.wav");
 	wav_roar_enraged = Mix_LoadWAV("data/sounds/roar_enraged.wav");
 
 	for (int i = 1; i <= NUM_SCREECHES; i++) {

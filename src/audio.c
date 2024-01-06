@@ -51,7 +51,17 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 
 	switch (event.type)
 	{
-		case EVENT_FOOTSTEP: return wav_step;
+		case EVENT_FOOTSTEP: {
+			if (event.zombie != ZOMBIE_TYPE_NONE) {
+				switch(event.zombie) {
+					case ZOMBIE_TYPE_ENRAGED: return wav_step_enraged;
+					default: return wav_error;
+				}		
+			}
+			else {
+				return wav_step;
+			}
+		} 
 		case EVENT_CHARACTER_TYPE: return wav_character;
 		case EVENT_ROUND_CHANGE: return wav_round_change;
 		case EVENT_COLLECT: return wav_collect;
