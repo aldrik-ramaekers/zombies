@@ -434,7 +434,7 @@ void draw_zombies(platform_window* window) {
 			renderer->render_rectangle(zombie_pos.x + (zombie_size/2) - (bar_w/2), zombie_pos.y - bar_h, bar_w*percentage, bar_h, rgb(100,0,0));
 		}
 
-		if (global_state.server) draw_path_of_zombie(window, o);
+		//if (global_state.server) draw_path_of_zombie(window, o);
 	}
 }
 

@@ -20,5 +20,6 @@ box get_render_box_of_square(platform_window* window, vec3f position, vec3f size
 box get_box_of_square(vec3f position, vec3f size);
 vec3f get_center_of_square(vec3f position, vec3f size);
 bool rect_contains_point(vec2 point, vec2 tl, vec2 br);
+bool vec3f_equals(vec3f p1, vec3f p2);
 
 #endif

@@ -108,6 +108,10 @@ box get_box_of_square(vec3f position, vec3f size) {
 	return (box){rendertl, rendertr, renderbl, renderbr, rendertl, rendertr, renderbl, renderbr};
 }
 
+bool vec3f_equals(vec3f p1, vec3f p2) {
+	return p1.x == p2.x && p1.y == p2.y && p1.z == p2.z;
+}
+
 box get_render_box_of_square_without_incline(platform_window* window, vec3f position, vec3f size) {
 	map_info info = get_map_info(window);
 	float render_x = (info.tile_width * position.x);

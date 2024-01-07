@@ -35,7 +35,7 @@ void add_audio_event_to_queue(audio_event_type event, u32 playerid, vec3f positi
 }
 
 void add_ui_audio_event_to_queue(audio_event_type event) {
-	add_object_audio_event_to_queue(event, OBJECT_NONE, -1, (vec3f){-1,-1,-1});
+	add_object_audio_event_to_queue(event, OBJECT_NONE, -1, global_audio_source_position);
 }
 
 static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
@@ -158,6 +158,8 @@ void play_positioned_sound(int channel, Mix_Chunk* wav, vec3f pos, float max_aud
 
 	// calculate volume
 	int tiles_between_throwable_and_player = distance_between_3f((vec3f){.x = p->playerx, .y = p->playery, .z = p->height}, pos);
+	if (vec3f_equals(pos, global_audio_source_position)) tiles_between_throwable_and_player = 0; // Global audio source.
+
 	float volume = (tiles_between_throwable_and_player / max_audible_dist);
 	if (volume > 1.0f) volume = 1.0f;
 	if (volume < 0.0f) volume = 0.0f;
@@ -173,5 +175,6 @@ void play_positioned_sound(int channel, Mix_Chunk* wav, vec3f pos, float max_aud
 	*/
 
 	int c = Mix_PlayChannel(-1, wav, 0);
+	if (c == -1) log_info("Audio not playable because no channels are free");
 	Mix_SetPosition(c, 0, (int)(volume*255));
 }
