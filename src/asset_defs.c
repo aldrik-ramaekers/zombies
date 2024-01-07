@@ -104,6 +104,12 @@ void load_assets() {
 		wav_screech[i-1] = Mix_LoadWAV(path);
 	}
 
+	for (int i = 1; i <= NUM_PLAYER_HURT; i++) {
+		char path[100];
+		sprintf(path, "data/sounds/player_hurt%d.wav", i);
+		wav_player_hurt[i-1] = Mix_LoadWAV(path);
+	}
+
 	// music
 	music_inside1 = Mix_LoadMUS("data/sounds/music_inside1.mp3");
 

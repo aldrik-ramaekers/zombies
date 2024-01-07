@@ -40,6 +40,7 @@ void connect_to_server(char* ip, char* port) {
 	global_state.client->on_message = client_on_message_received;
 
 	if (global_state.server) {
+		player_id = 127001;
 		spawn_player(player_id, (network_client){0, false, 0, "Host"});
 		global_state.network_state = CONNECTED;
 	}

@@ -61,6 +61,8 @@ void spawn_player(u32 id, network_client client) {
 		players[i].client = client;
 		players[i].sprite = create_sprite(img_gunner_blue_run, 6, 48, 48, 0.1f);
 		players[i].sprite.zoom = 1.1f;
+		players[i].health = 500;
+		players[i].max_health = 500;
 
 		players[i].gun_sprite = create_sprite(img_gun_mp5, 4, 256, 256, 0.0f);
 		players[i].direction = DIRECTION_DOWN;
@@ -351,6 +353,16 @@ void update_players_client() {
 
 		update_sprite(&players[i].sprite);
 	}
+}
+
+void hurt_player(u32 id, u32 damage) {
+	player* p = get_player_by_id(id);
+	if (p == 0) {
+		return;
+	}
+
+	p->health -= damage;
+	add_audio_event_to_queue(EVENT_PLAYERHURT, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
 }
 
 void update_players_server() {

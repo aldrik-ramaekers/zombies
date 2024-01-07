@@ -103,6 +103,9 @@ Mix_Chunk* wav_step_enraged;
 #define NUM_SCREECHES 11
 Mix_Chunk* wav_screech[NUM_SCREECHES];
 
+#define NUM_PLAYER_HURT 3
+Mix_Chunk* wav_player_hurt[NUM_PLAYER_HURT];
+
 Mix_Music* music_inside1;
 
 void load_assets();

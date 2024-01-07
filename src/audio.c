@@ -42,6 +42,7 @@ static int get_channel_from_audio_event_type(audio_event_type event) {
 			return i;
 		}
 	}
+	log_info("Ran out of audio channels");
 	return 0;
 }
 
@@ -119,6 +120,11 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 		case EVENT_ZOMBIESCREECH: {
 			int random_screech_index = rand() % NUM_SCREECHES;
 			return wav_screech[random_screech_index];
+		}
+		case EVENT_PLAYERHURT: {
+			int random_hurt_index = rand() % NUM_PLAYER_HURT;
+			return wav_player_hurt[random_hurt_index];
+			return wav_error;
 		}
 
 		default: return wav_error;

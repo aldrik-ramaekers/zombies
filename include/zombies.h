@@ -16,13 +16,17 @@ typedef enum t_zombie_type {
 
 typedef struct t_zombie {
 	bool alive;
-	float health;
-	float max_health;
+	s32 health;
+	s32 max_health;
 	vec3f position;
 	vec3f size;
 	array path;
 	float speed;
+	float attack_range;
+	float attack_rate;
+	u32 attack_damage;
 	float sec_since_last_step;
+	float sec_since_last_attack;
 	array next_path;
 	float time_since_last_path;
 	pathfinding_request request;

@@ -44,6 +44,8 @@ typedef struct t_point_animation
 typedef struct t_player {
 	u32 id;
 	bool active;
+	s32 health;
+	s32 max_health;
 	float sec_since_last_shot;
 	player_interact_state interact_state;
 	float sec_since_interact_state_change;
@@ -92,6 +94,7 @@ object check_if_player_collided_with_object(player p);
 float get_player_size(platform_window* window);
 void move_user(platform_window* window, u32 id, protocol_move_type move, float delta);
 void update_players_server();
+void hurt_player(u32 id, u32 damage);
 void spawn_player(u32 id, network_client client);
 bool player_has_old_session(u32 id);
 void rejoin_player(u32 id, network_client client);

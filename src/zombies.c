@@ -1,6 +1,30 @@
 #include "../include/zombies.h"
 
-static player get_closest_player_to_tile(int x, int y) {
+static player get_closest_player_to_tile_x(float x, float y, float* buf_length) {
+	float best_length = 99999;
+	int best_index = -1;
+
+	for (int i = 0; i < MAX_PLAYERS; i++) {
+		if (!players[i].active) continue;
+		float dirx = (players[i].playerx - x);
+		float diry = (players[i].playery - y);
+		double length = sqrt(dirx * dirx + diry * diry);
+
+		if (length < best_length) {
+			best_length = length;
+			best_index = i;
+		}
+	}
+	*buf_length = best_length;
+	if (best_index == -1) {
+		return (player){-1};
+	}
+	else {
+		return players[best_index];
+	}
+}
+
+static player get_closest_player_to_tile(float x, float y) {
 	float best_length = 99999;
 	int best_index = -1;
 
@@ -85,6 +109,9 @@ static void set_enraged_zombie_stats(zombie *zombie) {
 	zombie->sprite_run = create_sprite(img_alien_run, 6, 32, 32, 0.1f);
 	zombie->sprite_run.zoom = 1.20f;
 	zombie->speed = 5.0f;
+	zombie->attack_range = 0.8f;
+	zombie->attack_rate = 0.7f;
+	zombie->attack_damage = 250;
 
 	add_zombie_audio_event_to_queue(EVENT_ZOMBIEROAR, ZOMBIE_TYPE_ENRAGED, zombie->position);
 }
@@ -99,6 +126,9 @@ static void set_normal_zombie_stats(zombie *zombie) {
 	zombie->sprite_run = create_sprite(img_alien_run, 6, 32, 32, 0.1f);
 	zombie->sprite_run.zoom = 1.20f;
 	zombie->speed = 4.0f;
+	zombie->attack_range = 0.8f;
+	zombie->attack_rate = 0.7f;
+	zombie->attack_damage = 100;
 }
 
 int normal_zombie_spawn_counter = 0;
@@ -115,6 +145,7 @@ void spawn_zombie(int x, int y) {
 		zombies[i].type = (normal_zombie_spawn_counter % 5 == 0) ? ZOMBIE_TYPE_ENRAGED : ZOMBIE_TYPE_NORMAL;	
 		zombies[i].position = (vec3f){x,y, 0};
 		zombies[i].sec_since_last_step = 0.0f;
+		zombies[i].sec_since_last_attack = 0.0f;
 		switch(zombies[i].type) {
 			case ZOMBIE_TYPE_NORMAL: set_normal_zombie_stats(&zombies[i]); break;
 			case ZOMBIE_TYPE_ENRAGED: set_enraged_zombie_stats(&zombies[i]); break;
@@ -274,6 +305,19 @@ static vec2f get_random_point_around_player(player p, zombie o) {
 	return (vec2f){x, y};
 }
 
+static void update_zombie_attacks_server(zombie *zombie) {
+	if (zombie->sec_since_last_attack >= zombie->attack_rate) {
+		//add_zombie_audio_event_to_queue(EVENT_FOOTSTEP, o.type, o.position);
+		
+		float dist;
+		player p = get_closest_player_to_tile_x(zombie->position.x, zombie->position.y, &dist);
+		if (p.id != -1 && dist <= zombie->attack_range) {
+			zombie->sec_since_last_attack = 0.0f;
+			hurt_player(p.id, zombie->attack_damage);
+		}
+	}
+}
+
 void update_zombies_server(platform_window* window) {
 	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
@@ -286,11 +330,12 @@ void update_zombies_server(platform_window* window) {
 			zombies[i].sec_since_last_step = 0.0f;
 		}
 		zombies[i].sec_since_last_step += SERVER_TICK_RATE;
+		zombies[i].sec_since_last_attack += SERVER_TICK_RATE;
 
 		// Update pathfinding
 		zombies[i].time_since_last_path += SERVER_TICK_RATE;
 		if (zombies[i].time_since_last_path > SERVER_PATHFINDING_INTERVAL) {
-			player closest_player = get_closest_player_to_tile((int)o.position.x, (int)o.position.y);
+			player closest_player = get_closest_player_to_tile(o.position.x, o.position.y);
 			vec2f target_tile = (vec2f){closest_player.playerx, closest_player.playery+(get_player_size_in_tile()/2)};
 
 			array_clear(zombies[i].request.to_fill);
@@ -306,7 +351,7 @@ void update_zombies_server(platform_window* window) {
 					array_destroy(&zombies[i].path);
 					zombies[i].path = array_copy(zombies[i].request.to_fill);
 					
-					player closest_player = get_closest_player_to_tile((int)o.position.x, (int)o.position.y);
+					player closest_player = get_closest_player_to_tile(o.position.x, o.position.y);
 					vec2f final_pos = get_random_point_around_player(closest_player, zombies[i]);
 					array_push_at(&zombies[i].path, (u8*)&final_pos, 0);
 
@@ -341,6 +386,9 @@ void update_zombies_server(platform_window* window) {
 				}
 			}
 		}
+
+		// Attacking
+		update_zombie_attacks_server(&zombies[i]);
 	}
 }
 
@@ -381,7 +429,7 @@ void draw_zombies(platform_window* window) {
 		if (o.health < o.max_health) {
 			int bar_h = zombie_size/8;
 			int bar_w = zombie_size/2;
-			float percentage = o.health/o.max_health;
+			float percentage = o.health/(float)o.max_health;
 			renderer->render_rectangle(zombie_pos.x + (zombie_size/2) - (bar_w/2), zombie_pos.y - bar_h, bar_w, bar_h, rgb(0,0,0));
 			renderer->render_rectangle(zombie_pos.x + (zombie_size/2) - (bar_w/2), zombie_pos.y - bar_h, bar_w*percentage, bar_h, rgb(100,0,0));
 		}
