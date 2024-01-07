@@ -492,6 +492,17 @@ color get_color_tint_by_player_index(int index) {
 	return c;
 }
 
+image* get_player_death_sprite_from_index(int index) {
+	image* imgs[] = {
+		img_gunner_blue_die,
+		img_gunner_black_die,
+		img_gunner_green_die,
+		img_gunner_yellow_die,
+		img_gunner_red_die,
+	};
+	return imgs[index];
+}
+
 image* get_player_run_sprite_from_index(int index) {
 	image* imgs[] = {
 		img_gunner_blue_run,
@@ -523,7 +534,7 @@ void draw_player(platform_window* window, player* p, int index) {
 		
 		if (p->interact_state == INTERACT_DEAD) {
 			frame = sprite_get_frame(img_gunner_blue_die, &p->sprite_death);
-			renderer->render_image_quad_partial(img_gunner_blue_die, 
+			renderer->render_image_quad_partial(get_player_death_sprite_from_index(index), 
 			player_render_x, player_render_y,
 			player_render_x, player_render_y + size, 
 			player_render_x + size, player_render_y + size, 
