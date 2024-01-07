@@ -12,8 +12,9 @@
 
 #define MAX_PLAYERS 5
 #define MAX_POINT_ANIMATIONS 10
-
+#define PLAYER_HEAL_DELAY 2.0f
 #define GUN_OFFSET_FROM_PLAYER 0.8f
+#define PLAYER_HEALTH_REGEN_PER_SEC 200
 
 typedef enum t_player_interact_state {
 	INTERACT_IDLE,
@@ -47,6 +48,7 @@ typedef struct t_player {
 	s32 health;
 	s32 max_health;
 	float sec_since_last_shot;
+	float sec_since_last_damage_taken;
 	player_interact_state interact_state;
 	float sec_since_interact_state_change;
 	float playerx;

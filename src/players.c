@@ -50,6 +50,7 @@ void spawn_player(u32 id, network_client client) {
 		if (players[i].active) continue;
 		players[i].active = true;
 		players[i].sec_since_last_shot = 10.0f;
+		players[i].sec_since_last_damage_taken = 10.0f;
 		players[i].playerx = 3;
 		players[i].playery = 3;
 		players[i].gunx = 0.0f;
@@ -362,6 +363,7 @@ void hurt_player(u32 id, u32 damage) {
 	}
 
 	p->health -= damage;
+	p->sec_since_last_damage_taken = 0.0f;
 	add_audio_event_to_queue(EVENT_PLAYERHURT, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
 }
 
@@ -371,7 +373,9 @@ void update_players_server() {
 		players[i].sec_since_last_shot += SERVER_TICK_RATE;
 		players[i].sec_since_interact_state_change += SERVER_TICK_RATE;
 		players[i].sec_since_last_step += SERVER_TICK_RATE;
+		players[i].sec_since_last_damage_taken += SERVER_TICK_RATE;
 
+		// Reloading
 		gun g = get_gun_by_type(players[i].guntype);
 		if (players[i].interact_state == INTERACT_RELOADING && players[i].sec_since_interact_state_change >= g.reload_time) {
 			int amount_to_reload = g.magazine_size;
@@ -380,6 +384,12 @@ void update_players_server() {
 			players[i].ammo_in_mag = amount_to_reload;
 
 			players[i].interact_state = INTERACT_IDLE;
+		}
+
+		// Health regen
+		if (players[i].sec_since_last_damage_taken >= PLAYER_HEAL_DELAY) {
+			players[i].health += PLAYER_HEALTH_REGEN_PER_SEC * SERVER_TICK_RATE;
+			if (players[i].health >= players[i].max_health) players[i].health = players[i].max_health;
 		}
 	}
 

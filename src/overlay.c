@@ -156,7 +156,50 @@ void draw_points(platform_window* window) {
 	}
 }
 
+static void draw_hurt_borders(platform_window* window) {
+	player* p = get_player_by_id(player_id);
+	if (!p) return;
+
+	int width = window->width * 0.1f;
+	float opacity = 1.0f - (p->health/(float)p->max_health);
+	if (opacity < 0.0f) opacity = 0.0f;
+	if (opacity > 1.0f) opacity = 1.0f;
+
+	color c = rgba(255,255,255,255*opacity);
+	
+	// left
+	renderer->render_image_tint(img_red_border, _global_camera.x, _global_camera.y, width, window->height, c);
+
+	// top
+	sprite_frame top = {.tl = (vec2f){.x = 0.0f, .y = 0.0f}, .tr = (vec2f){.x = 1.0f, .y = 0.0f}, .bl = (vec2f){.x = 0.0f, .y = 1.0f}, .br = (vec2f){.x = 1.0f, .y = 1.0f}, };
+	top = sprite_swap_rotate_90(top);
+	renderer->render_image_quad_partial_tint(img_red_border, 
+		_global_camera.x, _global_camera.y, 
+		_global_camera.x, _global_camera.y + width, 
+		_global_camera.x + window->width, _global_camera.y + width, 
+		_global_camera.x + window->width, _global_camera.y, 
+		top.tl, top.tr, top.bl, top.br, c);
+
+
+	top = sprite_swap_rotate_90(top);
+	renderer->render_image_quad_partial_tint(img_red_border, 
+		_global_camera.x + window->width - width, _global_camera.y, 
+		_global_camera.x + window->width, _global_camera.y + window->height, 
+		_global_camera.x + window->width - width, _global_camera.y + window->height, 
+		_global_camera.x + window->width, _global_camera.y, 
+		top.tl, top.tr, top.bl, top.br, c);
+
+	top = sprite_swap_rotate_90(top);
+	renderer->render_image_quad_partial_tint(img_red_border, 
+		_global_camera.x, _global_camera.y + window->height - width, 
+		_global_camera.x, _global_camera.y + window->height, 
+		_global_camera.x + window->width, _global_camera.y + window->height, 
+		_global_camera.x + window->width, _global_camera.y + window->height - width, 
+		top.tl, top.tr, top.bl, top.br, c);
+}
+
 void draw_overlay(platform_window* window) {
+	draw_hurt_borders(window);
 	draw_gun_info(window);
 	draw_points(window);
 	draw_leaderboard(window);

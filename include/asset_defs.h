@@ -17,6 +17,9 @@ font* fnt_12;
 font* fnt_8;
 font* fnt_4;
 
+// UI
+image* img_red_border;
+
 // Icons
 image* img_icon_bullets;
 image* img_icon_nova;

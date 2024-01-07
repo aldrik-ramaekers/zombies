@@ -60,6 +60,18 @@ sprite_frame sprite_get_frame(image* img, sprite* sprite) {
 	return frame;
 }
 
+sprite_frame sprite_swap_rotate_90(sprite_frame frame) {
+	vec2f tl = frame.bl;
+	vec2f tr = frame.tl;
+	vec2f bl = frame.br;
+	vec2f br = frame.tr;
+	frame.tl = tl;
+	frame.tr = tr;
+	frame.bl = bl;
+	frame.br = br;
+	return frame;
+}
+
 sprite_frame sprite_swap_frame_horizontally(sprite_frame frame) {
 	vec2f tl = frame.tr;
 	vec2f tr = frame.tl;

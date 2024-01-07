@@ -19,6 +19,9 @@ void load_assets() {
 	fnt_8 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 8);
 	fnt_4 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 4);
 
+	// UI
+	img_red_border = assets_load_image_from_file("data/imgs/ui/red_border.png");
+
 	// Icons
 	img_icon_bullets = assets_load_image_from_file("data/imgs/bullets.png");
 	img_icon_nova = assets_load_image_from_file("data/imgs/nova.png");
@@ -41,8 +44,8 @@ void load_assets() {
 
 	// Objects
 	img_spawner = assets_load_image_from_file("data/imgs/spawner.png");
-	img_obj_plants = assets_load_image_from_file("data/imgs/plants.png");
-	img_obj_wall1 = assets_load_image_from_file("data/imgs/wall1.png");
+	img_obj_plants = assets_load_image_from_file("data/imgs/objects/plants.png");
+	img_obj_wall1 = assets_load_image_from_file("data/imgs/objects/wall1.png");
 	img_metal_wall = assets_load_image_from_file("data/imgs/objects/metal_wall.png");
 	img_metal_wall2 = assets_load_image_from_file("data/imgs/objects/metal_wall2.png");
 
