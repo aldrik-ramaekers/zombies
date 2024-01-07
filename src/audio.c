@@ -40,7 +40,6 @@ void add_ui_audio_event_to_queue(audio_event_type event) {
 
 static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 	player* p = get_player_by_id(playerid);
-	if (!p) return 0;
 
 	switch (event.type)
 	{
@@ -68,6 +67,7 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 			}
 		}
 		case EVENT_SHOOT: {
+			if (!p) { log_infox("Unknown player audio event %d", playerid); return wav_error; }
 			switch (p->guntype)
 			{
 				case GUN_MP5: return wav_shoot_mp5;
@@ -153,8 +153,6 @@ void play_music(Mix_Music* music) {
 }
 
 void play_positioned_sound(int channel, Mix_Chunk* wav, vec3f pos, float max_audible_dist) {
-	player* p = get_player_by_id(player_id);
-	if (!p) return;
 
 	// calculate volume
 	int tiles_between_throwable_and_player = distance_between_3f((vec3f){.x = p->playerx, .y = p->playery, .z = p->height}, pos);
@@ -162,6 +160,8 @@ void play_positioned_sound(int channel, Mix_Chunk* wav, vec3f pos, float max_aud
 	if (volume > 1.0f) volume = 1.0f;
 	if (volume < 0.0f) volume = 0.0f;
 
+	//player* p = get_player_by_id(player_id);
+	//if (!p) return;
 	// calculate angle
 	/*
 	float dirx = (throwables[i].position.x - p->playerx);
