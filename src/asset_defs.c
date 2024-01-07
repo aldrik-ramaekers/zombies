@@ -52,18 +52,23 @@ void load_assets() {
 	// Players
 	img_gunner_black_run = assets_load_image_from_file("data/imgs/players/Black/Gunner_Black_Run.png");
 	img_gunner_black_idle = assets_load_image_from_file("data/imgs/players/Black/Gunner_Black_Idle.png");
+	img_gunner_black_die = assets_load_image_from_file("data/imgs/players/Black/Gunner_Black_Death.png");
 
 	img_gunner_blue_run = assets_load_image_from_file("data/imgs/players/Blue/Gunner_Blue_Run.png");
 	img_gunner_blue_idle = assets_load_image_from_file("data/imgs/players/Blue/Gunner_Blue_Idle.png");
+	img_gunner_blue_die = assets_load_image_from_file("data/imgs/players/Blue/Gunner_Blue_Death.png");
 
 	img_gunner_green_run = assets_load_image_from_file("data/imgs/players/Green/Gunner_Green_Run.png");
 	img_gunner_green_idle = assets_load_image_from_file("data/imgs/players/Green/Gunner_Green_Idle.png");
+	img_gunner_green_die = assets_load_image_from_file("data/imgs/players/Green/Gunner_Green_Death.png");
 
 	img_gunner_red_run = assets_load_image_from_file("data/imgs/players/Red/Gunner_Red_Run.png");
 	img_gunner_red_idle = assets_load_image_from_file("data/imgs/players/Red/Gunner_Red_Idle.png");
+	img_gunner_red_die = assets_load_image_from_file("data/imgs/players/Red/Gunner_Red_Death.png");
 
 	img_gunner_yellow_run = assets_load_image_from_file("data/imgs/players/Yellow/Gunner_Yellow_Run.png");
 	img_gunner_yellow_idle = assets_load_image_from_file("data/imgs/players/Yellow/Gunner_Yellow_Idle.png");
+	img_gunner_yellow_die = assets_load_image_from_file("data/imgs/players/Yellow/Gunner_Yellow_Death.png");
 
 	img_muzzle_flash = assets_load_image_from_file("data/imgs/players/MuzzleFlash.png");
 	img_bullet_stream = assets_load_image_from_file("data/imgs/players/BulletStream.png");

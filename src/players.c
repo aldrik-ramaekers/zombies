@@ -61,11 +61,13 @@ void spawn_player(u32 id, network_client client) {
 		players[i].height = 0.0f;
 		players[i].client = client;
 		players[i].sprite = create_sprite(img_gunner_blue_run, 6, 48, 48, 0.1f);
+		players[i].sprite_death = create_sprite(img_gunner_blue_run, 8, 48, 48, 0.1f);
+		players[i].sprite_death.loop = false;
 		players[i].sprite.zoom = 1.1f;
+		players[i].sprite_death.zoom = 1.1f;
 		players[i].health = 500;
 		players[i].max_health = 500;
 
-		players[i].gun_sprite = create_sprite(img_gun_mp5, 4, 256, 256, 0.0f);
 		players[i].direction = DIRECTION_DOWN;
 		players[i].connection_state = CONNECTED;
 		players[i].throwables.grenades = 3; 
@@ -128,6 +130,8 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 		log_info("Unknown user moved");
 		return;
 	}
+
+	if (p->interact_state == INTERACT_DEAD) return;
 
 	if (p->sec_since_last_step > 0.2f) {
 		add_audio_event_to_queue(EVENT_FOOTSTEP, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
@@ -321,7 +325,7 @@ void take_player_input(platform_window* window) {
 	}	
 }
 
-void update_players_client() {
+void update_players_orientation() {
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
 
@@ -353,6 +357,7 @@ void update_players_client() {
 		
 
 		update_sprite(&players[i].sprite);
+		if (players[i].interact_state == INTERACT_DEAD) update_sprite(&players[i].sprite_death);
 	}
 }
 
@@ -365,6 +370,11 @@ void hurt_player(u32 id, u32 damage) {
 	p->health -= damage;
 	p->sec_since_last_damage_taken = 0.0f;
 	add_audio_event_to_queue(EVENT_PLAYERHURT, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
+
+	if (p->health <= 0) {
+		p->health = 0;
+		p->interact_state = INTERACT_DEAD;
+	}
 }
 
 void update_players_server() {
@@ -374,6 +384,8 @@ void update_players_server() {
 		players[i].sec_since_interact_state_change += SERVER_TICK_RATE;
 		players[i].sec_since_last_step += SERVER_TICK_RATE;
 		players[i].sec_since_last_damage_taken += SERVER_TICK_RATE;
+
+		if (players[i].interact_state == INTERACT_DEAD) continue;
 
 		// Reloading
 		gun g = get_gun_by_type(players[i].guntype);
@@ -393,7 +405,7 @@ void update_players_server() {
 		}
 	}
 
-	update_players_client();
+	update_players_orientation();
 }
 
 static void draw_player_bullet_cone(platform_window* window, player* p) {
@@ -509,22 +521,37 @@ void draw_player(platform_window* window, player* p, int index) {
 			frame = sprite_swap_frame_horizontally(frame);
 		}
 		
-		renderer->render_image_quad_partial(get_player_run_sprite_from_index(index), 
-		player_render_x, player_render_y,
-		player_render_x, player_render_y + size, 
-		player_render_x + size, player_render_y + size, 
-		player_render_x + size, player_render_y, 
-		frame.tl, frame.tr, frame.bl, frame.br);
+		if (p->interact_state == INTERACT_DEAD) {
+			frame = sprite_get_frame(img_gunner_blue_die, &p->sprite_death);
+			renderer->render_image_quad_partial(img_gunner_blue_die, 
+			player_render_x, player_render_y,
+			player_render_x, player_render_y + size, 
+			player_render_x + size, player_render_y + size, 
+			player_render_x + size, player_render_y, 
+			frame.tl, frame.tr, frame.bl, frame.br);
+		}
+		else {
+			renderer->render_image_quad_partial(get_player_run_sprite_from_index(index), 
+			player_render_x, player_render_y,
+			player_render_x, player_render_y + size, 
+			player_render_x + size, player_render_y + size, 
+			player_render_x + size, player_render_y, 
+			frame.tl, frame.tr, frame.bl, frame.br);
+		}
 	}
 
-	font* name_fnt = get_font(window, 0.2f);
-	int name_x = player_render_x + (size)/2 - (renderer->calculate_text_width(name_fnt, name))/2;
-	int name_y = player_render_y - name_fnt->px_h - 5;
-	renderer->render_text(name_fnt, name_x+1, name_y+1, name, rgba(0,0,0,120));
-	renderer->render_text(name_fnt, name_x, name_y, name, rgb(255,255,255));
+	// Nametag
+	{
+		font* name_fnt = get_font(window, 0.2f);
+		int name_x = player_render_x + (size)/2 - (renderer->calculate_text_width(name_fnt, name))/2;
+		int name_y = player_render_y - name_fnt->px_h - 5;
+		renderer->render_text(name_fnt, name_x+1, name_y+1, name, rgba(0,0,0,120));
+		renderer->render_text(name_fnt, name_x, name_y, name, rgb(255,255,255));
+	}
 
 	p->gun_height = p->height+0.2;
 
+	// Disconnected icon
 	if (p->connection_state == DISCONNECTED) {
 		float icon_h = (size)/2;
 		renderer->render_image(img_disconnected, player_render_x + (icon_h/3), player_render_y - icon_h, icon_h, icon_h);

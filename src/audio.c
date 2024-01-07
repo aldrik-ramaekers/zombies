@@ -175,6 +175,10 @@ void play_positioned_sound(int channel, Mix_Chunk* wav, vec3f pos, float max_aud
 	*/
 
 	int c = Mix_PlayChannel(-1, wav, 0);
-	if (c == -1) log_info("Audio not playable because no channels are free");
-	Mix_SetPosition(c, 0, (int)(volume*255));
+	if (c == -1) {
+		log_info("Audio not playable because no channels are free");
+	}
+	else {
+		Mix_SetPosition(c, 0, (int)(volume*255));
+	}
 }

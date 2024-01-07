@@ -12,6 +12,7 @@ sprite create_sprite(image* img, int frame_count, int fwidth, int fheight, float
 	s.time = 0.0f;
 	s.frame_start = 0;
 	s.zoom = 1.0f;
+	s.loop = true;
 	return s;
 }
 
@@ -21,8 +22,13 @@ void update_sprite(sprite* sprite) {
 	int frame = sprite->time / sprite->sec_per_frame;
 	sprite->current_frame = frame;
 	if (frame >= sprite->frame_count) {
-		sprite->time = 0.0f;
-		sprite->current_frame = 0;
+		if (sprite->loop) {
+			sprite->time = 0.0f;
+			sprite->current_frame = 0;
+		}
+		else {
+			sprite->current_frame = sprite->frame_count-1;
+		}
 	}
 }
 

@@ -19,6 +19,7 @@
 typedef enum t_player_interact_state {
 	INTERACT_IDLE,
 	INTERACT_RELOADING,
+	INTERACT_DEAD
 } player_interact_state;
 
 typedef enum t_player_direction {
@@ -68,7 +69,7 @@ typedef struct t_player {
 	int kills;
 	u64 ping;
 	sprite sprite;
-	sprite gun_sprite;
+	sprite sprite_death;
 	network_state connection_state;
 	u32 points;
 	struct {

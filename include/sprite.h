@@ -14,6 +14,7 @@ typedef struct t_sprite {
 	int img_height;
 	int frame_start;
 	float zoom;
+	bool loop;
 } sprite;
 
 typedef struct t_sprite_frame {

@@ -6,6 +6,7 @@ static player get_closest_player_to_tile_x(float x, float y, float* buf_length) 
 
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
+		if (players[i].interact_state == INTERACT_DEAD) continue;
 		float dirx = (players[i].playerx - x);
 		float diry = (players[i].playery - y);
 		double length = sqrt(dirx * dirx + diry * diry);
@@ -30,6 +31,7 @@ static player get_closest_player_to_tile(float x, float y) {
 
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
+		if (players[i].interact_state == INTERACT_DEAD) continue;
 		float dirx = (players[i].playerx - x);
 		float diry = (players[i].playery - y);
 		double length = sqrt(dirx * dirx + diry * diry);
@@ -99,6 +101,19 @@ u32 number_of_zombies_active()
 	return res;
 }
 
+static vec2f get_random_target_for_zombie(zombie o) {
+	vec2f target = {0,0};
+	try_again:;
+	int dist = 10;
+	target.x = o.position.x + (rand() % dist) - (dist/2);
+	target.y = o.position.y + (rand() % dist) - (dist/2);
+
+	object obj = get_object_at_tile(target.x, target.y);
+	if (obj.active) goto try_again;
+	
+	return target;
+}
+
 static void set_enraged_zombie_stats(zombie *zombie) {
 	zombie->health = 1500.0f;
 	zombie->max_health = 1500.0f;
@@ -154,8 +169,13 @@ void spawn_zombie(int x, int y) {
 		_current_round.zombies--;
 		
 		player closest_player = get_closest_player_to_tile(x, y);
+		vec2f target = (vec2f){closest_player.playerx, closest_player.playery};
+		// All players died, move around randomly
+		if (closest_player.id == -1) {
+			target = get_random_target_for_zombie(zombies[i]);
+		}
 
-		make_pathfinding_request((vec2f){x,y}, (vec2f){closest_player.playerx, closest_player.playery}, &zombies[i].next_path, &zombies[i].request);
+		make_pathfinding_request((vec2f){x,y}, target, &zombies[i].next_path, &zombies[i].request);
 		break;
 	}
 }
@@ -337,6 +357,10 @@ void update_zombies_server(platform_window* window) {
 		if (zombies[i].time_since_last_path > SERVER_PATHFINDING_INTERVAL) {
 			player closest_player = get_closest_player_to_tile(o.position.x, o.position.y);
 			vec2f target_tile = (vec2f){closest_player.playerx, closest_player.playery+(get_player_size_in_tile()/2)};
+			// All players died, move around randomly
+			if (closest_player.id == -1) {
+				target_tile = get_random_target_for_zombie(o);
+			}		
 
 			array_clear(zombies[i].request.to_fill);
 			make_pathfinding_request((vec2f){o.position.x,o.position.y}, target_tile, &zombies[i].next_path, &zombies[i].request);
@@ -352,6 +376,13 @@ void update_zombies_server(platform_window* window) {
 					zombies[i].path = array_copy(zombies[i].request.to_fill);
 					
 					player closest_player = get_closest_player_to_tile(o.position.x, o.position.y);
+
+					// All players died, move around randomly
+					if (closest_player.id == -1) {
+						vec2f target = get_random_target_for_zombie(o);
+						closest_player.playerx = target.x;
+						closest_player.playery = target.y;
+					}
 					vec2f final_pos = get_random_point_around_player(closest_player, zombies[i]);
 					array_push_at(&zombies[i].path, (u8*)&final_pos, 0);
 
