@@ -7,6 +7,7 @@ void add_throwable_audio_event_to_queue(audio_event_type event, throwable_type t
 		audio_events[i] = (audio_event){.active = true, .throwable = throwable, .obj = OBJECT_NONE, .zombie = ZOMBIE_TYPE_NONE, .playerid = playerid, .position = position, .type = event};
 		return;
 	}
+	log_info("Audio queue full");
 }
 
 void add_zombie_audio_event_to_queue(audio_event_type event, zombie_type zombie, vec3f position) {
@@ -16,6 +17,7 @@ void add_zombie_audio_event_to_queue(audio_event_type event, zombie_type zombie,
 		audio_events[i] = (audio_event){.active = true, .throwable = THROWABLE_NONE, .obj = OBJECT_NONE, .zombie = zombie, .playerid = -1, .position = position, .type = event};
 		return;
 	}
+	log_info("Audio queue full");
 }
 
 void add_object_audio_event_to_queue(audio_event_type event, object_type obj, u32 playerid, vec3f position) {
@@ -25,6 +27,7 @@ void add_object_audio_event_to_queue(audio_event_type event, object_type obj, u3
 		audio_events[i] = (audio_event){.active = true, .throwable = THROWABLE_NONE, .obj = obj, .zombie = ZOMBIE_TYPE_NONE, .playerid = playerid, .position = position, .type = event};
 		return;
 	}
+	log_info("Audio queue full");
 }
 
 void add_audio_event_to_queue(audio_event_type event, u32 playerid, vec3f position) {
@@ -33,17 +36,6 @@ void add_audio_event_to_queue(audio_event_type event, u32 playerid, vec3f positi
 
 void add_ui_audio_event_to_queue(audio_event_type event) {
 	add_object_audio_event_to_queue(event, OBJECT_NONE, -1, (vec3f){-1,-1,-1});
-}
-
-static int get_channel_from_audio_event_type(audio_event_type event) {
-	for (int i = 0; i < NUM_AUDIO_CHANNELS; i++) {
-		if (!audio_channel_usage[i]) {
-			audio_channel_usage[i] = true;
-			return i;
-		}
-	}
-	log_info("Ran out of audio channels");
-	return 0;
 }
 
 static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
@@ -141,9 +133,7 @@ void play_sounds_in_queue() {
 			audio_events[i].type, audio_events[i].obj, audio_events[i].zombie, audio_events[i].throwable);
 		}*/
 
-		int channel = get_channel_from_audio_event_type(audio_events[i].type);
-		play_positioned_sound(
-			channel, sample, audio_events[i].position, 20);
+		play_positioned_sound(0, sample, audio_events[i].position, 20);
 	}
 }
 
@@ -155,10 +145,6 @@ void clear_sounds_in_queue() {
 
 void play_sound(int channel, Mix_Chunk* wav) {
 	Mix_PlayChannel(channel, wav, 0);
-}
-
-void audio_channel_finished(int channel) {
-	audio_channel_usage[channel] = false;
 }
 
 void play_music(Mix_Music* music) {
@@ -186,6 +172,6 @@ void play_positioned_sound(int channel, Mix_Chunk* wav, vec3f pos, float max_aud
 	if (rads > 360) rads -= 360;
 	*/
 
-	Mix_SetPosition(channel, 0, (int)(volume*255));
-	Mix_PlayChannel(channel, wav, 0);
+	int c = Mix_PlayChannel(-1, wav, 0);
+	Mix_SetPosition(c, 0, (int)(volume*255));
 }

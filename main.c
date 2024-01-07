@@ -104,7 +104,6 @@ int main(int argc, char **argv)
 		if (Mix_AllocateChannels(NUMBER_OF_AUDIO_CHANNELS) == NUM_AUDIO_CHANNELS) {
 			log_info("Audio system initialized.");
 			Mix_MasterVolume(MIX_MAX_VOLUME/4);
-			Mix_ChannelFinished(audio_channel_finished);
 		}
 		else {
 			log_info("Channel allocation failed.");
