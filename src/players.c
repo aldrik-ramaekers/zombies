@@ -583,7 +583,9 @@ void draw_players(platform_window* window) {
 		float height = get_height_of_tile_under_coords(players[i].playerx, players[i].playery);
 		players[i].height = height;
 
-		draw_player_bullet_cone(window, &players[i]);
+		if (players[i].interact_state == INTERACT_IDLE) {
+			draw_player_bullet_cone(window, &players[i]);
+		}
 		draw_player(window, &players[i], i);	
 	}
 }

@@ -128,7 +128,7 @@ font* get_font(platform_window* window, float scale) {
 	float window_scale = window->width / 800.0f;
 	float diff = window_scale - 1.0f;
 
-	float step = 1/5.0f;
+	float step = 1/3.0f;
 
 	int index_of_original = (int)(scale / step);
 	int index_to_return = index_of_original + (int)(diff/step);

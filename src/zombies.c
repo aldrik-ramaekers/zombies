@@ -105,9 +105,12 @@ static vec2f get_random_target_for_zombie(zombie o) {
 	vec2f target = {0,0};
 	try_again:;
 	int dist = 10;
-	target.x = o.position.x + (rand() % dist) - (dist/2);
-	target.y = o.position.y + (rand() % dist) - (dist/2);
+	target.x = o.position.x + (rand() % dist) - (dist/2) +1;
+	target.y = o.position.y + (rand() % dist) - (dist/2) +1;
 
+	if (target.x <= 0 || target.y <= 0) goto try_again;
+	if (target.x >= MAP_SIZE_X-1 || target.y >= MAP_SIZE_Y-1) goto try_again;
+	
 	object obj = get_object_at_tile(target.x, target.y);
 	if (obj.active) goto try_again;
 	
