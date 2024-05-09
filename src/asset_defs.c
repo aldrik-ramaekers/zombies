@@ -42,10 +42,10 @@ void load_assets() {
 	img_grenade_explode = assets_load_image_from_file("data/imgs/throwables/grenade_explode.png");
 	img_molotov_explode = assets_load_image_from_file("data/imgs/throwables/molotov_explode.png");
 
-	// Objects
+	// Objects // @NEWOBJECT
 	img_spawner = assets_load_image_from_file("data/imgs/spawner.png");
-	img_obj_plants = assets_load_image_from_file("data/imgs/objects/plants.png");
-	img_obj_wall1 = assets_load_image_from_file("data/imgs/objects/wall1.png");
+	img_space_control_panel = assets_load_image_from_file("data/imgs/objects/space_control_panel.png");
+	img_space_window = assets_load_image_from_file("data/imgs/objects/metal_wall_window.png");
 	img_metal_wall = assets_load_image_from_file("data/imgs/objects/metal_wall.png");
 	img_metal_wall2 = assets_load_image_from_file("data/imgs/objects/metal_wall2.png");
 

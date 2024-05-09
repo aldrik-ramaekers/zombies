@@ -1,5 +1,6 @@
 #include "../include/map.h"
 
+int player_zoom = 30;
 static int get_height_of_tile_tl(int current_height, int x, int y) {
 	int highest_point = current_height;
 	if (y > 0) {
@@ -299,9 +300,11 @@ static int round_up(int numToRound, int multiple)
 }
 
 inline int get_tile_width(platform_window* window) {
-	int tile_width = window->height / 30;
-	if (window->width > window->height) tile_width = window->width / 30;
-	return round_up(tile_width, 8);
+	//int tile_width = window->height / player_zoom;
+	//if (window->width > window->height) tile_width = window->width / player_zoom;
+	//return round_up(tile_width, 8);
+
+	return 32;
 }
 
 inline int get_tile_height(platform_window* window) {

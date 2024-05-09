@@ -85,6 +85,15 @@ void update_editor(platform_window* window)
 		camera_x += update_delta*cam_speed;
 	}
 
+	if (_global_mouse.scroll_state == SCROLL_UP) {
+		player_zoom++;
+		printf("%d %d\n", player_zoom, get_tile_width(window));
+	}
+	if (_global_mouse.scroll_state == SCROLL_DOWN) {
+		player_zoom--;
+		printf("%d %d\n", player_zoom, get_tile_width(window));
+	}
+
 	_next_camera_pos.x = -(window->width / 2) + camera_x;
 	_next_camera_pos.y = -(window->height / 2) + camera_y;
 
@@ -375,6 +384,7 @@ void update_object_editor(platform_window* window) {
 	if (keyboard_is_key_down(KEY_ESCAPE)) {
 		object_edit_state = OBJECT_EDITOR_SELECTING;
 	}
+	if (_global_mouse.x < editor_width) return;
 
 	if (pos.x < 0 || pos.y < 0) return;
 	if (pos.x >= loaded_map.width || pos.y >= loaded_map.height) return;
@@ -415,7 +425,7 @@ void draw_object_panel(platform_window* window) {
 		y += offset_y;
 
 		image* img = get_image_from_objecttype((object_type)i);
-		if (push_icon_button(x, y, tile_w, img, object_to_place == (object_type)i && object_edit_state == OBJECT_EDITOR_PLACING)) {
+		if (push_icon_button(x, y, tile_w, img, object_to_place == (object_type)i)) {
 			object_to_place = (object_type)i;
 			object_edit_state = OBJECT_EDITOR_PLACING;
 		}

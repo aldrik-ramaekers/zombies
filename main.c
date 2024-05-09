@@ -3,7 +3,7 @@
 #define ASSET_FONT_COUNT 20
 #define NUM_AUDIO_CHANNELS 64
 
-#include <projectbase/project_base.h>
+#include "project-base/src/project_base.h"
 
 #include "include/SDL2/SDL_mixer.h"
 

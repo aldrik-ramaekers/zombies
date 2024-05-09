@@ -34,10 +34,10 @@ image* img_disconnected;
 image* img_icon_grenade;
 image* img_icon_molotov;
 
-// Objects
+// Objects // @NEWOBJECT
 image* img_spawner;
-image* img_obj_plants;
-image* img_obj_wall1;
+image* img_space_control_panel;
+image* img_space_window;
 image* img_metal_wall;
 image* img_metal_wall2;
 

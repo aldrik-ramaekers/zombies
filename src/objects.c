@@ -77,13 +77,14 @@ void add_object(object obj) {
 	log_info("Object limit reached.");
 }
 
+// @NEWOBJECT
 image* get_image_from_objecttype(object_type tile) {
 	switch (tile)
 	{
-	case OBJECT_COBBLESTONEWALL1:
-		return img_obj_wall1;
-	case OBJECT_PLANTBOX1:
-		return img_obj_plants;
+	case OBJECT_SPACE_CONTROL_PANEL:
+		return img_space_control_panel;
+	case OBJECT_SPACE_WINDOW:
+		return img_space_window;
 	case OBJECT_METAL_WALL:
 		return img_metal_wall;
 	case OBJECT_METAL_WALL2:

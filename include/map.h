@@ -67,6 +67,7 @@ typedef struct t_extracted_map_data {
 	light_emitter light_emitters[MAX_LIGHT_EMITTERS];
 } extracted_map_data;
 
+extern int player_zoom;
 map_data map_to_load = {0};
 extracted_map_data loaded_map = {0};
 

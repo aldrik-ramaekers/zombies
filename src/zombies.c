@@ -342,6 +342,10 @@ static void update_zombie_attacks_server(zombie *zombie) {
 }
 
 void update_zombies_server(platform_window* window) {
+	#ifdef MODE_DEBUG
+	if (is_editing_map) return;
+	#endif
+
 	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;

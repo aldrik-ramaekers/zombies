@@ -20,10 +20,10 @@ typedef struct t_light_emitter {
 
 typedef enum t_object_type {
 	OBJECT_NONE,
-	OBJECT_COBBLESTONEWALL1,
-	OBJECT_PLANTBOX1,
-	OBJECT_METAL_WALL,
-	OBJECT_METAL_WALL2,
+	OBJECT_SPACE_CONTROL_PANEL = 1,
+	OBJECT_SPACE_WINDOW = 2,
+	OBJECT_METAL_WALL = 3,
+	OBJECT_METAL_WALL2 = 4,
 
 	OBJECT_END,
 } object_type;
@@ -47,9 +47,10 @@ typedef struct t_box {
 	vec2f br_u;
 } box;
 
+// @NEWOBJECT
 object object_dict[OBJECT_END] = {
-	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_COBBLESTONEWALL1},
-	{0,(vec3f){0, 0, 0},{1,1,2},OBJECT_PLANTBOX1},
+	{0,(vec3f){0, 0, 0},{1,3,1},OBJECT_SPACE_CONTROL_PANEL},
+	{0,(vec3f){0, 0, 0},{1,1,2},OBJECT_SPACE_WINDOW},
 	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL},
 	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL2},
 };

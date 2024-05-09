@@ -19,8 +19,15 @@
 typedef enum t_player_interact_state {
 	INTERACT_IDLE,
 	INTERACT_RELOADING,
-	INTERACT_DEAD
+	INTERACT_DEAD,
 } player_interact_state;
+
+typedef enum t_player_move_state
+{
+	PLAYER_MOVE_STATE_RUNNING,
+	PLAYER_MOVE_STATE_IDLE,
+	PLAYER_MOVE_STATE_JUMPING,
+} player_move_state;
 
 typedef enum t_player_direction {
 	DIRECTION_UP,
@@ -58,6 +65,7 @@ typedef struct t_player {
 	float guny;
 	float dirx;
 	float diry;
+	player_move_state move_state;
 	float gun_height;
 	float sec_since_last_step;
 	player_direction direction;
@@ -70,6 +78,7 @@ typedef struct t_player {
 	u64 ping;
 	sprite sprite;
 	sprite sprite_death;
+	sprite sprite_idle;
 	network_state connection_state;
 	u32 points;
 	struct {

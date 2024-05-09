@@ -57,14 +57,17 @@ void spawn_player(u32 id, network_client client) {
 		players[i].guny = 0.0f;
 		players[i].gun_height = 0.0f;
 		players[i].id = id;
+		players[i].move_state = PLAYER_MOVE_STATE_IDLE;
 		players[i].guntype = GUN_MP5;
 		players[i].height = 0.0f;
 		players[i].client = client;
 		players[i].sprite = create_sprite(img_gunner_blue_run, 6, 48, 48, 0.1f);
 		players[i].sprite_death = create_sprite(img_gunner_blue_run, 8, 48, 48, 0.1f);
+		players[i].sprite_idle = create_sprite(img_gunner_blue_idle, 5, 48, 48, 0.1f);
 		players[i].sprite_death.loop = false;
 		players[i].sprite.zoom = 1.1f;
 		players[i].sprite_death.zoom = 1.1f;
+		players[i].sprite_idle.zoom = 1.1f;
 		players[i].health = 500;
 		players[i].max_health = 500;
 
@@ -132,6 +135,12 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 	}
 
 	if (p->interact_state == INTERACT_DEAD) return;
+
+	if (move == MOVE_NONE) {
+		p->move_state = PLAYER_MOVE_STATE_IDLE;
+		return;
+	}
+	p->move_state = PLAYER_MOVE_STATE_RUNNING;
 
 	if (p->sec_since_last_step > 0.2f) {
 		add_audio_event_to_queue(EVENT_FOOTSTEP, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
@@ -273,6 +282,11 @@ void take_player_input(platform_window* window) {
 		network_message message = create_protocol_user_moved(MOVE_DOWN, player_id);
 		add_message_to_outgoing_queuex(message, *global_state.client);
 		move_user(window, player_id,MOVE_DOWN, update_delta);
+	}
+	else if (p->move_state == PLAYER_MOVE_STATE_RUNNING) {
+		network_message message = create_protocol_user_moved(MOVE_NONE, player_id);
+		add_message_to_outgoing_queuex(message, *global_state.client);
+		move_user(window, player_id,MOVE_NONE, update_delta);
 	}
 
 
@@ -514,6 +528,17 @@ image* get_player_run_sprite_from_index(int index) {
 	return imgs[index];
 }
 
+image* get_player_idle_sprite_from_index(int index) {
+	image* imgs[] = {
+		img_gunner_blue_idle,
+		img_gunner_black_idle,
+		img_gunner_green_idle,
+		img_gunner_yellow_idle,
+		img_gunner_red_idle,
+	};
+	return imgs[index];
+}
+
 void draw_player(platform_window* window, player* p, int index) {
 	float size = get_player_size(window);
 	map_info info = get_map_info(window);
@@ -528,27 +553,31 @@ void draw_player(platform_window* window, player* p, int index) {
 	{
 		sprite_frame frame = sprite_get_frame(img_gunner_blue_run, &p->sprite);
 		float rads = -atan2(p->diry, p->dirx);
+		
+		image* img;
+		if (p->interact_state == INTERACT_DEAD) {
+			frame = sprite_get_frame(get_player_death_sprite_from_index(index), &p->sprite_death);
+			img = get_player_death_sprite_from_index(index);
+		}
+		else if (p->move_state == PLAYER_MOVE_STATE_IDLE) {
+			frame = sprite_get_frame(get_player_idle_sprite_from_index(index), &p->sprite_idle);
+			img = get_player_idle_sprite_from_index(index);
+		}
+		// TODO: other movement states
+		else if (p->move_state == PLAYER_MOVE_STATE_RUNNING) {
+			img = get_player_run_sprite_from_index(index);
+		}
+
 		if (rads > M_PI/2 || rads < -M_PI/2) {
 			frame = sprite_swap_frame_horizontally(frame);
 		}
-		
-		if (p->interact_state == INTERACT_DEAD) {
-			frame = sprite_get_frame(img_gunner_blue_die, &p->sprite_death);
-			renderer->render_image_quad_partial(get_player_death_sprite_from_index(index), 
+
+		renderer->render_image_quad_partial(img, 
 			player_render_x, player_render_y,
 			player_render_x, player_render_y + size, 
 			player_render_x + size, player_render_y + size, 
 			player_render_x + size, player_render_y, 
 			frame.tl, frame.tr, frame.bl, frame.br);
-		}
-		else {
-			renderer->render_image_quad_partial(get_player_run_sprite_from_index(index), 
-			player_render_x, player_render_y,
-			player_render_x, player_render_y + size, 
-			player_render_x + size, player_render_y + size, 
-			player_render_x + size, player_render_y, 
-			frame.tl, frame.tr, frame.bl, frame.br);
-		}
 	}
 
 	// Nametag
