@@ -49,7 +49,7 @@ typedef struct t_box {
 
 // @NEWOBJECT
 object object_dict[OBJECT_END] = {
-	{0,(vec3f){0, 0, 0},{1,3,1},OBJECT_SPACE_CONTROL_PANEL},
+	{0,(vec3f){0, 0, 0},{1,3,0.5f},OBJECT_SPACE_CONTROL_PANEL},
 	{0,(vec3f){0, 0, 0},{1,1,2},OBJECT_SPACE_WINDOW},
 	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL},
 	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL2},
@@ -62,7 +62,8 @@ void create_objects();
 void add_object(object obj);
 void draw_objects(platform_window* window);
 box get_box_of_object(platform_window* window, object o);
-void render_quad_with_outline(vec2f tl, vec2f tr, vec2f bl, vec2f br, color c);
-void render_box_with_outline(box box, color c);
+void render_fill_quad_with_outline(vec2f tl, vec2f tr, vec2f bl, vec2f br, color c);
+void render_fill_box_with_outline(box box, color c);
+void render_box_outline(box box, color c);
 
 #endif

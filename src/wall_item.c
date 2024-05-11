@@ -80,7 +80,7 @@ void draw_keybinding_for_wallitem_purchase(platform_window* window, wall_item it
 	key_box.tl_u.y -= KEY_INSET; key_box.bl_u.y -= KEY_INSET;
 	key_box.tr_u.x -= KEY_INSET; key_box.br_u.x -= KEY_INSET;
 	key_box.tr_u.y -= KEY_INSET; key_box.br_u.y -= KEY_INSET;
-	render_box_with_outline(key_box, rgb(255,255,255));
+	render_fill_box_with_outline(key_box, rgb(255,255,255));
 
 	int surface_w = key_box.tr_u.x - key_box.tl_u.x;
 	int surface_h = key_box.br_u.y - key_box.tr_u.y;

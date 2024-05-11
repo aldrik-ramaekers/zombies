@@ -56,11 +56,11 @@ void draw_drops(platform_window* window) {
 		b.position.y += 0.2f;
 		b.position.x -= 0.07f;
 		box shadow_box = get_render_box_of_square(window, b.position, b.size);
-		render_box_with_outline(shadow_box, rgba(0,0,0,alpha * (120.0f/255.0f)));
+		render_fill_box_with_outline(shadow_box, rgba(0,0,0,alpha * (120.0f/255.0f)));
 
 		b = drops[i];
 		box full_box = get_render_box_of_square(window, b.position, b.size);
-		//render_box_with_outline(full_box, rgba(218,112,214, alpha));
+		//render_fill_box_with_outline(full_box, rgba(218,112,214, alpha));
 		renderer->render_image_tint(img_drop, full_box.tl_u.x, full_box.tl_u.y, 
 			full_box.br_d.x - full_box.tl_d.x, full_box.br_d.y - full_box.tr_u.y, rgba(218,112,214, alpha));
         

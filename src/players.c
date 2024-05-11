@@ -603,11 +603,12 @@ void draw_player(platform_window* window, player* p, int index) {
 	}
 }
 
-void draw_players(platform_window* window) {
+void draw_players(platform_window* window, uint32_t ystart, uint32_t yend) {
 	float size = get_player_size_in_tile();
 
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;
+		if (!((int)players[i].playery >= ystart && (int)players[i].playery <= yend+1)) continue;
 
 		float height = get_height_of_tile_under_coords(players[i].playerx, players[i].playery);
 		players[i].height = height;

@@ -385,22 +385,12 @@ void update_game(platform_window* window) {
 		take_player_input(window);
 		
 		draw_grid(window);
+		draw_objects(window);
 		draw_wallitems(window);
 		draw_zombie_chunks(window);
 		draw_drops(window);
 		draw_bullets(window);
 		draw_throwables(window);
-
-		#ifdef MODE_DEBUG 
-			if (!is_editing_map) 
-		#endif 
-		draw_zombies(window);
-		
-		#ifdef MODE_DEBUG 
-			if (!is_editing_map) 
-		#endif
-
-		draw_players(window);
 		draw_round(window);
 		draw_spawners(window);
 		draw_overlay(window);

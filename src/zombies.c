@@ -430,17 +430,21 @@ void update_zombies_server(platform_window* window) {
 	}
 }
 
-void draw_zombies(platform_window* window) {
+void draw_zombies(platform_window* window, uint32_t ystart, uint32_t yend) {
 	map_info info = get_map_info(window);
 
 	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];
 		if (!o.alive) continue;
+		if (!((int)o.position.y >= ystart && (int)o.position.y <= yend+1)) continue;
+		
+		float zombie_size = o.size.x * get_tile_width(window);
+		o.position.x -=o.size.x/2.0f;
+		o.position.y -=o.size.x/2.0f;
 
 		sprite_frame frame = sprite_get_frame(img_alien_run, &o.sprite_run);
 		box box = get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, o.position.z}, o.size);
 		vec2f zombie_pos = world_pos_to_screen_pos(window, o.position.x, o.position.y, o.position.z);
-		float zombie_size = o.size.x * get_tile_width(window);
 
 		float rads = -atan2(o.dir.x, o.dir.y);
 		if (rads >= 0.0f) {
@@ -472,7 +476,7 @@ void draw_zombies(platform_window* window) {
 			renderer->render_rectangle(zombie_pos.x + (zombie_size/2) - (bar_w/2), zombie_pos.y - bar_h, bar_w*percentage, bar_h, rgb(100,0,0));
 		}
 
-		//if (global_state.server) draw_path_of_zombie(window, o);
+		if (global_state.server) draw_path_of_zombie(window, o);
 	}
 }
 

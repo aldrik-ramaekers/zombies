@@ -100,7 +100,7 @@ player players[MAX_PLAYERS] = {0};
 
 int get_player_count();
 player* get_player_by_id(u32 id);
-void draw_players(platform_window* window);
+void draw_players(platform_window* window, uint32_t ystart, uint32_t yend);
 void draw_bullets(platform_window* window);
 object check_if_player_collided_with_object(player p);
 float get_player_size(platform_window* window);

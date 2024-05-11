@@ -5,17 +5,32 @@ box get_box_of_object(platform_window* window, object o) {
 	return get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, o.position.z}, o.size);
 }
 
-void render_box_with_outline(box box, color c) {
-	render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, c); // down
-	render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, c); // up
+void render_fill_box_with_outline(box box, color c) {
+	render_fill_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, c); // down
+	render_fill_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, c); // up
 
-	render_quad_with_outline(box.tr_u, box.tr_d, box.br_u, box.br_d, c); // right
-	render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, c); // left
-	render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, c); // bottom
+	render_fill_quad_with_outline(box.tr_u, box.tr_d, box.br_u, box.br_d, c); // right
+	render_fill_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, c); // left
+	render_fill_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, c); // bottom
 
 }
 
-void render_quad_with_outline(vec2f tl, vec2f tr, vec2f bl, vec2f br, color c) {
+void render_quad_outline(vec2f tl, vec2f tr, vec2f bl, vec2f br, color c) {
+	renderer->render_line(tl.x, tl.y, tr.x, tr.y, 1, rgba(0,0,255, c.a)); // top
+	renderer->render_line(tl.x, tl.y, bl.x, bl.y, 1, rgba(0,0,255, c.a)); // left
+	renderer->render_line(tr.x, tr.y, br.x, br.y, 1, rgba(0,0,255, c.a)); // right
+	renderer->render_line(bl.x, bl.y, br.x, br.y, 1, rgba(0,0,255, c.a)); // bottom
+}
+void render_box_outline(box box, color c) {
+	render_quad_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, c); // down
+	render_quad_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, c); // up
+
+	render_quad_outline(box.tr_u, box.tr_d, box.br_u, box.br_d, c); // right
+	render_quad_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, c); // left
+	render_quad_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, c); // bottom
+}
+
+void render_fill_quad_with_outline(vec2f tl, vec2f tr, vec2f bl, vec2f br, color c) {
 	renderer->render_quad(
 			tl.x, tl.y, 
 			bl.x, bl.y, 
@@ -97,6 +112,7 @@ image* get_image_from_objecttype(object_type tile) {
 void draw_objects(platform_window* window) {
 	map_info info = get_map_info(window);
 
+	uint32_t prev_y = 0;
 	for (int i = 0; i < MAX_OBJECTS; i++) {
 		if (!loaded_map.objects[i].active) continue;
 		object o = loaded_map.objects[i];
@@ -108,7 +124,17 @@ void draw_objects(platform_window* window) {
 			renderer->render_image(img, box.tl_u.x, box.tl_u.y, 
 				box.br_d.x - box.tl_d.x, box.br_d.y - box.tr_u.y);
 		}
+		render_box_outline(box, rgb(255,0,0));
+
+		if (prev_y < o.position.y) {
+			prev_y = o.position.y;
+			draw_zombies(window, prev_y, prev_y);
+			draw_players(window, prev_y, prev_y);
+		}
 	}
+
+	draw_zombies(window, prev_y, MAP_SIZE_Y);
+	draw_players(window, prev_y, MAP_SIZE_Y);
 }
 
 void create_objects() {

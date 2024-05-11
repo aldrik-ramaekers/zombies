@@ -101,7 +101,7 @@ void draw_zombie_chunks(platform_window* window) {
 		if (alpha < 0) alpha = 0;
 
 		box box = get_render_box_of_square(window, zombie_chunks[i].position, (vec3f){0.6f, 0.6f, 0.6f});
-		//render_box_with_outline(box, rgba(200, 50, 50, alpha));
+		//render_fill_box_with_outline(box, rgba(200, 50, 50, alpha));
 
 		renderer->render_set_rotation(zombie_chunks[i].rotation);
 		renderer->render_image_tint(get_chunk_image_from_type(zombie_chunks[i].type), box.tl_d.x, box.tl_d.y, box.tr_d.x - box.tl_d.x, box.br_d.y - box.tr_d.y, rgba(255,255,255,alpha));

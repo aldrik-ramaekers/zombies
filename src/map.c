@@ -434,8 +434,6 @@ void draw_grid(platform_window* window) {
 			loaded_map.heightmap[y][x].br = bottomright;
 		}
 	}
-
-	draw_objects(window);
 }
 
 inline map_info get_map_info(platform_window* window) {

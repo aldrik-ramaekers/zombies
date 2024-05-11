@@ -52,7 +52,7 @@ zombie zombies[SERVER_MAX_ZOMBIES] = {0};
 bool hit_zombie(int index, int damage);
 void create_spawner(vec2 position);
 void draw_spawners(platform_window* window);
-void draw_zombies(platform_window* window);
+void draw_zombies(platform_window* window, uint32_t ystart, uint32_t yend);
 void spawn_zombie(int x, int y);
 u32 number_of_zombies_active();
 

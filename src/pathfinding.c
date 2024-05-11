@@ -219,6 +219,7 @@ bool find_path_to(vec2f start_pos, vec2f end_pos, array *to_fill, pathfinding_re
 vec2f get_open_tile_next_to_target(float x, float y)
 {
 	vec2f adjecent[8] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1} };
+	//vec2f adjecent[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0}};
 	
 	vec2f v_s;
 	v_s.x = x;

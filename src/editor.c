@@ -143,10 +143,10 @@ void draw_placing_rectangle(platform_window* window) {
 	tile t = loaded_map.heightmap[mouse_tile_y][mouse_tile_x];
 	box box = get_render_box_of_square(window, (vec3f){mouse_tile_x, mouse_tile_y, 0}, (vec3f){1,1,t.height});
 
-	render_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgba(255,0,0, 70));
-	render_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgba(255,0,0, 70));
-	render_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, rgba(255,0,0, 70));
-	render_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgba(255,0,0, 70));
+	render_fill_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgba(255,0,0, 70));
+	render_fill_quad_with_outline(box.tl_u, box.tr_u, box.bl_u, box.br_u, rgba(255,0,0, 70));
+	render_fill_quad_with_outline(box.tl_u, box.tl_d, box.bl_u, box.bl_d, rgba(255,0,0, 70));
+	render_fill_quad_with_outline(box.bl_u, box.br_u, box.bl_d, box.br_d, rgba(255,0,0, 70));
 }
 
 static bool push_icon_button(int x, int y, int w, image* img, bool isSelected) {
