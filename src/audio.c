@@ -56,6 +56,8 @@ static Mix_Chunk* get_sample_from_audio_event(audio_event event, u32 playerid) {
 		} 
 		case EVENT_CHARACTER_TYPE: return wav_character;
 		case EVENT_ROUND_CHANGE: return wav_round_change;
+		case EVENT_DOOR_CLOSE: return wav_door_close;
+		case EVENT_DOOR_OPEN: return wav_door_open;
 		case EVENT_COLLECT: return wav_collect;
 		case EVENT_BOUNCE_THROWABLE: return wav_throwable_bounce;
 		case EVENT_FIRE: return wav_fire;

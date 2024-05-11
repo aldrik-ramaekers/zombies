@@ -28,6 +28,8 @@ typedef enum t_audio_event_type {
 	EVENT_ZOMBIESCREECH,
 	EVENT_ZOMBIEROAR,
 	EVENT_PLAYERHURT,
+	EVENT_DOOR_OPEN,
+	EVENT_DOOR_CLOSE,
 } audio_event_type;
 
 typedef struct t_audio_event {

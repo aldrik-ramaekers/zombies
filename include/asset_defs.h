@@ -118,6 +118,9 @@ Mix_Chunk* wav_round_change;
 Mix_Chunk* wav_step;
 Mix_Chunk* wav_step_enraged;
 
+Mix_Chunk* wav_door_open;
+Mix_Chunk* wav_door_close;
+
 #define NUM_SCREECHES 11
 Mix_Chunk* wav_screech[NUM_SCREECHES];
 

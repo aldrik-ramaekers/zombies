@@ -115,6 +115,8 @@ void load_assets() {
 	wav_step = Mix_LoadWAV("data/sounds/step.wav");
 	wav_step_enraged = Mix_LoadWAV("data/sounds/step_enraged.wav");
 	wav_roar_enraged = Mix_LoadWAV("data/sounds/roar_enraged.wav");
+	wav_door_open = Mix_LoadWAV("data/sounds/door_open.wav");
+	wav_door_close = Mix_LoadWAV("data/sounds/door_close.wav");
 
 	for (int i = 1; i <= NUM_SCREECHES; i++) {
 		char path[100];

@@ -17,16 +17,38 @@ void update_glass_doors_server()
 	for (int i = 0; i < MAX_GLASS_DOORS; i++)
 	{
 		if (!glass_doors[i].obj.active) continue;
-		glass_doors[i].is_open = 0;
+		bool do_open = 0;
 
+		// Open for players
 		for (int x = 0; x < MAX_PLAYERS; x++) {
 			if (!players[x].active) continue;
 			
 			if (distance_between((vec2f){.x = glass_doors[i].obj.position.x, .y = glass_doors[i].obj.position.y}, 
 				(vec2f){.x = players[x].playerx, .y = players[x].playery}) < 3.0f) {
-				glass_doors[i].is_open = 1;
+				do_open = 1;
+				break;
 			}
 		}
+
+		// Open for zombies
+		for (int x = 0; x < SERVER_MAX_ZOMBIES; x++) {
+			zombie o = zombies[x];
+			
+			if (distance_between((vec2f){.x = glass_doors[i].obj.position.x, .y = glass_doors[i].obj.position.y}, 
+				(vec2f){.x = o.position.x, .y = o.position.y}) < 3.0f) {
+				do_open = 1;
+				break;
+			}
+		}
+
+		if (do_open && glass_doors[i].is_open == 0) {
+			add_audio_event_to_queue(EVENT_DOOR_OPEN, player_id, glass_doors[i].obj.position);
+		}
+		else if (!do_open && glass_doors[i].is_open == 1) {
+			add_audio_event_to_queue(EVENT_DOOR_CLOSE, player_id, glass_doors[i].obj.position);
+		}
+
+		glass_doors[i].is_open = do_open;
 	}
 }
 
