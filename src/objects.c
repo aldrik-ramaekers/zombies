@@ -114,6 +114,12 @@ image* get_image_from_objecttype(object_type tile) {
 		return img_zombie_spawner;
 	case OBJECT_LAMP_EAST:
 		return img_lamp_east;
+	case OBJECT_METAL_TABLE_H:
+		return img_metal_table_h;
+	case OBJECT_CANTINE_GLASS:
+		return img_cantine_glass;
+	case OBJECT_GLASS_DOOR_H:
+		return img_glass_door_h_closed;
 	default:
 		return 0;
 	}
