@@ -30,6 +30,7 @@
 #include "include/zombie_chunk.h"
 #include "include/sprite.h"
 #include "include/editor.h"
+#include "include/glass_doors.h"
 
 #include "src/map.c"
 #include "src/players.c"
@@ -53,6 +54,7 @@
 #include "src/zombie_chunk.c"
 #include "src/sprite.c"
 #include "src/editor.c"
+#include "src/glass_doors.c"
 
 #define CONFIG_DIRECTORY "zombieshooter"
 

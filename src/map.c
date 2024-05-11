@@ -1,4 +1,5 @@
 #include "../include/map.h"
+#include "../include/glass_doors.h"
 
 int player_zoom = 30;
 static int get_height_of_tile_tl(int current_height, int x, int y) {
@@ -271,6 +272,10 @@ void load_mapdata_into_world() {
 		if (o.type == OBJECT_ZOMBIE_SPAWNER) {
 			create_spawner((vec2){.x = o.position.x, .y = o.position.y});
 		}
+
+		if (o.type == OBJECT_GLASS_DOOR_H) {
+			create_glass_door(o);
+		}	
 	}
 }
 

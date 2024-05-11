@@ -1,5 +1,6 @@
 #include "../include/objects.h"
 #include "../include/wall_item.h"
+#include "../include/glass_doors.h"
 
 box get_box_of_object(platform_window* window, object o) {
 	return get_render_box_of_square(window, (vec3f){o.position.x, o.position.y, o.position.z}, o.size);
@@ -132,6 +133,8 @@ void draw_objects(platform_window* window) {
 	for (int i = 0; i < MAX_OBJECTS; i++) {
 		if (!loaded_map.objects[i].active) continue;
 		object o = loaded_map.objects[i];
+
+		if (o.type == OBJECT_GLASS_DOOR_H) continue;
 		
 		box box = get_box_of_object(window, o);
 
@@ -149,6 +152,7 @@ void draw_objects(platform_window* window) {
 			if (!is_editing_map) 
 			#endif
 			draw_players(window, prev_y, prev_y);
+			draw_glass_doors(window, prev_y, prev_y);
 		}
 	}
 
@@ -157,6 +161,7 @@ void draw_objects(platform_window* window) {
 			if (!is_editing_map) 
 	#endif
 	draw_players(window, prev_y, MAP_SIZE_Y);
+	draw_glass_doors(window, prev_y, MAP_SIZE_Y);
 }
 
 void create_objects() {

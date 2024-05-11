@@ -222,6 +222,7 @@ void update_server(platform_window* window) {
 		update_zombie_chunks_server();
 		update_round_server();
 		update_points_animation_server();
+		update_glass_doors_server();
 
 		broadcast_players = platform_get_time(TIME_FULL, TIME_NS);
 		update_players_server();

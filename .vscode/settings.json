@@ -3,6 +3,8 @@
 		"project_base.h": "c",
 		"initializer_list": "c",
 		"type_traits": "c",
-		"xutility": "c"
+		"xutility": "c",
+		"editor.h": "c",
+		"glass_doors.h": "c"
 	}
 }
