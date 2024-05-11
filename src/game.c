@@ -217,7 +217,7 @@ void update_server(platform_window* window) {
 	if (update_timer >= SERVER_TICK_RATE) { // send at 60 ticks
 		update_spawners_server();
 		update_drops_server();
-		update_wallitems_server();
+		//update_wallitems_server();
 		update_throwables_server();
 		update_zombie_chunks_server();
 		update_round_server();
@@ -383,10 +383,10 @@ void update_game(platform_window* window) {
 	
 	if (global_state.network_state == CONNECTED) {
 		take_player_input(window);
-		
+
 		draw_grid(window);
 		draw_objects(window);
-		draw_wallitems(window);
+		//draw_wallitems(window);
 		draw_zombie_chunks(window);
 		draw_drops(window);
 		draw_bullets(window);

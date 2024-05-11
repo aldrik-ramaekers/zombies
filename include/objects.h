@@ -18,12 +18,15 @@ typedef struct t_light_emitter {
 	float range;
 } light_emitter;
 
+// @NEWOBJECT
 typedef enum t_object_type {
 	OBJECT_NONE,
 	OBJECT_SPACE_CONTROL_PANEL = 1,
 	OBJECT_SPACE_WINDOW = 2,
 	OBJECT_METAL_WALL = 3,
 	OBJECT_METAL_WALL2 = 4,
+	OBJECT_SPACE_CONTROL_PANEL2 = 5,
+	OBJECT_CHAIR_UP = 6,
 
 	OBJECT_END,
 } object_type;
@@ -53,6 +56,8 @@ object object_dict[OBJECT_END] = {
 	{0,(vec3f){0, 0, 0},{1,1,2},OBJECT_SPACE_WINDOW},
 	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL},
 	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL2},
+	{0,(vec3f){0, 0, 0},{3,1,0.5f},OBJECT_SPACE_CONTROL_PANEL2},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CHAIR_UP},
 };
 
 object get_object_at_tile(float x, float y);

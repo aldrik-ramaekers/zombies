@@ -24,7 +24,7 @@ typedef struct t_wall_item {
 	image* img;
 } wall_item;
 
-#define MAX_WALLITEMS (20)
+#define MAX_WALLITEMS (200)
 wall_item wallitems[MAX_WALLITEMS] = {0};
 
 void update_wallitems_server();

@@ -99,6 +99,37 @@ static float distance_between_3f(vec3f v1, vec3f v2)
 	return sqrt((v1.x-v2.x)*(v1.x-v2.x)+(v1.y-v2.y)*(v1.y-v2.y)+(v1.z-v2.z)*(v1.z-v2.z));
 }
 
+bool check_if_bullet_collided_with_section(float* dist_of_closest_intersect, vec2f bstart, 
+	vec2f bend, vec2f l1, vec2f l2, vec2f* intersect_point_buf);
+
+static bool ray_intersects_with_object(vec3f begin, vec3f end) {
+	float dist_of_closest_intersect = __FLT_MAX__;
+	vec2f bstart = (vec2f){begin.x, begin.y};
+	vec2f bend = (vec2f){end.x, end.y};
+
+	for (int i = 0; i < MAX_OBJECTS; i++) {
+		object o = loaded_map.objects[i];
+		if (!o.active) continue;
+		if (begin.z <= o.position.z + o.size.z && begin.z >= o.position.z) {
+			box obj_box = get_box_of_square((vec3f){o.position.x, o.position.y, o.position.z}, o.size);
+			vec2f intersect_point;
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.bl_d, obj_box.br_d, &intersect_point)) {
+				return true;
+			}
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_d, obj_box.tr_d, &intersect_point)) {
+				return true;
+			}
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tl_d, obj_box.bl_d, &intersect_point)) {
+				return true;
+			}
+			if (check_if_bullet_collided_with_section(&dist_of_closest_intersect, bstart, bend, obj_box.tr_d, obj_box.br_d, &intersect_point)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 static bool ray_intersects_with_ground(vec3f begin, vec3f end) {
 	float dirx = (end.x - begin.x);
 	float diry = (end.y - begin.y);
@@ -146,6 +177,7 @@ void load_mapdata_into_world() {
 	// Load emitters
 	for (int i = 0; i < MAX_LIGHT_EMITTERS; i++) {
 		loaded_map.light_emitters[i] = map_to_load.light_emitters[i];
+		loaded_map.light_emitters[i].position.z = 1;
 	}
 
 	// Load lightmap
@@ -196,7 +228,20 @@ void load_mapdata_into_world() {
 				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].bottomright}, emitter.position)) {
 					p_br = 0.0f;
 				}
-
+/*
+				if (ray_intersects_with_object((vec3f){x, y, loaded_map.heightmap[y][x].topleft}, emitter.position)) {
+					p_tl = 0.0f;
+				}
+				if (ray_intersects_with_object((vec3f){x, y, loaded_map.heightmap[y][x].topright}, emitter.position)) {
+					p_tr = 0.0f;
+				}
+				if (ray_intersects_with_object((vec3f){x, y, loaded_map.heightmap[y][x].bottomleft}, emitter.position)) {
+					p_bl = 0.0f;
+				}
+				if (ray_intersects_with_object((vec3f){x, y, loaded_map.heightmap[y][x].bottomright}, emitter.position)) {
+					p_br = 0.0f;
+				}
+*/
 				p_tl += loaded_map.lightmap[y][x].tl;
 				p_tr += loaded_map.lightmap[y][x].tr;
 				p_bl += loaded_map.lightmap[y][x].bl;
@@ -224,7 +269,7 @@ void create_empty_map() {
 
 	for (int y = 0; y < MAP_SIZE_Y; y++) {
 		for (int x = 0; x < MAP_SIZE_X; x++) {
-			map_to_load.tiles[y][x] = TILE_COBBLESTONE1;
+			map_to_load.tiles[y][x] = TILE_FLOOR1;
 		}
 	}
 
@@ -319,8 +364,8 @@ bool is_in_bounds(float x, float y) {
 image* get_image_from_tiletype(tile_type tile) {
 	switch (tile)
 	{
-		case TILE_COBBLESTONE1: return img_tile_cobblestone;
-		case TILE_GRASS1: return img_tile_grass1;
+		case TILE_FLOOR1: return img_tile_floor1;
+		case TILE_FLOOR2: return img_tile_floor2;
 		default: return 0;
 	}
 }
@@ -341,15 +386,37 @@ vec2f world_pos_to_screen_pos(platform_window* window, float x, float y, float z
 	return (vec2f){.x = render_x, .y = render_y};
 }
 
+static void draw_backdrop(platform_window* window)
+{
+	map_info info = get_map_info(window);
+
+	int tilemap_render_min_y = (_global_camera.y / info.tile_height)-1;
+	int tilemap_render_max_y = tilemap_render_min_y + (window->height/ info.tile_height) + 1;
+
+	int tilemap_render_min_x = (_global_camera.x / info.tile_width)-1;
+	int tilemap_render_max_x = tilemap_render_min_x + (window->width/ info.tile_width) + 1;
+
+	for (int y = -40; y <= 0; y++)
+	{
+		if (y < tilemap_render_min_y) continue;
+		if (y > tilemap_render_max_y) continue;
+
+		for (int x = -40; x <= MAP_SIZE_X + 40; x++)
+		{
+			if (x < tilemap_render_min_x) continue;
+			if (x > tilemap_render_max_x) continue;
+			
+			renderer->render_image(img_mars_surface, x*info.tile_width, y*info.tile_width, info.tile_width, info.tile_height);
+		}
+	}
+}
+
 static float offset = 0.0f;
 static bool dir = true;
 void draw_grid(platform_window* window) {
-	/*if (dir) offset += 0.005f;
-	else offset -= 0.005f;
-	if (offset >= 0.5f) dir = false;
-	if (offset <= -0.5f) dir = true;*/
-
 	map_info info = get_map_info(window);
+
+	draw_backdrop(window);
 
 	int tilemap_render_min_y = (_global_camera.y / info.tile_height);
 	int tilemap_render_max_y = tilemap_render_min_y + (window->height/ info.tile_height) + 1;

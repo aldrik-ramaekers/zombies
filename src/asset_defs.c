@@ -45,9 +45,11 @@ void load_assets() {
 	// Objects // @NEWOBJECT
 	img_spawner = assets_load_image_from_file("data/imgs/spawner.png");
 	img_space_control_panel = assets_load_image_from_file("data/imgs/objects/space_control_panel.png");
+	img_space_control_panel2 = assets_load_image_from_file("data/imgs/objects/space_control_panel2.png");
 	img_space_window = assets_load_image_from_file("data/imgs/objects/metal_wall_window.png");
 	img_metal_wall = assets_load_image_from_file("data/imgs/objects/metal_wall.png");
 	img_metal_wall2 = assets_load_image_from_file("data/imgs/objects/metal_wall2.png");
+	img_chair_up = assets_load_image_from_file("data/imgs/objects/chair_up.png");
 
 	// Players
 	img_gunner_black_run = assets_load_image_from_file("data/imgs/players/Black/Gunner_Black_Run.png");
@@ -83,8 +85,9 @@ void load_assets() {
 	img_zombie_chunk_blood = assets_load_image_from_file("data/imgs/zombie_chunk_blood.png");
 
 	// Tiles
-	img_tile_cobblestone = assets_load_image_from_file("data/imgs/tiles/tile_cobblestone.png");
-	img_tile_grass1 = assets_load_image_from_file("data/imgs/tiles/tile_grass1.png");
+	img_mars_surface = assets_load_image_from_file("data/imgs/tiles/mars_surface.png");
+	img_tile_floor1 = assets_load_image_from_file("data/imgs/tiles/floor1.png");
+	img_tile_floor2 = assets_load_image_from_file("data/imgs/tiles/floor2.png");
 
 	// sounds
 	wav_throwable_bounce = Mix_LoadWAV("data/sounds/throwable_bounce.wav");

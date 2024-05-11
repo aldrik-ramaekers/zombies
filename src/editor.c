@@ -85,14 +85,14 @@ void update_editor(platform_window* window)
 		camera_x += update_delta*cam_speed;
 	}
 
+/*
 	if (_global_mouse.scroll_state == SCROLL_UP) {
 		player_zoom++;
-		printf("%d %d\n", player_zoom, get_tile_width(window));
 	}
 	if (_global_mouse.scroll_state == SCROLL_DOWN) {
 		player_zoom--;
-		printf("%d %d\n", player_zoom, get_tile_width(window));
 	}
+*/
 
 	_next_camera_pos.x = -(window->width / 2) + camera_x;
 	_next_camera_pos.y = -(window->height / 2) + camera_y;
@@ -150,7 +150,13 @@ void draw_placing_rectangle(platform_window* window) {
 }
 
 static bool push_icon_button(int x, int y, int w, image* img, bool isSelected) {
-	if (img) renderer->render_image(img,_global_camera.x+ x,_global_camera.y+ y, w, w);
+	if (img) {
+		int imgw = w;
+		int imgh = w;
+		if (img->height > img->width) imgw = w*(img->width/(float)img->height);
+		if (img->height < img->width) imgh = w*(img->height/(float)img->width);
+		renderer->render_image(img,_global_camera.x+ x,_global_camera.y+ y, imgw, imgh);
+	}
 	renderer->render_rectangle_outline(_global_camera.x+ x,_global_camera.y+ y, w+1, w+1, 1, rgb(255,255,255));
 
 	if (isSelected) {
@@ -217,7 +223,7 @@ void draw_lighting_panel(platform_window* window) {
 		renderer->render_rectangle(_global_camera.x, _global_camera.y + offset_y + row_h + offsety, editor_width, row_h, rgba(255,0,0,40));
 
 		char buf[50];
-		sprintf(buf, "{x: %.0f y: %.0f, z: %.0f}", emitter.position.x, emitter.position.y, emitter.position.z);
+		sprintf(buf, "{x: %.0f y: %.0f, z: %.0f} {%.0f}", emitter.position.x, emitter.position.y, emitter.position.z, emitter.range);
 		renderer->render_text(fnt_20, _global_camera.x, _global_camera.y + offset_y + row_h + offsety + 5, buf, rgb(0,0,0));
 
 		vec2f pos = world_pos_to_screen_pos(window, emitter.position.x, emitter.position.y, emitter.position.z);
@@ -247,6 +253,13 @@ void draw_lighting_panel(platform_window* window) {
 
 				map_to_load.light_emitters[i].position.x = orig_x + newpos.x;
 				map_to_load.light_emitters[i].position.y = orig_y + newpos.y;
+
+				if (_global_mouse.scroll_state == SCROLL_UP) {
+					map_to_load.light_emitters[i].range++;
+				}
+				if (_global_mouse.scroll_state == SCROLL_DOWN) {
+					map_to_load.light_emitters[i].range--;
+				}
 				load_mapdata_into_world();
 			}
 			else {

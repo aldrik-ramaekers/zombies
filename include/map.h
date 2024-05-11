@@ -8,8 +8,8 @@
 
 typedef enum t_tile_type {
 	TILE_NONE = 0,
-	TILE_COBBLESTONE1 = 1,
-	TILE_GRASS1 = 2,
+	TILE_FLOOR1 = 1,
+	TILE_FLOOR2 = 2,
 
 	TILE_END,
 } tile_type;
@@ -42,7 +42,7 @@ typedef struct t_map_info {
 	float px_incline;
 } map_info;
 
-typedef struct t_map_data {
+typedef struct t_map_data { // Data written to disk.
 	int width;
 	int height;
 	int heightmap[MAP_SIZE_Y][MAP_SIZE_X];
@@ -58,7 +58,7 @@ typedef struct t_light_data {
 	float br;
 } light_data;
 
-typedef struct t_extracted_map_data {
+typedef struct t_extracted_map_data { // Data extracted from file on disk.
 	int width;
 	int height;
 	tile heightmap[MAP_SIZE_Y][MAP_SIZE_X]; // tilemap

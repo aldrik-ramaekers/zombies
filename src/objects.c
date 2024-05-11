@@ -96,6 +96,8 @@ void add_object(object obj) {
 image* get_image_from_objecttype(object_type tile) {
 	switch (tile)
 	{
+	case OBJECT_SPACE_CONTROL_PANEL2:
+		return img_space_control_panel2;
 	case OBJECT_SPACE_CONTROL_PANEL:
 		return img_space_control_panel;
 	case OBJECT_SPACE_WINDOW:
@@ -104,6 +106,8 @@ image* get_image_from_objecttype(object_type tile) {
 		return img_metal_wall;
 	case OBJECT_METAL_WALL2:
 		return img_metal_wall2;
+	case OBJECT_CHAIR_UP:
+		return img_chair_up;
 	default:
 		return 0;
 	}
@@ -124,16 +128,22 @@ void draw_objects(platform_window* window) {
 			renderer->render_image(img, box.tl_u.x, box.tl_u.y, 
 				box.br_d.x - box.tl_d.x, box.br_d.y - box.tr_u.y);
 		}
-		render_box_outline(box, rgb(255,0,0));
+		//render_box_outline(box, rgb(255,0,0));
 
 		if (prev_y < o.position.y) {
 			prev_y = o.position.y;
 			draw_zombies(window, prev_y, prev_y);
+			#ifdef MODE_DEBUG 
+			if (!is_editing_map) 
+			#endif
 			draw_players(window, prev_y, prev_y);
 		}
 	}
 
 	draw_zombies(window, prev_y, MAP_SIZE_Y);
+	#ifdef MODE_DEBUG 
+			if (!is_editing_map) 
+	#endif
 	draw_players(window, prev_y, MAP_SIZE_Y);
 }
 

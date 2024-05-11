@@ -37,9 +37,11 @@ image* img_icon_molotov;
 // Objects // @NEWOBJECT
 image* img_spawner;
 image* img_space_control_panel;
+image* img_space_control_panel2;
 image* img_space_window;
 image* img_metal_wall;
 image* img_metal_wall2;
+image* img_chair_up;
 
 // Throwables
 image* img_grenade;
@@ -80,8 +82,9 @@ image* img_zombie_chunk_foot;
 image* img_zombie_chunk_blood;
 
 // Tiles
-image* img_tile_cobblestone;
-image* img_tile_grass1;
+image* img_mars_surface;
+image* img_tile_floor1;
+image* img_tile_floor2;
 
 // Sounds
 Mix_Chunk* wav_throwable_bounce;
