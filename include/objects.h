@@ -27,6 +27,8 @@ typedef enum t_object_type {
 	OBJECT_METAL_WALL2 = 4,
 	OBJECT_SPACE_CONTROL_PANEL2 = 5,
 	OBJECT_CHAIR_UP = 6,
+	OBJECT_SPACE_WINDOW_H = 7,
+	OBJECT_ZOMBIE_SPAWNER = 8, // Substitute.
 
 	OBJECT_END,
 } object_type;
@@ -53,11 +55,13 @@ typedef struct t_box {
 // @NEWOBJECT
 object object_dict[OBJECT_END] = {
 	{0,(vec3f){0, 0, 0},{1,3,0.5f},OBJECT_SPACE_CONTROL_PANEL},
-	{0,(vec3f){0, 0, 0},{1,1,2},OBJECT_SPACE_WINDOW},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_SPACE_WINDOW},
 	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL},
 	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL2},
 	{0,(vec3f){0, 0, 0},{3,1,0.5f},OBJECT_SPACE_CONTROL_PANEL2},
 	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CHAIR_UP},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_SPACE_WINDOW_H},
+	{0,(vec3f){0, 0, 0},{1,1,0.5},OBJECT_ZOMBIE_SPAWNER},
 };
 
 object get_object_at_tile(float x, float y);

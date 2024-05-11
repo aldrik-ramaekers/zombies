@@ -33,7 +33,7 @@ typedef struct t_tile {
 
 #define MAP_SIZE_X 1000
 #define MAP_SIZE_Y 1000
-#define MAX_LIGHT_EMITTERS 100
+#define MAX_LIGHT_EMITTERS 1000
 
 typedef struct t_map_info {
 	int tile_width;

@@ -39,9 +39,11 @@ image* img_spawner;
 image* img_space_control_panel;
 image* img_space_control_panel2;
 image* img_space_window;
+image* img_space_window_h;
 image* img_metal_wall;
 image* img_metal_wall2;
 image* img_chair_up;
+image* img_zombie_spawner;
 
 // Throwables
 image* img_grenade;

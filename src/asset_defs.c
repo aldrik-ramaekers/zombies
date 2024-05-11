@@ -47,9 +47,11 @@ void load_assets() {
 	img_space_control_panel = assets_load_image_from_file("data/imgs/objects/space_control_panel.png");
 	img_space_control_panel2 = assets_load_image_from_file("data/imgs/objects/space_control_panel2.png");
 	img_space_window = assets_load_image_from_file("data/imgs/objects/metal_wall_window.png");
+	img_space_window_h = assets_load_image_from_file("data/imgs/objects/metal_wall_window_h.png");
 	img_metal_wall = assets_load_image_from_file("data/imgs/objects/metal_wall.png");
 	img_metal_wall2 = assets_load_image_from_file("data/imgs/objects/metal_wall2.png");
 	img_chair_up = assets_load_image_from_file("data/imgs/objects/chair_up.png");
+	img_zombie_spawner = assets_load_image_from_file("data/imgs/objects/zombie_spawner.png");
 
 	// Players
 	img_gunner_black_run = assets_load_image_from_file("data/imgs/players/Black/Gunner_Black_Run.png");

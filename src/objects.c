@@ -108,6 +108,10 @@ image* get_image_from_objecttype(object_type tile) {
 		return img_metal_wall2;
 	case OBJECT_CHAIR_UP:
 		return img_chair_up;
+	case OBJECT_SPACE_WINDOW_H:
+		return img_space_window_h;
+	case OBJECT_ZOMBIE_SPAWNER:
+		return img_zombie_spawner;
 	default:
 		return 0;
 	}
@@ -148,6 +152,6 @@ void draw_objects(platform_window* window) {
 }
 
 void create_objects() {
-	create_spawner((vec2){11, 18});
-	create_wallitem((vec3f){14, 1, 0}, WALLITEM_GUN, (wall_item_data){.gun = GUN_NOVA});
+	//create_spawner((vec2){11, 18});
+	//create_wallitem((vec3f){14, 1, 0}, WALLITEM_GUN, (wall_item_data){.gun = GUN_NOVA});
 }

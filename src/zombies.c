@@ -54,7 +54,7 @@ void create_spawner(vec2 position) {
 	s.active = true;
 	s.position = position;
 	s.sec_since_last_spawn = 999.0f;
-	s.sprite = create_sprite(img_spawner, 14, 64, 64, 1.0f);
+	s.sprite = create_sprite(img_spawner, 1, 256, 384, 1.0f);
 
 	for (int i = 0; i < MAX_SPAWNERS; i++) {
 		spawner o = spawner_tiles[i];
@@ -198,6 +198,8 @@ void update_spawners_server() {
 }
 
 void draw_spawners(platform_window* window) {
+	return;
+	#if 0
 	map_info info = get_map_info(window);
 
 	for (int x = 0; x < MAX_SPAWNERS; x++) {
@@ -233,6 +235,7 @@ void draw_spawners(platform_window* window) {
 		renderer->render_line(tile.tr.x, tile.tr.y, tile.br.x, tile.br.y, 1, rgb(0,255,255)); // right
 		renderer->render_line(tile.bl.x, tile.bl.y, tile.br.x, tile.br.y, 1, rgb(0,255,255)); // bottom*/
 	}
+	#endif
 }
 
 static void draw_path_of_zombie(platform_window* window, zombie o) {

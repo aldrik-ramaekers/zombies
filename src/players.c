@@ -51,7 +51,7 @@ void spawn_player(u32 id, network_client client) {
 		players[i].active = true;
 		players[i].sec_since_last_shot = 10.0f;
 		players[i].sec_since_last_damage_taken = 10.0f;
-		players[i].playerx = 3;
+		players[i].playerx = 30;
 		players[i].playery = 3;
 		players[i].gunx = 0.0f;
 		players[i].guny = 0.0f;

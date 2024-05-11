@@ -261,6 +261,16 @@ void load_mapdata_into_world() {
 
 	// Load objects
 	memcpy(loaded_map.objects, map_to_load.objects, sizeof(loaded_map.objects));
+
+	// Load special objects
+	for (int i = 0; i < MAX_OBJECTS; i++) {
+		object o = loaded_map.objects[i];
+		if (!o.active) continue;
+
+		if (o.type == OBJECT_ZOMBIE_SPAWNER) {
+			create_spawner((vec2){.x = o.position.x, .y = o.position.y});
+		}
+	}
 }
 
 void create_empty_map() {
@@ -277,8 +287,8 @@ void create_empty_map() {
 		map_to_load.objects[x] = (object){.active = true, .position = (vec3f){x, 0, 0}, .size = (vec3f){1,1,1}, .type = OBJECT_METAL_WALL};
 	}
 
-	map_to_load.light_emitters[0] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 0, 10}, .range = 20.0f, .active = true};
-	map_to_load.light_emitters[1] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 30, 10}, .range = 20.0f, .active = true};
+	//map_to_load.light_emitters[0] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 0, 10}, .range = 20.0f, .active = true};
+	//map_to_load.light_emitters[1] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 30, 10}, .range = 20.0f, .active = true};
 
 	load_mapdata_into_world();
 }
@@ -391,17 +401,33 @@ static void draw_backdrop(platform_window* window)
 	map_info info = get_map_info(window);
 
 	int tilemap_render_min_y = (_global_camera.y / info.tile_height)-1;
-	int tilemap_render_max_y = tilemap_render_min_y + (window->height/ info.tile_height) + 1;
+	int tilemap_render_max_y = tilemap_render_min_y + (window->height/ info.tile_height) + 2;
 
 	int tilemap_render_min_x = (_global_camera.x / info.tile_width)-1;
-	int tilemap_render_max_x = tilemap_render_min_x + (window->width/ info.tile_width) + 1;
+	int tilemap_render_max_x = tilemap_render_min_x + (window->width/ info.tile_width) + 2;
 
-	for (int y = -40; y <= 0; y++)
+	// north of spaceship
+	for (int y = -40; y <= 7; y++)
 	{
 		if (y < tilemap_render_min_y) continue;
 		if (y > tilemap_render_max_y) continue;
 
 		for (int x = -40; x <= MAP_SIZE_X + 40; x++)
+		{
+			if (x < tilemap_render_min_x) continue;
+			if (x > tilemap_render_max_x) continue;
+			
+			renderer->render_image(img_mars_surface, x*info.tile_width, y*info.tile_width, info.tile_width, info.tile_height);
+		}
+	}
+
+	// west of spaceship
+	for (int y = 0; y <= MAP_SIZE_Y; y++)
+	{
+		if (y < tilemap_render_min_y) continue;
+		if (y > tilemap_render_max_y) continue;
+
+		for (int x = -40; x <= 10; x++)
 		{
 			if (x < tilemap_render_min_x) continue;
 			if (x > tilemap_render_max_x) continue;

@@ -62,6 +62,25 @@ static void update_tile_editor(platform_window* window) {
 	}
 }
 
+void update_lighting_panel(platform_window* window, vec2 cursor_pos) {
+	if (keyboard_is_key_pressed(KEY_ENTER)) {
+		for (int i = 0; i < MAX_LIGHT_EMITTERS; i++) {
+			light_emitter emitter = loaded_map.light_emitters[i];
+			if (emitter.active) continue;
+
+			map_to_load.light_emitters[i].position.x = cursor_pos.x;
+			map_to_load.light_emitters[i].position.y = cursor_pos.y;
+			map_to_load.light_emitters[i].position.z = 1;
+			map_to_load.light_emitters[i].active = 1;
+			map_to_load.light_emitters[i].brightness = 1.0f;
+			map_to_load.light_emitters[i].range = 10.0f;
+
+			load_mapdata_into_world();
+			return;
+		}
+	}
+}
+
 void update_editor(platform_window* window)
 {
 	if (keyboard_is_key_pressed(KEY_F1)) {
@@ -97,11 +116,12 @@ void update_editor(platform_window* window)
 	_next_camera_pos.x = -(window->width / 2) + camera_x;
 	_next_camera_pos.y = -(window->height / 2) + camera_y;
 
+	vec2 pos = screen_pos_to_world_pos(window, _global_mouse.x + window->width/2, _global_mouse.y + window->height/2);
 	switch (edit_state)
 	{
 		case EDITING_TILES: update_tile_editor(window); break;
 		case EDITING_OBJECTS: update_object_editor(window); break;
-		case EDITING_LIGHTING: break;
+		case EDITING_LIGHTING: update_lighting_panel(window, pos); break;
 	}
 
 
@@ -418,7 +438,7 @@ void update_object_editor(platform_window* window) {
 		case OBJECT_EDITOR_SELECTING:
 			update_object_selection(window, pos);
 			break;
-		
+
 		default:
 			break;
 	}
