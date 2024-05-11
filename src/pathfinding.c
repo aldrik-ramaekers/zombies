@@ -10,6 +10,7 @@ bool can_walk_at(float x, float y)
 	for (int i = 0; i < MAX_OBJECTS; i++) {
 		object o = loaded_map.objects[i];
 		if (!o.active) continue;
+		if (!o.collision) continue;
 		if (x >= o.position.x && x < o.position.x + o.size.x && y >= o.position.y && y < o.position.y + o.size.y) return false;
 	}
 	return true;

@@ -169,6 +169,7 @@ void load_mapdata_into_world() {
 			int highest_point_topright = get_height_of_tile_tr(h, x, y);
 			int highest_point_bottomright = get_height_of_tile_br(h, x, y);
 			int highest_point_bottomleft = get_height_of_tile_bl(h, x, y);
+
 			loaded_map.heightmap[y][x] = (tile){.height = h, .type = map_to_load.tiles[y][x], highest_point_topleft, highest_point_topright, highest_point_bottomleft, highest_point_bottomright};
 			loaded_map.lightmap[y][x] = (light_data){0.0f,0.0f,0.0f,0.0f};
 		}
@@ -428,6 +429,21 @@ static void draw_backdrop(platform_window* window)
 		if (y > tilemap_render_max_y) continue;
 
 		for (int x = -40; x <= 10; x++)
+		{
+			if (x < tilemap_render_min_x) continue;
+			if (x > tilemap_render_max_x) continue;
+			
+			renderer->render_image(img_mars_surface, x*info.tile_width, y*info.tile_width, info.tile_width, info.tile_height);
+		}
+	}
+
+	// south of spaceship
+	for (int y = 48; y <= 70; y++)
+	{
+		if (y < tilemap_render_min_y) continue;
+		if (y > tilemap_render_max_y) continue;
+
+		for (int x = -40; x <= MAP_SIZE_X + 40; x++)
 		{
 			if (x < tilemap_render_min_x) continue;
 			if (x > tilemap_render_max_x) continue;

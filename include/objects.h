@@ -29,6 +29,7 @@ typedef enum t_object_type {
 	OBJECT_CHAIR_UP = 6,
 	OBJECT_SPACE_WINDOW_H = 7,
 	OBJECT_ZOMBIE_SPAWNER = 8, // Substitute.
+	OBJECT_LAMP_EAST = 9,
 
 	OBJECT_END,
 } object_type;
@@ -38,7 +39,17 @@ typedef struct t_object {
 	vec3f position;
 	vec3f size;
 	object_type type;
+	bool collision;
 } object;
+
+/*
+typedef struct t_object2 {
+	bool active;
+	vec3f position;
+	vec3f size;
+	object_type type;
+	bool collision;
+} object2;*/
 
 typedef struct t_box {
 	vec2f tl_d;
@@ -54,14 +65,15 @@ typedef struct t_box {
 
 // @NEWOBJECT
 object object_dict[OBJECT_END] = {
-	{0,(vec3f){0, 0, 0},{1,3,0.5f},OBJECT_SPACE_CONTROL_PANEL},
-	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_SPACE_WINDOW},
-	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL},
-	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL2},
-	{0,(vec3f){0, 0, 0},{3,1,0.5f},OBJECT_SPACE_CONTROL_PANEL2},
-	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CHAIR_UP},
-	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_SPACE_WINDOW_H},
-	{0,(vec3f){0, 0, 0},{1,1,0.5},OBJECT_ZOMBIE_SPAWNER},
+	{0,(vec3f){0, 0, 0},{1,3,0.5f},OBJECT_SPACE_CONTROL_PANEL, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_SPACE_WINDOW, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL2, 1},
+	{0,(vec3f){0, 0, 0},{3,1,0.5f},OBJECT_SPACE_CONTROL_PANEL2, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CHAIR_UP, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_SPACE_WINDOW_H, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5},OBJECT_ZOMBIE_SPAWNER, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0},OBJECT_LAMP_EAST, 0},
 };
 
 object get_object_at_tile(float x, float y);

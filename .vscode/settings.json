@@ -1,5 +1,8 @@
 {
 	"files.associations": {
-		"project_base.h": "c"
+		"project_base.h": "c",
+		"initializer_list": "c",
+		"type_traits": "c",
+		"xutility": "c"
 	}
 }

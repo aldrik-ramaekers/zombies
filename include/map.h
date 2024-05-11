@@ -51,6 +51,16 @@ typedef struct t_map_data { // Data written to disk.
 	light_emitter light_emitters[MAX_LIGHT_EMITTERS];
 } map_data;
 
+/* used for migerations.
+typedef struct t_map_data2 { // Data written to disk.
+	int width;
+	int height;
+	int heightmap[MAP_SIZE_Y][MAP_SIZE_X];
+	tile_type tiles[MAP_SIZE_Y][MAP_SIZE_X];
+	object2 objects[MAX_OBJECTS];
+	light_emitter light_emitters[MAX_LIGHT_EMITTERS];
+} map_data2;*/
+
 typedef struct t_light_data {
 	float tl;
 	float tr;

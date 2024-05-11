@@ -218,6 +218,7 @@ object check_if_player_collided_with_object(player p) {
 	for (int i = 0; i < MAX_OBJECTS; i++) {
 		object o = loaded_map.objects[i];
 		if (!o.active) continue;
+		if (!o.collision) continue;
 
 		if (check_if_player_collided_with_box(p, get_box_of_square((vec3f){o.position.x, o.position.y, o.position.z}, o.size))) {
 			return o;

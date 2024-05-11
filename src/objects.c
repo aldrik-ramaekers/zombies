@@ -112,6 +112,8 @@ image* get_image_from_objecttype(object_type tile) {
 		return img_space_window_h;
 	case OBJECT_ZOMBIE_SPAWNER:
 		return img_zombie_spawner;
+	case OBJECT_LAMP_EAST:
+		return img_lamp_east;
 	default:
 		return 0;
 	}

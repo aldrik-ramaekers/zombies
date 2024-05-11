@@ -44,6 +44,7 @@ image* img_metal_wall;
 image* img_metal_wall2;
 image* img_chair_up;
 image* img_zombie_spawner;
+image* img_lamp_east;
 
 // Throwables
 image* img_grenade;

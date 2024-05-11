@@ -116,7 +116,7 @@ void update_editor(platform_window* window)
 	_next_camera_pos.x = -(window->width / 2) + camera_x;
 	_next_camera_pos.y = -(window->height / 2) + camera_y;
 
-	vec2 pos = screen_pos_to_world_pos(window, _global_mouse.x + window->width/2, _global_mouse.y + window->height/2);
+	vec2 pos = screen_pos_to_world_pos(window, _global_mouse.x, _global_mouse.y);
 	switch (edit_state)
 	{
 		case EDITING_TILES: update_tile_editor(window); break;
@@ -126,9 +126,30 @@ void update_editor(platform_window* window)
 
 
 	if (keyboard_is_key_down(KEY_LEFT_CONTROL) && keyboard_is_key_pressed(KEY_S)) {
+		#if 0
+		map_data2* tmp = malloc(sizeof(map_data2));
+		tmp->width = map_to_load.width;
+		tmp->height = map_to_load.height;
+		memcpy(tmp->heightmap, map_to_load.heightmap, sizeof(map_to_load.heightmap));
+		memcpy(tmp->tiles, map_to_load.tiles, sizeof(map_to_load.tiles));
+		memcpy(tmp->light_emitters, map_to_load.light_emitters, sizeof(map_to_load.light_emitters));
+
+		for (int i = 0; i < MAX_OBJECTS; i++) {
+			object o = map_to_load.objects[i];
+			tmp->objects[i].active = o.active;
+			tmp->objects[i].position = o.position;
+			tmp->objects[i].size = o.size;
+			tmp->objects[i].type = o.type;
+			tmp->objects[i].collision = 1;
+		}
+		platform_write_file_content("../data/maps/map1.dat", "wb", (u8*)tmp, sizeof(map_data2));
+		platform_write_file_content("data/maps/map1.dat", "wb", (u8*)tmp, sizeof(map_data2));
+		log_info("Saved map");
+		#else
 		platform_write_file_content("../data/maps/map1.dat", "wb", (u8*)&map_to_load, sizeof(map_to_load));
 		platform_write_file_content("data/maps/map1.dat", "wb", (u8*)&map_to_load, sizeof(map_to_load));
 		log_info("Saved map");
+		#endif
 	}
 }
 
