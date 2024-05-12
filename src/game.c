@@ -372,8 +372,24 @@ static void move_camera(platform_window* window) {
 	_global_camera.y = (int)_camera_buffer.y;
 }
 
+void draw_splash(platform_window* window) {
+	image* img = img_splash_art1;
+	int imgw = img->width * (window->height/(float)img->height);
+	int imgh = window->height;
+
+	int imgx = (window->width - imgw) / 2 + _global_camera.x;
+	int imgy = 0 + _global_camera.y;
+
+	renderer->render_image(img, imgx, imgy, imgw, imgh);
+}
+
 void update_game(platform_window* window) {
 	clear_bullets();
+
+	if (global_state.state != GAMESTATE_PLAYING) {
+		draw_splash(window);
+		return;
+	}
 
 	if (global_state.server) {
 		update_server(window);

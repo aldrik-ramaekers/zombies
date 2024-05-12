@@ -3,6 +3,9 @@
 
 #include <projectbase/project_base.h>
 
+/////// Loaded at game start.
+image* img_splash_art1;
+
 font* fnt_52;
 font* fnt_48;
 font* fnt_44;
@@ -16,6 +19,8 @@ font* fnt_16;
 font* fnt_12;
 font* fnt_8;
 font* fnt_4;
+
+/////// Loaded at match start.
 
 // UI
 image* img_red_border;

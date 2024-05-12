@@ -3,7 +3,8 @@
 //#include "../data/fonts/oxanium.h"
 #include "../data/fonts/aleo.h"
 
-void load_assets() {
+void load_menu_assets() { // Assets loaded at game start
+	img_splash_art1 = assets_load_image_from_file("data/imgs/ui/splash1.png");
 
 	fnt_52 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 52);
 	fnt_48 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 48);
@@ -18,7 +19,9 @@ void load_assets() {
 	fnt_12 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 12);
 	fnt_8 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 8);
 	fnt_4 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 4);
+}
 
+void load_assets() { // Assets loaded at match start.
 	// UI
 	img_red_border = assets_load_image_from_file("data/imgs/ui/red_border.png");
 

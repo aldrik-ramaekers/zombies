@@ -59,7 +59,7 @@
 #define CONFIG_DIRECTORY "zombieshooter"
 
 void update_func(platform_window* window) {
-	renderer->render_clear(window, rgb(0,255,0));
+	renderer->render_clear(window, rgb(0,0,0));
 	update_game(window);
 }
 
@@ -114,6 +114,8 @@ int main(int argc, char **argv)
 	else {
 		log_info("Audio failed.");
 	}
+
+	load_menu_assets();
 
 	init_game();
 	
