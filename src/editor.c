@@ -41,6 +41,7 @@ static void update_tile_editor(platform_window* window) {
 			if (is_left_down()) {
 				map_to_load.tiles[pos.y][pos.x] = tile_to_place;
 				load_mapdata_into_world();
+				printf("%d %d\n", pos.x, pos.y);
 			}
 			break;
 
