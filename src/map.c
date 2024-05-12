@@ -364,8 +364,10 @@ inline int get_tile_width(platform_window* window) {
 	//int tile_width = window->height / player_zoom;
 	//if (window->width > window->height) tile_width = window->width / player_zoom;
 	//return round_up(tile_width, 8);
-
-	return 32;
+	#ifdef MODE_DEBUG
+	if (is_editing_map) return 32;
+	#endif
+	return 256/5.0f+1;
 }
 
 inline int get_tile_height(platform_window* window) {

@@ -33,6 +33,7 @@ static void update_tile_editor(platform_window* window) {
 
 	if (pos.x < 0 || pos.y < 0) return;
 	if (pos.x >= loaded_map.width || pos.y >= loaded_map.height) return;
+	if (_global_mouse.x < editor_width) return;
 
 	switch (tile_edit_state)
 	{
@@ -90,7 +91,7 @@ void update_editor(platform_window* window)
 
 	if (!is_editing_map) return;
 
-	float cam_speed = 500;
+	float cam_speed = 1000;
 	if (keyboard_is_key_down(KEY_W)) {
 		camera_y -= update_delta*cam_speed;
 	}
