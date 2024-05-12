@@ -18,6 +18,15 @@ typedef enum t_game_state {
 	GAMESTATE_PLAYING,
 } game_state;
 
+typedef enum t_scene_state
+{
+	SCENE_MAIN_MENU,
+	SCENE_GAME,
+	SCENE_CREDITS,
+	SCENE_SETTINGS,
+	SCENE_LOBBY,
+} scene_state;
+
 typedef struct t_game {
 	game_state state;
 	network_state network_state;
@@ -25,6 +34,7 @@ typedef struct t_game {
 	network_client *client;
 } game;
 
+scene_state global_scene_state = SCENE_MAIN_MENU;
 game global_state = {GAMESTATE_IDLE,DISCONNECTED,0,0};
 
 void init_game();

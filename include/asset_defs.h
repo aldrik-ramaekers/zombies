@@ -5,6 +5,12 @@
 
 /////// Loaded at game start.
 image* img_splash_art1;
+image* img_splash_art2;
+image* img_menu_screen;
+
+Mix_Music* music_menu;
+
+Mix_Chunk* wav_menu_hover;
 
 font* fnt_52;
 font* fnt_48;

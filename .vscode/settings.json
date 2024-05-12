@@ -5,6 +5,7 @@
 		"type_traits": "c",
 		"xutility": "c",
 		"editor.h": "c",
-		"glass_doors.h": "c"
+		"glass_doors.h": "c",
+		"*.rh": "c"
 	}
 }

@@ -4,7 +4,11 @@
 #include "../data/fonts/aleo.h"
 
 void load_menu_assets() { // Assets loaded at game start
-	img_splash_art1 = assets_load_image_from_file("data/imgs/ui/splash1.png");
+	img_menu_screen = assets_load_image_from_file("data/imgs/ui/menu_screen.png");
+	img_splash_art2 = assets_load_image_from_file("data/imgs/ui/splash2.png");
+
+	wav_menu_hover = Mix_LoadWAV("data/sounds/menu_hover.wav");
+	music_menu = Mix_LoadMUS("data/sounds/menu_ambient.mp3");
 
 	fnt_52 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 52);
 	fnt_48 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 48);
@@ -19,6 +23,8 @@ void load_menu_assets() { // Assets loaded at game start
 	fnt_12 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 12);
 	fnt_8 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 8);
 	fnt_4 = assets_load_font(Aleo_Regular, Aleo_Regular + Aleo_Regular_Size, 4);
+
+	img_splash_art1 = assets_load_image_from_file("data/imgs/ui/splash1.png");
 }
 
 void load_assets() { // Assets loaded at match start.

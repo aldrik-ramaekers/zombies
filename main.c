@@ -31,6 +31,7 @@
 #include "include/sprite.h"
 #include "include/editor.h"
 #include "include/glass_doors.h"
+#include "include/menu.h"
 
 #include "src/map.c"
 #include "src/players.c"
@@ -55,12 +56,19 @@
 #include "src/sprite.c"
 #include "src/editor.c"
 #include "src/glass_doors.c"
+#include "src/menu.c"
 
 #define CONFIG_DIRECTORY "zombieshooter"
 
 void update_func(platform_window* window) {
 	renderer->render_clear(window, rgb(0,0,0));
-	update_game(window);
+
+	if (global_scene_state == SCENE_GAME) {
+		update_game(window);
+	}
+	else if (global_scene_state == SCENE_MAIN_MENU) {
+		update_menu(window);
+	}
 }
 
 
@@ -114,15 +122,19 @@ int main(int argc, char **argv)
 	else {
 		log_info("Audio failed.");
 	}
-
+	
 	load_menu_assets();
+	play_music(music_menu);
 
 	init_game();
 	
 	bool did_handle_args = false;
     while(platform_keep_running(window)) {
 		if (global_asset_collection.done_loading_assets && !did_handle_args && global_state.state == GAMESTATE_LOADING_ASSETS) {
-			handle_args(argc, argv);
+			if (argc > 1) {
+				handle_args(argc, argv);
+				global_scene_state = SCENE_GAME;
+			}
 			did_handle_args = true;
 		}
 
