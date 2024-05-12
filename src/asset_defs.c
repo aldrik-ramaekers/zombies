@@ -62,6 +62,9 @@ void load_assets() {
 	img_big_control_panel = assets_load_image_from_file("data/imgs/objects/big_control_panel.png");
 	img_computer_rack = assets_load_image_from_file("data/imgs/objects/computer_rack.png");
 	img_generator = assets_load_image_from_file("data/imgs/objects/generator.png");
+	img_school_bench = assets_load_image_from_file("data/imgs/objects/school_bench.png");
+	img_school_table = assets_load_image_from_file("data/imgs/objects/school_table.png");
+	img_locker = assets_load_image_from_file("data/imgs/objects/locker.png");
 
 	// Players
 	img_gunner_black_run = assets_load_image_from_file("data/imgs/players/Black/Gunner_Black_Run.png");
@@ -96,11 +99,15 @@ void load_assets() {
 	img_zombie_chunk_foot = assets_load_image_from_file("data/imgs/zombie_chunk_foot.png");
 	img_zombie_chunk_blood = assets_load_image_from_file("data/imgs/zombie_chunk_blood.png");
 
-	// Tiles
+	// Tiles // @NEWTILE
 	img_mars_surface = assets_load_image_from_file("data/imgs/tiles/mars_surface.png");
 	img_tile_floor1 = assets_load_image_from_file("data/imgs/tiles/floor1.png");
 	img_tile_floor2 = assets_load_image_from_file("data/imgs/tiles/floor2.png");
 	img_space_parallax = assets_load_image_from_file("data/imgs/tiles/space_parallax.png");
+	img_tile_bathroom = assets_load_image_from_file("data/imgs/tiles/bathroom.png");
+	img_tile_funk = assets_load_image_from_file("data/imgs/tiles/tile_funk.png");
+	img_tile_wood1 = assets_load_image_from_file("data/imgs/tiles/tile_wood1.png");
+	img_tile_gym = assets_load_image_from_file("data/imgs/tiles/tile_gym.png");
 
 	// sounds
 	wav_throwable_bounce = Mix_LoadWAV("data/sounds/throwable_bounce.wav");

@@ -131,6 +131,12 @@ image* get_image_from_objecttype(object_type tile) {
 		return img_computer_rack;
 	case OBJECT_GENERATOR:
 		return img_generator;
+	case OBJECT_SCHOOL_BENCH:
+		return img_school_bench;
+	case OBJECT_SCHOOL_TABLE:
+		return img_school_table;
+	case OBJECT_LOCKER:
+		return img_locker;
 	default:
 		return 0;
 	}

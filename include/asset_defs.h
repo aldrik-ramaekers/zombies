@@ -54,6 +54,9 @@ image* img_big_control_panel;
 image* img_chair_down;
 image* img_computer_rack;
 image* img_generator;
+image* img_school_table;
+image* img_school_bench;
+image* img_locker;
 
 // Throwables
 image* img_grenade;
@@ -98,6 +101,10 @@ image* img_mars_surface;
 image* img_space_parallax;
 image* img_tile_floor1;
 image* img_tile_floor2;
+image* img_tile_bathroom;
+image* img_tile_funk;
+image* img_tile_wood1;
+image* img_tile_gym;
 
 // Sounds
 Mix_Chunk* wav_throwable_bounce;

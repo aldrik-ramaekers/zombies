@@ -388,6 +388,10 @@ image* get_image_from_tiletype(tile_type tile) {
 	{
 		case TILE_FLOOR1: return img_tile_floor1;
 		case TILE_FLOOR2: return img_tile_floor2;
+		case TILE_BATHROOM: return img_tile_bathroom;
+		case TILE_FUNK: return img_tile_funk;
+		case TILE_WOOD1: return img_tile_wood1;
+		case TILE_GYM: return img_tile_gym;
 		default: return 0;
 	}
 }

@@ -6,10 +6,15 @@
 #include "players.h"
 #include "objects.h"
 
+// @NEWTILE
 typedef enum t_tile_type {
 	TILE_NONE = 0,
 	TILE_FLOOR1 = 1,
 	TILE_FLOOR2 = 2,
+	TILE_BATHROOM = 3,
+	TILE_FUNK = 4,
+	TILE_WOOD1 = 5,
+	TILE_GYM = 6,
 
 	TILE_END,
 } tile_type;
