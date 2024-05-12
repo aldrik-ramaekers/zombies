@@ -51,12 +51,16 @@ void load_assets() {
 	img_metal_wall = assets_load_image_from_file("data/imgs/objects/metal_wall.png");
 	img_metal_wall2 = assets_load_image_from_file("data/imgs/objects/metal_wall2.png");
 	img_chair_up = assets_load_image_from_file("data/imgs/objects/chair_up.png");
+	img_chair_down = assets_load_image_from_file("data/imgs/objects/chair_down.png");
 	img_zombie_spawner = assets_load_image_from_file("data/imgs/objects/zombie_spawner.png");
 	img_lamp_east = assets_load_image_from_file("data/imgs/objects/lamp_east.png");
+	img_lamp_south = assets_load_image_from_file("data/imgs/objects/lamp_south.png");
 	img_metal_table_h = assets_load_image_from_file("data/imgs/objects/metal_table_h.png");
 	img_cantine_glass = assets_load_image_from_file("data/imgs/objects/cantine_glass.png");
 	img_glass_door_h_open = assets_load_image_from_file("data/imgs/objects/glass_door_h_open.png");
 	img_glass_door_h_closed = assets_load_image_from_file("data/imgs/objects/glass_door_h_closed.png");
+	img_big_control_panel = assets_load_image_from_file("data/imgs/objects/big_control_panel.png");
+	img_computer_rack = assets_load_image_from_file("data/imgs/objects/computer_rack.png");
 
 	// Players
 	img_gunner_black_run = assets_load_image_from_file("data/imgs/players/Black/Gunner_Black_Run.png");

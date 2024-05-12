@@ -9,12 +9,16 @@ float get_bullet_size(platform_window* window) {
 	return get_tile_width(window) * get_bullet_size_in_tile(window);
 }
 
-float get_player_size_in_tile() {
+float get_player_height_in_tile() {
+	return 1.0f;
+}
+
+float get_player_width_in_tile() {
 	return 1.5f;
 }
 
 float get_player_size(platform_window* window) {
-	float player_size = get_tile_width(window) * get_player_size_in_tile();
+	float player_size = get_tile_width(window) * get_player_width_in_tile();
 	return player_size;
 }
 
@@ -168,7 +172,7 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 		if (is_in_bounds(p->playerx, newy)) {
 			p->playery = newy;
 			object o = check_if_player_collided_with_object(*p);
-			if (o.active) p->playery = o.position.y - get_player_size_in_tile() - pad_between_player_and_obj;
+			if (o.active) p->playery = o.position.y - get_player_height_in_tile() - pad_between_player_and_obj;
 		}
 	}
 
@@ -188,7 +192,7 @@ void move_user(platform_window* window, u32 id, protocol_move_type move, float d
 		if (is_in_bounds(newx, p->playery)) {
 			p->playerx = newx;
 			object o = check_if_player_collided_with_object(*p);
-			if (o.active) p->playerx = o.position.x-get_player_size_in_tile() - pad_between_player_and_obj;
+			if (o.active) p->playerx = o.position.x-get_player_width_in_tile() - pad_between_player_and_obj;
 		}
 	}
 
@@ -204,9 +208,9 @@ player* get_player_by_id(u32 id) {
 }
 
 bool check_if_player_collided_with_box(player p, box o) {
-	float player_size = get_player_size_in_tile();
+	float player_size = get_player_width_in_tile();
 
-	box pbox = get_box_of_square((vec3f){p.playerx, p.playery, p.height}, (vec3f){player_size,player_size,0.8f});
+	box pbox = get_box_of_square((vec3f){p.playerx, p.playery, p.height}, (vec3f){player_size,get_player_height_in_tile(),0.8f});
 
 	// [x1, y1, x2, y2]
 	bool b1 = min(pbox.br_u.x, o.br_d.x) > max(pbox.tl_u.x, o.tl_u.x);
@@ -305,8 +309,8 @@ void take_player_input(platform_window* window) {
 		diry /= length;
 
 		float gunsize = get_gun_size(p->guntype);
-		float gun_offset_x = (get_player_size_in_tile()/2) + (dirx*gunsize);
-		float gun_offset_y = (get_player_size_in_tile()/2) + (diry*gunsize);
+		float gun_offset_x = (get_player_width_in_tile()/2) + (dirx*gunsize);
+		float gun_offset_y = (get_player_width_in_tile()/2) + (diry*gunsize);
 
 		add_message_to_outgoing_queuex(create_protocol_user_look(player_id, gun_offset_x, gun_offset_y, dirx, diry), *global_state.client);
 	}
@@ -546,7 +550,7 @@ void draw_player(platform_window* window, player* p, int index) {
 
 	char* name = get_player_name_by_player_index(index);
 
-	vec2f player_pos = world_pos_to_screen_pos(window, p->playerx, p->playery, p->height);
+	vec2f player_pos = world_pos_to_screen_pos(window, p->playerx, p->playery - (get_player_width_in_tile() - get_player_height_in_tile()), p->height);
 	float player_render_x = player_pos.x;
 	float player_render_y = player_pos.y;
 
@@ -605,7 +609,7 @@ void draw_player(platform_window* window, player* p, int index) {
 }
 
 void draw_players(platform_window* window, uint32_t ystart, uint32_t yend) {
-	float size = get_player_size_in_tile();
+	float size = get_player_width_in_tile();
 
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (!players[i].active) continue;

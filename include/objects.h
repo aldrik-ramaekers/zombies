@@ -32,7 +32,11 @@ typedef enum t_object_type {
 	OBJECT_LAMP_EAST = 9,
 	OBJECT_METAL_TABLE_H = 10,
 	OBJECT_CANTINE_GLASS = 11,
-	OBJECT_GLASS_DOOR_H,
+	OBJECT_GLASS_DOOR_H = 12, // Substitute.
+	OBJECT_LAMP_SOUTH = 13,
+	OBJECT_BIG_CONTROL_PANEL = 14,
+	OBJECT_CHAIR_DOWN = 15,
+	OBJECT_COMPUTER_RACK = 16,
 
 	OBJECT_END,
 } object_type;
@@ -80,6 +84,10 @@ object object_dict[OBJECT_END] = {
 	{0,(vec3f){0, 0, 0},{3,1,0.5},OBJECT_METAL_TABLE_H, 1},
 	{0,(vec3f){0, 0, 0},{2,2,0.5},OBJECT_CANTINE_GLASS, 1},
 	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_GLASS_DOOR_H, 0},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_LAMP_SOUTH, 0},
+	{0,(vec3f){0, 0, 0},{3,7,0.5f},OBJECT_BIG_CONTROL_PANEL, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CHAIR_DOWN, 1},
+	{0,(vec3f){0, 0, 0},{2,1,1.0f},OBJECT_COMPUTER_RACK, 1},
 };
 
 object get_object_at_tile(float x, float y);

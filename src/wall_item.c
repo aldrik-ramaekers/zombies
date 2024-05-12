@@ -112,8 +112,8 @@ void draw_wallitems(platform_window* window) {
 
 		player* p = get_player_by_id(player_id);
 		if (!p) continue;
-		float dirx = ((item.position.x + (0.5)) - (p->playerx + (get_player_size_in_tile()/2)));
-		float diry = ((item.position.y) - (p->playery + (get_player_size_in_tile()/2)));
+		float dirx = ((item.position.x + (0.5)) - (p->playerx + (get_player_width_in_tile()/2)));
+		float diry = ((item.position.y) - (p->playery + (get_player_width_in_tile()/2)));
 		float length = sqrt(dirx * dirx + diry * diry);
 		
 		if (length < 1.0f) {

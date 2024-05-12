@@ -116,7 +116,7 @@ static void rotate_user(platform_window* window, protocol_user_look *message) {
 	}
 
 	p->gunx = p->playerx + message->gunx;
-	p->guny = p->playery + message->guny;
+	p->guny = p->playery - 0.5f + message->guny;
 	p->dirx = message->dirx;
 	p->diry = message->diry;
 }

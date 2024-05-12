@@ -45,10 +45,14 @@ image* img_metal_wall2;
 image* img_chair_up;
 image* img_zombie_spawner;
 image* img_lamp_east;
+image* img_lamp_south;
 image* img_metal_table_h;
 image* img_cantine_glass;
 image* img_glass_door_h_closed;
 image* img_glass_door_h_open;
+image* img_big_control_panel;
+image* img_chair_down;
+image* img_computer_rack;
 
 // Throwables
 image* img_grenade;

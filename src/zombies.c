@@ -366,7 +366,7 @@ void update_zombies_server(platform_window* window) {
 		zombies[i].time_since_last_path += SERVER_TICK_RATE;
 		if (zombies[i].time_since_last_path > SERVER_PATHFINDING_INTERVAL) {
 			player closest_player = get_closest_player_to_tile(o.position.x, o.position.y);
-			vec2f target_tile = (vec2f){closest_player.playerx, closest_player.playery+(get_player_size_in_tile()/2)};
+			vec2f target_tile = (vec2f){closest_player.playerx, closest_player.playery+(get_player_width_in_tile()/2)};
 			// All players died, move around randomly
 			if (closest_player.id == -1) {
 				target_tile = get_random_target_for_zombie(o);
