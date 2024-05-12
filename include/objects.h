@@ -37,6 +37,7 @@ typedef enum t_object_type {
 	OBJECT_BIG_CONTROL_PANEL = 14,
 	OBJECT_CHAIR_DOWN = 15,
 	OBJECT_COMPUTER_RACK = 16,
+	OBJECT_GENERATOR = 17,
 
 	OBJECT_END,
 } object_type;
@@ -88,6 +89,7 @@ object object_dict[OBJECT_END] = {
 	{0,(vec3f){0, 0, 0},{3,7,0.5f},OBJECT_BIG_CONTROL_PANEL, 1},
 	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CHAIR_DOWN, 1},
 	{0,(vec3f){0, 0, 0},{2,1,1.0f},OBJECT_COMPUTER_RACK, 1},
+	{0,(vec3f){0, 0, 0},{8,2,1.0f},OBJECT_GENERATOR, 1},
 };
 
 object get_object_at_tile(float x, float y);

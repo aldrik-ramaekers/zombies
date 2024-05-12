@@ -430,7 +430,7 @@ void update_players_server() {
 static void draw_player_bullet_cone(platform_window* window, player* p) {
 	map_info info = get_map_info(window);
 	float bullet_range = 100.0f;
-	int divisions = 10;
+	int divisions = 3;
 
 	float bulletx = p->gunx;
 	float bullety = p->guny;

@@ -61,6 +61,7 @@ void load_assets() {
 	img_glass_door_h_closed = assets_load_image_from_file("data/imgs/objects/glass_door_h_closed.png");
 	img_big_control_panel = assets_load_image_from_file("data/imgs/objects/big_control_panel.png");
 	img_computer_rack = assets_load_image_from_file("data/imgs/objects/computer_rack.png");
+	img_generator = assets_load_image_from_file("data/imgs/objects/generator.png");
 
 	// Players
 	img_gunner_black_run = assets_load_image_from_file("data/imgs/players/Black/Gunner_Black_Run.png");

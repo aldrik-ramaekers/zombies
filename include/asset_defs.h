@@ -53,6 +53,7 @@ image* img_glass_door_h_open;
 image* img_big_control_panel;
 image* img_chair_down;
 image* img_computer_rack;
+image* img_generator;
 
 // Throwables
 image* img_grenade;

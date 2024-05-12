@@ -129,6 +129,8 @@ image* get_image_from_objecttype(object_type tile) {
 		return img_chair_down;
 	case OBJECT_COMPUTER_RACK:
 		return img_computer_rack;
+	case OBJECT_GENERATOR:
+		return img_generator;
 	default:
 		return 0;
 	}

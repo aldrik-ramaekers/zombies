@@ -60,8 +60,11 @@ void shoot(platform_window* window, u32 id, float dirx, float diry) {
 		add_audio_event_to_queue(EVENT_RELOAD, p->id, (vec3f){.x = p->playerx, .y = p->playery, .z = p->height});
 		p->interact_state = INTERACT_RELOADING;
 		p->sec_since_interact_state_change = 0;
+		//printf("XD!\n");
 		return;
 	}
+	//p->interact_state = INTERACT_RELOADING;
+	//p->sec_since_interact_state_change = 0;
 }
 
 bool check_if_bullet_collided_with_section(float* dist_of_closest_intersect, vec2f bstart, vec2f bend, vec2f l1, vec2f l2, vec2f* intersect_point_buf) {
