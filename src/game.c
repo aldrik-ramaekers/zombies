@@ -353,12 +353,12 @@ static void move_camera(platform_window* window) {
 	float speedx = window->width / 1000.0f;
 	float diffx = (_next_camera_pos.x - _global_camera.x);
 	if (abs(diffx) <= speedx) diffx = 0.0f;
-	speedx += (abs(diffx)/200.0f*speedx);
+	speedx += (abs(diffx)/50.0f*speedx);
 	
 	float speedy = window->height / 600.0f;
 	float diffy = (_next_camera_pos.y - _global_camera.y);
 	if (abs(diffy) <= speedy) diffy = 0.0f;
-	speedy += (abs(diffy)/200.0f*speedy);
+	speedy += (abs(diffy)/50.0f*speedy);
 
 	float length = sqrt(diffx * diffx + diffy * diffy);
 	if (length == 0) length = 1.0f;

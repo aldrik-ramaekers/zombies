@@ -94,6 +94,7 @@ image* img_zombie_chunk_blood;
 
 // Tiles
 image* img_mars_surface;
+image* img_space_parallax;
 image* img_tile_floor1;
 image* img_tile_floor2;
 

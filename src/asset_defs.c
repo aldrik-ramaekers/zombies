@@ -99,6 +99,7 @@ void load_assets() {
 	img_mars_surface = assets_load_image_from_file("data/imgs/tiles/mars_surface.png");
 	img_tile_floor1 = assets_load_image_from_file("data/imgs/tiles/floor1.png");
 	img_tile_floor2 = assets_load_image_from_file("data/imgs/tiles/floor2.png");
+	img_space_parallax = assets_load_image_from_file("data/imgs/tiles/space_parallax.png");
 
 	// sounds
 	wav_throwable_bounce = Mix_LoadWAV("data/sounds/throwable_bounce.wav");
