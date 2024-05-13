@@ -113,7 +113,7 @@ int main(int argc, char **argv)
 	if (Mix_OpenAudio(48000, AUDIO_F32SYS, 2, 2048) == 0) {
 		if (Mix_AllocateChannels(NUMBER_OF_AUDIO_CHANNELS) == NUM_AUDIO_CHANNELS) {
 			log_info("Audio system initialized.");
-			Mix_MasterVolume(MIX_MAX_VOLUME/4);
+			Mix_MasterVolume(MIX_MAX_VOLUME);
 		}
 		else {
 			log_info("Channel allocation failed.");

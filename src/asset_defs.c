@@ -6,7 +6,9 @@
 void load_menu_assets() { // Assets loaded at game start
 	img_menu_screen = assets_load_image_from_file("data/imgs/ui/menu_screen.png");
 	img_splash_art2 = assets_load_image_from_file("data/imgs/ui/splash2.png");
+	img_splash_art3 = assets_load_image_from_file("data/imgs/ui/splash3.png");
 
+	wav_woosh = Mix_LoadWAV("data/sounds/woosh.wav");
 	wav_menu_hover = Mix_LoadWAV("data/sounds/menu_hover.wav");
 	music_menu = Mix_LoadMUS("data/sounds/menu_ambient.mp3");
 
