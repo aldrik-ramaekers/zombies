@@ -86,17 +86,7 @@ void handle_args(int argc, char **argv) {
 		}
 	}
 
-	if (ip && port) {
-		if (strcmp(ip, "127.0.0.1") == 0) {
-			start_server(port);
-		}
-		connect_to_server(ip, port);
-	}
-
-	log_info("STATE: GAMESTATE_PLAYING");
-	global_state.state = GAMESTATE_PLAYING;
-
-	play_music(music_inside1);
+	connect_to_game(ip, port);
 }
 
 int main(int argc, char **argv)
@@ -104,7 +94,10 @@ int main(int argc, char **argv)
     platform_init(argc, argv, CONFIG_DIRECTORY);
 
 	settings_set_number("USE_GPU", 1);
-    platform_window *window = platform_open_window_ex("Zombies!", 1600, 900, 1920, 1080, 500, 500, FLAGS_MINIMIZE, update_func, 0, 0, 0, 0);
+    platform_window *window = platform_open_window_ex("Zombies!", 
+		available_resolutions[current_res_index].x, 
+		available_resolutions[current_res_index].y, 
+		UINT16_MAX, UINT16_MAX, 1366, 768, FLAGS_MINIMIZE, update_func, 0, 0, 0, 0);
 	platform_toggle_vsync(window, false);
 	//platform_toggle_fullscreen(window, true);
 

@@ -38,5 +38,7 @@ scene_state global_scene_state = SCENE_MAIN_MENU;
 game global_state = {GAMESTATE_IDLE,DISCONNECTED,0,0};
 
 void init_game();
+void start_solo_game();
+void connect_to_game(char* ip, char* port);
 
 #endif

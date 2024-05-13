@@ -1,8 +1,15 @@
 #include "../include/menu.h"
 
+#define PROGRAM_VERSION "0.1.0 | "__DATE__
+
+int current_res_index = 0;
+bool is_fullscreen = false;
+
 typedef enum t_menu_state {
 	MENU_STATE_MAIN,
 	MENU_STATE_LEVEL_SELECT,
+	MENU_STATE_CREDITS,
+	MENU_STATE_SETTINGS,
 } menu_state;
 
 menu_state current_menu_state = MENU_STATE_MAIN;
@@ -71,7 +78,7 @@ void draw_screen(platform_window* window) {
 	select_animation_duration += update_delta;
 
 	int item_h = screen_h / 6;
-	if (draw_menu_option(window, text_offset_x, text_offset_y + item_h*0, screen_w, item_h, "Play Solo", selected_menu_option == 0)) {
+	if (draw_menu_option(window, text_offset_x, text_offset_y + item_h*0, screen_w, item_h, "Start Game", selected_menu_option == 0)) {
 		if (selected_menu_option != 0) {
 			select_animation_duration = 0.0f;
 			play_sound(-1, wav_menu_hover);
@@ -84,7 +91,7 @@ void draw_screen(platform_window* window) {
 		}
 	}
 
-	if (draw_menu_option(window, text_offset_x, text_offset_y + item_h*1, screen_w, item_h, "Host Game", selected_menu_option == 1)) {
+	if (draw_menu_option(window, text_offset_x, text_offset_y + item_h*1, screen_w, item_h, "Join Game", selected_menu_option == 1)) {
 		if (selected_menu_option != 1) {
 			select_animation_duration = 0.0f;
 			play_sound(-1, wav_menu_hover);
@@ -92,36 +99,41 @@ void draw_screen(platform_window* window) {
 		selected_menu_option = 1;
 	}
 
-	if (draw_menu_option(window, text_offset_x, text_offset_y + item_h*2, screen_w, item_h, "Join Game", selected_menu_option == 2)) {
+	if (draw_menu_option(window, text_offset_x, text_offset_y + item_h*2, screen_w, item_h, "Settings", selected_menu_option == 2)) {
 		if (selected_menu_option != 2) {
 			select_animation_duration = 0.0f;
 			play_sound(-1, wav_menu_hover);
 		}
 		selected_menu_option = 2;
+		if (is_left_clicked()) {
+			play_sound(-1, wav_woosh);
+			current_menu_state = MENU_STATE_SETTINGS;
+			sec_since_state_change = 0.0f;
+		}	
 	}
-
-	if (draw_menu_option(window, text_offset_x, text_offset_y + item_h*3, screen_w, item_h, "Settings", selected_menu_option == 3)) {
+	
+	if (draw_menu_option(window, text_offset_x, text_offset_y + item_h*3, screen_w, item_h, "Credits", selected_menu_option == 3)) {
 		if (selected_menu_option != 3) {
 			select_animation_duration = 0.0f;
 			play_sound(-1, wav_menu_hover);
 		}
 		selected_menu_option = 3;
+		if (is_left_clicked()) {
+			play_sound(-1, wav_woosh);
+			current_menu_state = MENU_STATE_CREDITS;
+			sec_since_state_change = 0.0f;
+		}
 	}
-	
-	if (draw_menu_option(window, text_offset_x, text_offset_y + item_h*4, screen_w, item_h, "Credits", selected_menu_option == 4)) {
+
+	if (draw_menu_option(window, text_offset_x, text_offset_y + item_h*4, screen_w, item_h, "Quit", selected_menu_option == 4)) {
 		if (selected_menu_option != 4) {
 			select_animation_duration = 0.0f;
 			play_sound(-1, wav_menu_hover);
 		}
 		selected_menu_option = 4;
-	}
-
-	if (draw_menu_option(window, text_offset_x, text_offset_y + item_h*5, screen_w, item_h, "Quit", selected_menu_option == 5)) {
-		if (selected_menu_option != 5) {
-			select_animation_duration = 0.0f;
-			play_sound(-1, wav_menu_hover);
+		if (is_left_clicked()) {
+			window->is_open = 0;
 		}
-		selected_menu_option = 5;
 	}
 
 	renderer->render_image(img, imgx, imgy, imgw, imgh);
@@ -190,12 +202,139 @@ void draw_level_select(platform_window* window)
 		level_img_bg = img_splash_art3;
 		if (is_left_clicked()) {
 			global_scene_state = SCENE_GAME;
+			start_solo_game();
 			// start game/go to lobby.
 		}
 	}
 	else {
 		selected_level_index = -1;
 		level_img_bg = img_splash_art2;
+	}
+
+	renderable_rec = draw_screen_change_animation(window, 1.0f);
+}
+
+void draw_credits(platform_window* window)
+{
+	color txt = rgb(102, 255, 102);
+
+	int text_x = renderable_rec.x;
+	int text_y = renderable_rec.y + 20;
+
+	renderer->render_image(img_splash_art2, renderable_rec.x, renderable_rec.y, renderable_rec.w, renderable_rec.h);
+	renderer->render_rectangle(renderable_rec.x, renderable_rec.y, renderable_rec.w, renderable_rec.h, rgba(40,40,40, 200));
+
+	#define CREDITS_ADD_LINE(__txt, __fnt) {font* _fnt = get_font(window, __fnt); \
+		renderer->render_text(_fnt, text_x + (renderable_rec.w/2) - (renderer->calculate_text_width(_fnt, __txt)/2), text_y, __txt, txt); \
+		text_y += _fnt->px_h + 10;}
+	
+	CREDITS_ADD_LINE("Zombies!", 2.0f);
+	CREDITS_ADD_LINE("", 1.0f);
+	CREDITS_ADD_LINE("A game by:", 0.8f);
+	CREDITS_ADD_LINE("Aldrik Ramaekers", 1.0f);
+	CREDITS_ADD_LINE("", 1.0f);
+	CREDITS_ADD_LINE("Design, code, textures and levels by:", 0.8f);
+	CREDITS_ADD_LINE("Aldrik Ramaekers", 1.0f);
+	CREDITS_ADD_LINE("", 1.0f);
+	CREDITS_ADD_LINE("Sounds and music by numerous artists found at freesound.org", 1.0f);
+	CREDITS_ADD_LINE("", 1.0f);
+	CREDITS_ADD_LINE("Splash art has been created using text2img AI", 1.0f);
+	CREDITS_ADD_LINE("", 1.0f);
+	CREDITS_ADD_LINE("Thanks for playing!", 1.0f);
+
+	renderable_rec = draw_screen_change_animation(window, 1.0f);
+}
+
+static bool draw_settings_btn(platform_window* window, char* txt, int x, int y, int w, int h)
+{
+	font* fnt = get_font(window, 1.0f);
+
+	int pad = 2;
+	renderer->render_rectangle(x, y, w, h, rgb(0,0,0));
+	renderer->render_rectangle(x+pad, y+pad, w-pad*2, h-pad*2, rgb(255,255,255));
+	renderer->render_text(fnt, x+(w/2)-(fnt->px_h/2), y+(h/2)-(fnt->px_h/2), txt, rgb(0,0,0));
+
+	if (_global_mouse.x + _global_camera.x > x && 
+			_global_mouse.x + _global_camera.x < x + w && 
+			_global_mouse.y + _global_camera.y > y && 
+			_global_mouse.y + _global_camera.y < y + h) 
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void draw_settings(platform_window* window)
+{
+	color txt = rgb(255,255,255);
+
+	int btn_s = 50;
+	int row_y = renderable_rec.y + 50;
+	int btn_offset = 100;
+
+	renderer->render_image(img_splash_art2, renderable_rec.x, renderable_rec.y, renderable_rec.w, renderable_rec.h);
+	renderer->render_rectangle(renderable_rec.x, renderable_rec.y, renderable_rec.w, renderable_rec.h, rgba(40,40,40, 200));
+	font* fnt = get_font(window, 1.5f);
+
+	{ // Resolution.
+		renderer->render_rectangle(renderable_rec.x + btn_offset, row_y, renderable_rec.w - (btn_offset*2), btn_s, rgba(245,245,245, 100));
+
+		if (draw_settings_btn(window, "<", renderable_rec.x + btn_offset, row_y, btn_s, btn_s)) {
+			if (is_left_clicked()) {
+				current_res_index--;
+				if (current_res_index < 0) // Loop around
+					current_res_index = sizeof(available_resolutions)/sizeof(vec2)-1;
+
+				settings_set_number("RES_INDEX", current_res_index);
+				platform_window_set_size(window, available_resolutions[current_res_index].x, available_resolutions[current_res_index].y);
+			}
+		}
+
+		if (draw_settings_btn(window, ">", renderable_rec.x + renderable_rec.w - btn_offset - btn_s, row_y, btn_s, btn_s)) {
+			if (is_left_clicked()) {
+				current_res_index++;
+				if (current_res_index >= sizeof(available_resolutions)/sizeof(vec2)) // Loop around
+					current_res_index = 0;
+
+				settings_set_number("RES_INDEX", current_res_index);
+				platform_window_set_size(window, available_resolutions[current_res_index].x, available_resolutions[current_res_index].y);
+			}
+		}
+
+		// Resolution text.
+		char resolution_txt[50];
+		sprintf(resolution_txt, "%d x %d", available_resolutions[current_res_index].x, available_resolutions[current_res_index].y);
+		int text_w = renderer->calculate_text_width(fnt, resolution_txt);
+		renderer->render_text(fnt, renderable_rec.x + (renderable_rec.w/2) - (text_w/2), row_y + (btn_s/2) - (fnt->px_h/2), resolution_txt, txt);
+	}
+
+	row_y += btn_s + 20;
+
+	{ // Fullscreen.
+		renderer->render_rectangle(renderable_rec.x + btn_offset, row_y, renderable_rec.w - (btn_offset*2), btn_s, rgba(245,245,245, 100));
+
+		if (draw_settings_btn(window, "<", renderable_rec.x + btn_offset, row_y, btn_s, btn_s)) {
+			if (is_left_clicked()) {
+				is_fullscreen = !is_fullscreen;
+				settings_set_number("FULLSCRN", is_fullscreen);
+				platform_toggle_fullscreen(window, is_fullscreen);
+			}
+		}
+
+		if (draw_settings_btn(window, ">", renderable_rec.x + renderable_rec.w - btn_offset - btn_s, row_y, btn_s, btn_s)) {
+			if (is_left_clicked()) {
+				is_fullscreen = !is_fullscreen;
+				settings_set_number("FULLSCRN", is_fullscreen);
+				platform_toggle_fullscreen(window, is_fullscreen);
+			}
+		}
+
+		// fullscreen text.
+		char fullscrn_txt[50];
+		sprintf(fullscrn_txt, "%s", is_fullscreen ? "Fullscreen" : "Windowed");
+		int text_w = renderer->calculate_text_width(fnt, fullscrn_txt);
+		renderer->render_text(fnt, renderable_rec.x + (renderable_rec.w/2) - (text_w/2), row_y + (btn_s/2) - (fnt->px_h/2), fullscrn_txt, txt);
 	}
 
 	renderable_rec = draw_screen_change_animation(window, 1.0f);
@@ -210,6 +349,12 @@ void update_menu(platform_window* window)
 		}
 		else if (current_menu_state == MENU_STATE_LEVEL_SELECT) {
 			draw_level_select(window);
+		}
+		else if (current_menu_state == MENU_STATE_CREDITS) {
+			draw_credits(window);
+		}
+		else if (current_menu_state == MENU_STATE_SETTINGS) {
+			draw_settings(window);
 		}
 
 		if (keyboard_is_key_down(KEY_ESCAPE))
@@ -229,6 +374,11 @@ void update_menu(platform_window* window)
 		else {
 			draw_screen(window);
 		}
+	}
+
+	// Version
+	{
+		renderer->render_text(fnt_16, 10, window->height - fnt_16->px_h - 10, PROGRAM_VERSION, rgb(255,255,255));
 	}
 		
 	draw_black_overlay(window);

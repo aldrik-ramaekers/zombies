@@ -55,6 +55,34 @@ void connect_to_server(char* ip, char* port) {
 	}
 }
 
+void connect_to_game(char* ip, char* port)
+{
+	if (ip && port) {
+		if (strcmp(ip, "127.0.0.1") == 0) {
+			start_server(port);
+		}
+		connect_to_server(ip, port);
+	}
+
+	log_info("STATE: GAMESTATE_PLAYING");
+	global_state.state = GAMESTATE_PLAYING;
+
+	play_music(music_inside1);
+}
+
+void start_solo_game()
+{
+	char* ip = "127.0.0.1";
+	char* port = "27015";
+	start_server(port);
+	connect_to_server(ip, port);
+
+	log_info("STATE: GAMESTATE_PLAYING");
+	global_state.state = GAMESTATE_PLAYING;
+
+	play_music(music_inside1);
+}
+
 void load_map() {
 	log_info("STATE: GAMESTATE_LOADING_MAP");
 	global_state.state = GAMESTATE_LOADING_MAP;
