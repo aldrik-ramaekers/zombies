@@ -286,6 +286,12 @@ void draw_settings(platform_window* window)
 				if (current_res_index < 0) // Loop around
 					current_res_index = sizeof(available_resolutions)/sizeof(vec2)-1;
 
+				if (is_fullscreen) {
+					is_fullscreen = 0;
+					settings_set_number("FULLSCRN", is_fullscreen);
+					platform_toggle_fullscreen(window, is_fullscreen);
+				}
+
 				settings_set_number("RES_INDEX", current_res_index);
 				platform_window_set_size(window, available_resolutions[current_res_index].x, available_resolutions[current_res_index].y);
 			}
@@ -296,6 +302,12 @@ void draw_settings(platform_window* window)
 				current_res_index++;
 				if (current_res_index >= sizeof(available_resolutions)/sizeof(vec2)) // Loop around
 					current_res_index = 0;
+
+				if (is_fullscreen) {
+					is_fullscreen = 0;
+					settings_set_number("FULLSCRN", is_fullscreen);
+					platform_toggle_fullscreen(window, is_fullscreen);
+				}
 
 				settings_set_number("RES_INDEX", current_res_index);
 				platform_window_set_size(window, available_resolutions[current_res_index].x, available_resolutions[current_res_index].y);

@@ -93,13 +93,21 @@ int main(int argc, char **argv)
 {
     platform_init(argc, argv, CONFIG_DIRECTORY);
 
+	is_fullscreen = settings_get_number_or_default("FULLSCRN", 1);
+	current_res_index = settings_get_number_or_default("RES_INDEX", 2);
+
+	printf("%d %d x %d\n", current_res_index, available_resolutions[current_res_index].x, 
+		available_resolutions[current_res_index].y);
+
 	settings_set_number("USE_GPU", 1);
     platform_window *window = platform_open_window_ex("Zombies!", 
 		available_resolutions[current_res_index].x, 
 		available_resolutions[current_res_index].y, 
 		UINT16_MAX, UINT16_MAX, 1366, 768, FLAGS_MINIMIZE, update_func, 0, 0, 0, 0);
-	platform_toggle_vsync(window, false);
-	//platform_toggle_fullscreen(window, true);
+	platform_toggle_vsync(window, true);
+	if (is_fullscreen) platform_toggle_fullscreen(window, is_fullscreen);
+	//platform_window_set_size(window, available_resolutions[current_res_index].x, 
+	//	available_resolutions[current_res_index].y);
 
 	settings_set_number("USE_GPU", 1);
 
