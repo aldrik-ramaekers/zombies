@@ -73,6 +73,18 @@ image* img_locker;
 image* img_bar_h;
 image* img_bar_v;
 image* img_bar_hv;
+image* img_club_seat1;
+image* img_club_seat2;
+image* img_club_seat3;
+image* img_club_seat4;
+image* img_club_seat5;
+image* img_club_seat6;
+image* img_club_seat7;
+image* img_club_wall1;
+image* img_club_wall2;
+image* img_club_wall3;
+image* img_bowling_lane;
+image* img_bowling_lane_end;
 
 // Throwables
 image* img_grenade;
@@ -127,6 +139,24 @@ image* img_tile_carpet2;
 image* img_tile_carpet3;
 image* img_tile_carpet4;
 image* img_tile_carpet5;
+image* img_tile_carpet_stairs_v;
+image* img_tile_club1;
+image* img_tile_club2;
+image* img_tile_club3;
+image* img_tile_club4;
+image* img_tile_club_stairs1;
+image* img_tile_club_stairs2;
+image* img_tile_club_stairs3;
+image* img_tile_club_stairs4;
+image* img_tile_club_stairs5;
+image* img_tile_club_stairs6;
+image* img_tile_club_stairs7;
+image* img_tile_club_stairs8;
+image* img_tile_club_stairs9;
+image* img_tile_club_stairs10;
+image* img_tile_club_stairs11;
+image* img_tile_club_stairs12;
+image* img_tile_club_stairs13;
 
 // Sounds
 Mix_Chunk* wav_throwable_bounce;

@@ -398,6 +398,24 @@ image* get_image_from_tiletype(tile_type tile) {
 		case TILE_CARPET3: return img_tile_carpet3;
 		case TILE_CARPET4: return img_tile_carpet4;
 		case TILE_CARPET5: return img_tile_carpet5;
+		case TILE_CARPET_STAIRS_v: return img_tile_carpet_stairs_v;
+		case TILE_CLUB1: return img_tile_club1;
+		case TILE_CLUB2: return img_tile_club2;
+		case TILE_CLUB3: return img_tile_club3;
+		case TILE_CLUB4: return img_tile_club4;
+		case TILE_CLUB_STAIRS1: return img_tile_club_stairs1;
+		case TILE_CLUB_STAIRS2: return img_tile_club_stairs2;
+		case TILE_CLUB_STAIRS3: return img_tile_club_stairs3;
+		case TILE_CLUB_STAIRS4: return img_tile_club_stairs4;
+		case TILE_CLUB_STAIRS5: return img_tile_club_stairs5;
+		case TILE_CLUB_STAIRS6: return img_tile_club_stairs6;
+		case TILE_CLUB_STAIRS7: return img_tile_club_stairs7;
+		case TILE_CLUB_STAIRS8: return img_tile_club_stairs8;
+		case TILE_CLUB_STAIRS9: return img_tile_club_stairs9;
+		case TILE_CLUB_STAIRS10: return img_tile_club_stairs10;
+		case TILE_CLUB_STAIRS11: return img_tile_club_stairs11;
+		case TILE_CLUB_STAIRS12: return img_tile_club_stairs12;
+		case TILE_CLUB_STAIRS13: return img_tile_club_stairs13;
 		default: return 0;
 	}
 }

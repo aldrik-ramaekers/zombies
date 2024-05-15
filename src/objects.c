@@ -143,6 +143,30 @@ image* get_image_from_objecttype(object_type tile) {
 		return img_bar_v;
 	case OBJECT_BAR_HV:
 		return img_bar_hv;
+	case OBJECT_CLUB_WALL1:
+		return img_club_wall1;
+	case OBJECT_CLUB_WALL2:
+		return img_club_wall2;
+	case OBJECT_CLUB_SEAT1:
+		return img_club_seat1;
+	case OBJECT_CLUB_SEAT2:
+		return img_club_seat2;
+	case OBJECT_CLUB_SEAT3:
+		return img_club_seat3;
+	case OBJECT_CLUB_SEAT4:
+		return img_club_seat4;
+	case OBJECT_CLUB_SEAT5:
+		return img_club_seat5;
+	case OBJECT_CLUB_SEAT6:
+		return img_club_seat6;
+	case OBJECT_CLUB_SEAT7:
+		return img_club_seat7;
+	case OBJECT_CLUB_WALL3:
+		return img_club_wall3;
+	case OBJECT_BOWLING_LANE:
+		return img_bowling_lane;
+	case OBJECT_BOWLING_LANE_END:
+		return img_bowling_lane_end;
 	default:
 		return 0;
 	}
@@ -151,7 +175,7 @@ image* get_image_from_objecttype(object_type tile) {
 void draw_objects(platform_window* window) {
 	map_info info = get_map_info(window);
 
-	uint32_t prev_y = 0;
+	float prev_y = 0;
 	for (int i = 0; i < MAX_OBJECTS; i++) {
 		if (!loaded_map.objects[i].active) continue;
 		object o = loaded_map.objects[i];
@@ -167,8 +191,8 @@ void draw_objects(platform_window* window) {
 		}
 		//render_box_outline(box, rgb(255,0,0));
 
-		if (prev_y < o.position.y) {
-			prev_y = o.position.y;
+		if (prev_y < o.position.y-1) {
+			prev_y = o.position.y-1;
 			draw_zombies(window, prev_y, prev_y);
 			#ifdef MODE_DEBUG 
 			if (!is_editing_map) 
@@ -177,13 +201,6 @@ void draw_objects(platform_window* window) {
 			draw_glass_doors(window, prev_y, prev_y);
 		}
 	}
-
-	draw_zombies(window, prev_y, MAP_SIZE_Y);
-	#ifdef MODE_DEBUG 
-			if (!is_editing_map) 
-	#endif
-	draw_players(window, prev_y, MAP_SIZE_Y);
-	draw_glass_doors(window, prev_y, MAP_SIZE_Y);
 }
 
 void create_objects() {

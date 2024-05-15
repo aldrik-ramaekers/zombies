@@ -112,7 +112,7 @@ static vec2f get_random_target_for_zombie(zombie o) {
 	if (target.x >= MAP_SIZE_X-1 || target.y >= MAP_SIZE_Y-1) goto try_again;
 	
 	object obj = get_object_at_tile(target.x, target.y);
-	if (obj.active) goto try_again;
+	if (obj.active && obj.active) goto try_again;
 	
 	return target;
 }
@@ -326,7 +326,7 @@ static vec2f get_random_point_around_player(player p, zombie o) {
 	float y = (float)(radius * sin(angleInDegrees * M_PI / 180.0f)) + p.playery;
 
 	object obj = get_object_at_tile(x, y);
-	if (obj.active) goto try_again;
+	if (obj.active && obj.collision) goto try_again;
 	
 	return (vec2f){x, y};
 }

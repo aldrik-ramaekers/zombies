@@ -79,6 +79,18 @@ void load_assets() { // Assets loaded at match start.
 	img_bar_h = assets_load_image_from_file("data/imgs/objects/bar_h.png");
 	img_bar_v = assets_load_image_from_file("data/imgs/objects/bar_v.png");
 	img_bar_hv = assets_load_image_from_file("data/imgs/objects/bar_hv.png");
+	img_club_seat1 = assets_load_image_from_file("data/imgs/objects/club_seat1.png");
+	img_club_seat2 = assets_load_image_from_file("data/imgs/objects/club_seat2.png");
+	img_club_seat3 = assets_load_image_from_file("data/imgs/objects/club_seat3.png");
+	img_club_seat4 = assets_load_image_from_file("data/imgs/objects/club_seat4.png");
+	img_club_wall1 = assets_load_image_from_file("data/imgs/objects/club_wall1.png");
+	img_club_wall2 = assets_load_image_from_file("data/imgs/objects/club_wall2.png");
+	img_club_wall3 = assets_load_image_from_file("data/imgs/objects/club_wall3.png");
+	img_club_seat5 = assets_load_image_from_file("data/imgs/objects/club_seat5.png");
+	img_club_seat6 = assets_load_image_from_file("data/imgs/objects/club_seat6.png");
+	img_club_seat7 = assets_load_image_from_file("data/imgs/objects/club_seat7.png");
+	img_bowling_lane = assets_load_image_from_file("data/imgs/objects/bowling_lane.png");
+	img_bowling_lane_end = assets_load_image_from_file("data/imgs/objects/bowling_lane_end.png");
 
 	// Players
 	img_gunner_black_run = assets_load_image_from_file("data/imgs/players/Black/Gunner_Black_Run.png");
@@ -128,6 +140,24 @@ void load_assets() { // Assets loaded at match start.
 	img_tile_carpet3 = assets_load_image_from_file("data/imgs/tiles/tile_carpet3.png");
 	img_tile_carpet4 = assets_load_image_from_file("data/imgs/tiles/tile_carpet4.png");
 	img_tile_carpet5 = assets_load_image_from_file("data/imgs/tiles/tile_carpet5.png");
+	img_tile_carpet_stairs_v = assets_load_image_from_file("data/imgs/tiles/tile_carpet_stairs_v.png");
+	img_tile_club1 = assets_load_image_from_file("data/imgs/tiles/tile_club1.png");
+	img_tile_club2 = assets_load_image_from_file("data/imgs/tiles/tile_club2.png");
+	img_tile_club3 = assets_load_image_from_file("data/imgs/tiles/tile_club3.png");
+	img_tile_club4 = assets_load_image_from_file("data/imgs/tiles/tile_club4.png");
+	img_tile_club_stairs1 = assets_load_image_from_file("data/imgs/tiles/club_stairs1.png");
+	img_tile_club_stairs2 = assets_load_image_from_file("data/imgs/tiles/club_stairs2.png");
+	img_tile_club_stairs3 = assets_load_image_from_file("data/imgs/tiles/club_stairs3.png");
+	img_tile_club_stairs4 = assets_load_image_from_file("data/imgs/tiles/club_stairs4.png");
+	img_tile_club_stairs5 = assets_load_image_from_file("data/imgs/tiles/club_stairs5.png");
+	img_tile_club_stairs6 = assets_load_image_from_file("data/imgs/tiles/club_stairs6.png");
+	img_tile_club_stairs7 = assets_load_image_from_file("data/imgs/tiles/club_stairs7.png");
+	img_tile_club_stairs8 = assets_load_image_from_file("data/imgs/tiles/club_stairs8.png");
+	img_tile_club_stairs9 = assets_load_image_from_file("data/imgs/tiles/club_stairs9.png");
+	img_tile_club_stairs10 = assets_load_image_from_file("data/imgs/tiles/club_stairs10.png");
+	img_tile_club_stairs11 = assets_load_image_from_file("data/imgs/tiles/club_stairs11.png");
+	img_tile_club_stairs12 = assets_load_image_from_file("data/imgs/tiles/club_stairs12.png");
+	img_tile_club_stairs13 = assets_load_image_from_file("data/imgs/tiles/club_stairs13.png");
 
 	// sounds
 	wav_throwable_bounce = Mix_LoadWAV("data/sounds/throwable_bounce.wav");

@@ -43,6 +43,7 @@ bool connect_to_server(char* ip, char* port) {
 		player_id = 127001;
 		spawn_player(player_id, (network_client){0, false, 0, "Host"});
 		global_state.network_state = CONNECTED;
+		return true;
 	}
 	else {
 		if (global_state.client->is_connected) {

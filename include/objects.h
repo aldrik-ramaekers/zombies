@@ -44,6 +44,18 @@ typedef enum t_object_type {
 	OBJECT_BAR_H = 21,
 	OBJECT_BAR_V = 22,
 	OBJECT_BAR_HV = 23,
+	OBJECT_CLUB_SEAT1 = 24,
+	OBJECT_CLUB_SEAT2 = 25,
+	OBJECT_CLUB_SEAT3 = 26,
+	OBJECT_CLUB_SEAT4 = 27,
+	OBJECT_CLUB_WALL1 = 28,
+	OBJECT_CLUB_WALL2 = 29,
+	OBJECT_CLUB_WALL3 = 30,
+	OBJECT_CLUB_SEAT5 = 31,
+	OBJECT_CLUB_SEAT6 = 32,
+	OBJECT_CLUB_SEAT7 = 33,
+	OBJECT_BOWLING_LANE = 34,
+	OBJECT_BOWLING_LANE_END = 35,
 
 	OBJECT_END,
 } object_type;
@@ -102,6 +114,18 @@ object object_dict[OBJECT_END] = {
 	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_BAR_H, 1},
 	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_BAR_V, 1},
 	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_BAR_HV, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_SEAT1, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_SEAT2, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_SEAT3, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_SEAT4, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_WALL1, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_WALL2, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1.0f},OBJECT_CLUB_WALL3, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_SEAT5, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_SEAT6, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_SEAT7, 1},
+	{0,(vec3f){0, 0, 0},{13,3,0},OBJECT_BOWLING_LANE, 0},
+	{0,(vec3f){0, 0, 0},{2,3,1},OBJECT_BOWLING_LANE_END, 1},
 };
 
 object get_object_at_tile(float x, float y);
