@@ -11,6 +11,14 @@ network_message create_protocol_get_id_up(u32 id)
 	return network_create_message((u8*)buf, sizeof(protocol_get_id_upstream), MAX_NETWORK_BUFFER_SIZE);
 }
 
+network_message create_protocol_ping_downstream()
+{
+	protocol_ping_downstream *buf = alloc_network_message(protocol_ping_downstream);
+	buf->type = MESSAGE_PING_DOWNSTREAM;
+	snprintf(buf->program_version, 30, "%s", PROGRAM_VERSION);
+	return network_create_message((u8*)buf, sizeof(protocol_ping_downstream), MAX_NETWORK_BUFFER_SIZE);
+}
+
 network_message create_protocol_get_id_down(u32 id)
 {
 	protocol_get_id_downstream *buf = alloc_network_message(protocol_get_id_downstream);

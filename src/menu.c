@@ -1,7 +1,5 @@
 #include "../include/menu.h"
 
-#define PROGRAM_VERSION "0.1.0 | "__DATE__
-
 int current_res_index = 0;
 bool is_fullscreen = false;
 
@@ -10,6 +8,7 @@ typedef enum t_menu_state {
 	MENU_STATE_LEVEL_SELECT,
 	MENU_STATE_CREDITS,
 	MENU_STATE_SETTINGS,
+	MENU_STATE_JOIN_GAME,
 } menu_state;
 
 menu_state current_menu_state = MENU_STATE_MAIN;
@@ -97,6 +96,13 @@ void draw_screen(platform_window* window) {
 			play_sound(-1, wav_menu_hover);
 		}
 		selected_menu_option = 1;
+
+		if (is_left_clicked()) {
+			play_sound(-1, wav_woosh);
+			current_menu_state = MENU_STATE_JOIN_GAME;
+			sec_since_state_change = 0.0f;
+			_global_keyboard.take_input = 1;
+		}
 	}
 
 	if (draw_menu_option(window, text_offset_x, text_offset_y + item_h*2, screen_w, item_h, "Settings", selected_menu_option == 2)) {
@@ -203,7 +209,6 @@ void draw_level_select(platform_window* window)
 		if (is_left_clicked()) {
 			global_scene_state = SCENE_GAME;
 			start_solo_game();
-			// start game/go to lobby.
 		}
 	}
 	else {
@@ -249,20 +254,31 @@ static bool draw_settings_btn(platform_window* window, char* txt, int x, int y, 
 {
 	font* fnt = get_font(window, 1.0f);
 
-	int pad = 2;
-	renderer->render_rectangle(x, y, w, h, rgb(0,0,0));
-	renderer->render_rectangle(x+pad, y+pad, w-pad*2, h-pad*2, rgb(255,255,255));
-	renderer->render_text(fnt, x+(w/2)-(fnt->px_h/2), y+(h/2)-(fnt->px_h/2), txt, rgb(0,0,0));
-
+	static int was_hovered = 0;
+	bool result = false;
 	if (_global_mouse.x + _global_camera.x > x && 
 			_global_mouse.x + _global_camera.x < x + w && 
 			_global_mouse.y + _global_camera.y > y && 
 			_global_mouse.y + _global_camera.y < y + h) 
 	{
-		return true;
+		result = true;
+
+		if (result && was_hovered == 0) {
+			play_sound(-1, wav_menu_hover);
+		}
+
+		was_hovered = x+y;
+	}
+	else if (was_hovered == x+y) {
+		was_hovered = 0;
 	}
 
-	return false;
+	int pad = 2;
+	renderer->render_rectangle(x, y, w, h, rgba(0,0,0, result ? 240 : 160));
+	renderer->render_rectangle(x+pad, y+pad, w-pad*2, h-pad*2, rgba(255,255,255, result ? 240 : 160));
+	renderer->render_text(fnt, x+(w/2)-(fnt->px_h/2), y+(h/2)-(fnt->px_h/2), txt, rgb(0,0,0));
+
+	return result;
 }
 
 void draw_settings(platform_window* window)
@@ -352,6 +368,78 @@ void draw_settings(platform_window* window)
 	renderable_rec = draw_screen_change_animation(window, 1.0f);
 }
 
+void draw_join_game(platform_window* window)
+{
+	if (_global_keyboard.input_text_len >= 20) {
+		_global_keyboard.input_text[19] = 0;
+		keyboard_set_input_text(_global_keyboard.input_text);
+	}
+
+	color txt = rgb(102, 255, 102);
+	int tb_offset = 100;
+	int tb_w = renderable_rec.w - (tb_offset*2);
+	int tb_h = 50;
+	int tb_pad = 2;
+	int render_y = renderable_rec.y + tb_offset;
+
+	renderer->render_image(img_splash_art2, renderable_rec.x, renderable_rec.y, renderable_rec.w, renderable_rec.h);
+	renderer->render_rectangle(renderable_rec.x, renderable_rec.y, renderable_rec.w, renderable_rec.h, rgba(40,40,40, 200));
+
+	char* join_game_text = "Join Game";
+	font* fnt = get_font(window, 1.5f);
+	int text_w = renderer->calculate_text_width(fnt, join_game_text);
+	int text_y = renderable_rec.y + 30;
+
+	renderer->render_text(fnt, renderable_rec.x + (renderable_rec.w/2)-(text_w/2), text_y, join_game_text, txt);
+
+	render_y += 30;
+
+	vec4 tb_rec = (vec4){renderable_rec.x + tb_offset, render_y, tb_w, tb_h};
+
+	renderer->render_rectangle(tb_rec.x, tb_rec.y, tb_rec.w, tb_rec.h, rgba(0,0,0, 160));
+	renderer->render_rectangle(tb_rec.x+tb_pad, tb_rec.y+tb_pad, tb_rec.w-tb_pad*2, tb_rec.h-tb_pad*2, rgba(255,255,255, 160));
+
+	int txt_x = renderer->render_text(fnt, tb_rec.x+tb_pad + 20, tb_rec.y+tb_pad + (tb_h/2) - (fnt->px_h/2), _global_keyboard.input_text, txt);
+	renderer->render_rectangle(tb_rec.x+tb_pad + 20+txt_x, tb_rec.y+tb_pad + 10, 2, tb_h - 25, txt);
+
+	text_y += 200;
+	int item_h = 40;
+
+	select_animation_duration += update_delta;
+
+	static bool btn_hovered = 0;
+	bool do_join = 0;
+	if (draw_menu_option(window, renderable_rec.x, text_y, renderable_rec.w, item_h, "Join", btn_hovered)) {
+		if (btn_hovered != 1) {
+			select_animation_duration = 0.0f;
+			play_sound(-1, wav_menu_hover);
+		}
+		btn_hovered = 1;
+
+		if (is_left_clicked()) {
+			play_sound(-1, wav_woosh);
+			do_join = 1;
+		}
+	}
+	else {
+		btn_hovered = 0;
+	}
+
+	if (keyboard_is_key_pressed(KEY_ENTER) || do_join) {
+		char* ip = _global_keyboard.input_text;
+		if (_global_keyboard.input_text_len > 0) {
+			if (connect_to_game(ip, DEFAULT_PORT)) {
+				global_scene_state = SCENE_GAME;
+			}
+			else {
+				log_infox("Failed to connect to %s", ip);
+			}
+		}
+	}
+
+	renderable_rec = draw_screen_change_animation(window, 1.0f);
+}
+
 void update_menu(platform_window* window)
 {
 	sec_since_state_change += update_delta;
@@ -368,9 +456,14 @@ void update_menu(platform_window* window)
 		else if (current_menu_state == MENU_STATE_SETTINGS) {
 			draw_settings(window);
 		}
+		else if (current_menu_state == MENU_STATE_JOIN_GAME) {
+			draw_join_game(window);
+		}
 
 		if (keyboard_is_key_down(KEY_ESCAPE))
 		{
+			_global_keyboard.take_input = 0;
+			keyboard_set_input_text("");
 			play_sound(-1, wav_woosh);
 			current_menu_state = MENU_STATE_MAIN;
 			if (sec_since_state_change >= menu_state_change_duration)

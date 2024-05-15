@@ -8,6 +8,8 @@
 
 typedef enum t_network_message_type
 {
+	MESSAGE_PING_UPSTREAM,
+	MESSAGE_PING_DOWNSTREAM,
 	MESSAGE_GET_ID_UPSTREAM,
 	MESSAGE_GET_ID_DOWNSTREAM,
 	MESSAGE_USER_LIST,
@@ -47,6 +49,12 @@ typedef struct t_protocol_get_id_downstream
 	network_message_type type;
 	u32 id;
 } protocol_get_id_downstream;
+
+typedef struct t_protocol_ping_downstream
+{
+	network_message_type type;
+	char program_version[30];
+} protocol_ping_downstream;
 
 typedef struct t_protocol_user_list
 {
@@ -166,6 +174,7 @@ allocator server_incomming_allocator;
 allocator client_incomming_allocator;
 allocator outgoing_allocator;
 
+network_message create_protocol_ping_downstream();
 network_message create_protocol_get_id_up(u32 id);
 network_message create_protocol_get_id_down(u32 id);
 network_message create_protocol_sound_list();

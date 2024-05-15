@@ -106,8 +106,6 @@ int main(int argc, char **argv)
 		UINT16_MAX, UINT16_MAX, 1366, 768, FLAGS_MINIMIZE, update_func, 0, 0, 0, 0);
 	platform_toggle_vsync(window, true);
 	if (is_fullscreen) platform_toggle_fullscreen(window, is_fullscreen);
-	//platform_window_set_size(window, available_resolutions[current_res_index].x, 
-	//	available_resolutions[current_res_index].y);
 
 	settings_set_number("USE_GPU", 1);
 

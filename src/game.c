@@ -29,7 +29,7 @@ static u32 get_session_id() {
 	return (((time * 2654435789U) + time) * 2654435789U) + platform_get_processid();
 }
 
-void connect_to_server(char* ip, char* port) {
+bool connect_to_server(char* ip, char* port) {
 	client_incomming_allocator = create_allocator(MAX_NETWORK_BUFFER_SIZE);
 
 	messages_received_on_client = array_create(sizeof(protocol_generic_message*));
@@ -51,23 +51,28 @@ void connect_to_server(char* ip, char* port) {
 			player_id = get_session_id();
 			network_message message = create_protocol_get_id_up(player_id);
 			add_message_to_outgoing_queuex(message, *global_state.client);
+			return true;
 		}
 	}
+	return false;
 }
 
-void connect_to_game(char* ip, char* port)
+bool connect_to_game(char* ip, char* port)
 {
 	if (ip && port) {
 		if (strcmp(ip, "127.0.0.1") == 0) {
 			start_server(port);
 		}
-		connect_to_server(ip, port);
+		if (!connect_to_server(ip, port)) {
+			return false;
+		}
 	}
 
 	log_info("STATE: GAMESTATE_PLAYING");
 	global_state.state = GAMESTATE_PLAYING;
 
 	play_music(music_inside1);
+	return true;
 }
 
 void start_solo_game()
@@ -188,6 +193,10 @@ void update_server(platform_window* window) {
 
 		switch (msg->message->type)
 		{
+			case MESSAGE_PING_UPSTREAM: {
+				add_message_to_outgoing_queuex(create_protocol_ping_downstream(), msg->client);
+
+			} break;
 			case MESSAGE_GET_ID_UPSTREAM: {
 				protocol_get_id_upstream* m = (protocol_get_id_upstream*)msg->message;
 				u32 new_id = get_id_from_ip(msg->client);
