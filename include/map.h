@@ -15,6 +15,12 @@ typedef enum t_tile_type {
 	TILE_FUNK = 4,
 	TILE_WOOD1 = 5,
 	TILE_GYM = 6,
+	TILE_FLOWERS = 7,
+	TILE_CARPET1 = 8,
+	TILE_CARPET2 = 9,
+	TILE_CARPET3 = 10,
+	TILE_CARPET4 = 11,
+	TILE_CARPET5 = 12,
 
 	TILE_END,
 } tile_type;

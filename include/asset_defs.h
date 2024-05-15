@@ -109,7 +109,7 @@ image* img_zombie_chunk_hand;
 image* img_zombie_chunk_foot;
 image* img_zombie_chunk_blood;
 
-// Tiles
+// Tiles @NEWTILE
 image* img_mars_surface;
 image* img_space_parallax;
 image* img_tile_floor1;
@@ -118,6 +118,12 @@ image* img_tile_bathroom;
 image* img_tile_funk;
 image* img_tile_wood1;
 image* img_tile_gym;
+image* img_tile_flowers;
+image* img_tile_carpet1;
+image* img_tile_carpet2;
+image* img_tile_carpet3;
+image* img_tile_carpet4;
+image* img_tile_carpet5;
 
 // Sounds
 Mix_Chunk* wav_throwable_bounce;

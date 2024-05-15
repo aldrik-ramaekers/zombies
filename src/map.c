@@ -384,7 +384,7 @@ bool is_in_bounds(float x, float y) {
 }
 
 image* get_image_from_tiletype(tile_type tile) {
-	switch (tile)
+	switch (tile) // @NEWTILE
 	{
 		case TILE_FLOOR1: return img_tile_floor1;
 		case TILE_FLOOR2: return img_tile_floor2;
@@ -392,6 +392,12 @@ image* get_image_from_tiletype(tile_type tile) {
 		case TILE_FUNK: return img_tile_funk;
 		case TILE_WOOD1: return img_tile_wood1;
 		case TILE_GYM: return img_tile_gym;
+		case TILE_FLOWERS: return img_tile_flowers;
+		case TILE_CARPET1: return img_tile_carpet1;
+		case TILE_CARPET2: return img_tile_carpet2;
+		case TILE_CARPET3: return img_tile_carpet3;
+		case TILE_CARPET4: return img_tile_carpet4;
+		case TILE_CARPET5: return img_tile_carpet5;
 		default: return 0;
 	}
 }

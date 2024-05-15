@@ -119,6 +119,12 @@ void load_assets() { // Assets loaded at match start.
 	img_tile_funk = assets_load_image_from_file("data/imgs/tiles/tile_funk.png");
 	img_tile_wood1 = assets_load_image_from_file("data/imgs/tiles/tile_wood1.png");
 	img_tile_gym = assets_load_image_from_file("data/imgs/tiles/tile_gym.png");
+	img_tile_flowers = assets_load_image_from_file("data/imgs/tiles/tile_flowers.png");
+	img_tile_carpet1 = assets_load_image_from_file("data/imgs/tiles/tile_carpet1.png");
+	img_tile_carpet2 = assets_load_image_from_file("data/imgs/tiles/tile_carpet2.png");
+	img_tile_carpet3 = assets_load_image_from_file("data/imgs/tiles/tile_carpet3.png");
+	img_tile_carpet4 = assets_load_image_from_file("data/imgs/tiles/tile_carpet4.png");
+	img_tile_carpet5 = assets_load_image_from_file("data/imgs/tiles/tile_carpet5.png");
 
 	// sounds
 	wav_throwable_bounce = Mix_LoadWAV("data/sounds/throwable_bounce.wav");
