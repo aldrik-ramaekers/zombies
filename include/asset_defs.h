@@ -70,6 +70,9 @@ image* img_generator;
 image* img_school_table;
 image* img_school_bench;
 image* img_locker;
+image* img_bar_h;
+image* img_bar_v;
+image* img_bar_hv;
 
 // Throwables
 image* img_grenade;

@@ -76,6 +76,9 @@ void load_assets() { // Assets loaded at match start.
 	img_school_bench = assets_load_image_from_file("data/imgs/objects/school_bench.png");
 	img_school_table = assets_load_image_from_file("data/imgs/objects/school_table.png");
 	img_locker = assets_load_image_from_file("data/imgs/objects/locker.png");
+	img_bar_h = assets_load_image_from_file("data/imgs/objects/bar_h.png");
+	img_bar_v = assets_load_image_from_file("data/imgs/objects/bar_v.png");
+	img_bar_hv = assets_load_image_from_file("data/imgs/objects/bar_hv.png");
 
 	// Players
 	img_gunner_black_run = assets_load_image_from_file("data/imgs/players/Black/Gunner_Black_Run.png");

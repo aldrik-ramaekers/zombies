@@ -41,6 +41,9 @@ typedef enum t_object_type {
 	OBJECT_SCHOOL_TABLE = 18,
 	OBJECT_SCHOOL_BENCH = 19,
 	OBJECT_LOCKER = 20,
+	OBJECT_BAR_H = 21,
+	OBJECT_BAR_V = 22,
+	OBJECT_BAR_HV = 23,
 
 	OBJECT_END,
 } object_type;
@@ -96,6 +99,9 @@ object object_dict[OBJECT_END] = {
 	{0,(vec3f){0, 0, 0},{1,4,0.5f},OBJECT_SCHOOL_TABLE, 1},
 	{0,(vec3f){0, 0, 0},{2,1,0.5f},OBJECT_SCHOOL_BENCH, 1},
 	{0,(vec3f){0, 0, 0},{1,1,1.0f},OBJECT_LOCKER, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_BAR_H, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_BAR_V, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_BAR_HV, 1},
 };
 
 object get_object_at_tile(float x, float y);

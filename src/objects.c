@@ -137,6 +137,12 @@ image* get_image_from_objecttype(object_type tile) {
 		return img_school_table;
 	case OBJECT_LOCKER:
 		return img_locker;
+	case OBJECT_BAR_H:
+		return img_bar_h;
+	case OBJECT_BAR_V:
+		return img_bar_v;
+	case OBJECT_BAR_HV:
+		return img_bar_hv;
 	default:
 		return 0;
 	}
