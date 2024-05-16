@@ -111,11 +111,11 @@ void draw_debug_stats(platform_window* window) {
 		count++;
 	}
 
-	char fps_text[50];
-	snprintf(fps_text, 50, "FPS: %d, MS: %.4f, USAGE: %.0f%%", (int)fps, update_delta*1000.0f, usage);
+	char fps_text[100];
+	snprintf(fps_text, 100, "FPS: %d, MS: %.4f, USAGE: %.0f%%", (int)fps, update_delta*1000.0f, usage);
 
-	char update_text[50];
-	snprintf(update_text, 50, "update: %.2fms, queue: %d", logic_update_time/1000000.0f, count);
+	char update_text[100];
+	snprintf(update_text, 100, "update: %.2fms, tcp queue: %d, pathfinding queue: %d", logic_update_time/1000000.0f, count, global_pathfinding_queue.length);
 
 	renderer->render_text(fnt_20, _global_camera.x, _global_camera.y + fnt_20->px_h*0, fps_text, rgb(0,0,0));
 	renderer->render_text(fnt_20, _global_camera.x, _global_camera.y + fnt_20->px_h*1, update_text, rgb(0,0,0));
@@ -160,6 +160,36 @@ static void draw_hurt_borders(platform_window* window) {
 	player* p = get_player_by_id(player_id);
 	if (!p) return;
 
+	if (p->max_health == p->health) return;
+	if (p->health == 0) return;
+
+	float freq = 1.0f * (p->health/(float)p->max_health);
+	static float heatbeat_timestamp = 0.0f;
+	heatbeat_timestamp += update_delta;
+
+	float opacity = 1.0f - (heatbeat_timestamp / freq);
+	int heart_size = window->width / 7;
+	color c = rgba(255,255,255,255*opacity);
+
+	renderer->render_image_tint(img_heart, 
+		_global_camera.x + (window->width/2)-(heart_size/2), 
+		_global_camera.y + (window->height/2)-(heart_size/2), heart_size, heart_size, c);
+
+	if (heatbeat_timestamp >= freq) {
+		heatbeat_timestamp = 0.0f;
+		play_sound(-1, wav_heartbeat);
+	}
+
+	float border_opacity = 1.0f - (p->health/(float)p->max_health);
+	int hurt_border_width = window->width / (6 - (border_opacity*3));
+	color border_color = rgba(255,255,255,255*border_opacity);
+
+	renderer->render_image_tint(img_hurt_overlay_left, _global_camera.x, 
+		_global_camera.y, hurt_border_width, window->height, border_color);
+	renderer->render_image_tint(img_hurt_overlay_right, _global_camera.x + window->width - hurt_border_width, 
+		_global_camera.y, hurt_border_width, window->height, border_color);
+
+	/*
 	int width = window->width * 0.1f;
 	float opacity = 1.0f - (p->health/(float)p->max_health);
 	if (opacity < 0.0f) opacity = 0.0f;
@@ -196,6 +226,7 @@ static void draw_hurt_borders(platform_window* window) {
 		_global_camera.x + window->width, _global_camera.y + window->height, 
 		_global_camera.x + window->width, _global_camera.y + window->height - width, 
 		top.tl, top.tr, top.bl, top.br, c);
+	*/
 }
 
 void draw_overlay(platform_window* window) {

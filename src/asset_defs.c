@@ -32,6 +32,9 @@ void load_menu_assets() { // Assets loaded at game start
 void load_assets() { // Assets loaded at match start.
 	// UI
 	img_red_border = assets_load_image_from_file("data/imgs/ui/red_border.png");
+	img_heart = assets_load_image_from_file("data/imgs/ui/heart.png");
+	img_hurt_overlay_left = assets_load_image_from_file("data/imgs/ui/hurt_overlay_left.png");
+	img_hurt_overlay_right = assets_load_image_from_file("data/imgs/ui/hurt_overlay_right.png");
 
 	// Icons
 	img_icon_bullets = assets_load_image_from_file("data/imgs/bullets.png");
@@ -195,6 +198,7 @@ void load_assets() { // Assets loaded at match start.
 	wav_roar_enraged = Mix_LoadWAV("data/sounds/roar_enraged.wav");
 	wav_door_open = Mix_LoadWAV("data/sounds/door_open.wav");
 	wav_door_close = Mix_LoadWAV("data/sounds/door_close.wav");
+	wav_heartbeat = Mix_LoadWAV("data/sounds/heartbeat.wav");
 
 	for (int i = 1; i <= NUM_SCREECHES; i++) {
 		char path[100];

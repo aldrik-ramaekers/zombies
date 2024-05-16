@@ -107,8 +107,13 @@ void load_map() {
 
 	pathfinding_init();
 	
-	thread t = thread_start(pathfinding_thread, 0);
-	thread_detach(&t);
+	// TODO: only need this on server?
+	thread t1 = thread_start(pathfinding_thread, 0);
+	thread_detach(&t1);
+	thread t2 = thread_start(pathfinding_thread, 0);
+	thread_detach(&t2);
+	thread t3 = thread_start(pathfinding_thread, 0);
+	thread_detach(&t3);
 
 	log_info("STATE: GAMESTATE_LOADING_ASSETS");
 	global_state.state = GAMESTATE_LOADING_ASSETS;
@@ -148,6 +153,7 @@ static void rotate_user(platform_window* window, protocol_user_look *message) {
 		log_info("Unknown user rotated");
 		return;
 	}
+	if (p->interact_state == INTERACT_DEAD) return;
 
 	p->gunx = p->playerx + message->gunx;
 	p->guny = p->playery - 0.5f + message->guny;

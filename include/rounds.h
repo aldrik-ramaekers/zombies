@@ -17,7 +17,7 @@ typedef struct t_zombie_round {
 	float round_timer;
 } zombie_round;
 
-zombie_round _current_round = {.round_nr = 0, .zombies = 0, .state = ROUND_SWITCHING};
+zombie_round _current_round = {.round_nr = 12, .zombies = 0, .state = ROUND_SWITCHING};
 
 bool current_round_is_done();
 void start_next_round();

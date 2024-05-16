@@ -32,6 +32,9 @@ font* fnt_4;
 
 // UI
 image* img_red_border;
+image* img_heart;
+image* img_hurt_overlay_left;
+image* img_hurt_overlay_right;
 
 // Icons
 image* img_icon_bullets;
@@ -177,7 +180,7 @@ image* img_tile_concrete;
 Mix_Chunk* wav_throwable_bounce;
 Mix_Chunk* wav_grenade_explode;
 Mix_Chunk* wav_molotov_explode;
-
+Mix_Chunk* wav_heartbeat;
 Mix_Chunk* wav_fire;
 
 Mix_Chunk* wav_shoot_mp5;
