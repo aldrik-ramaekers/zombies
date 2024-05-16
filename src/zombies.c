@@ -213,7 +213,7 @@ void update_spawners_server() {
 
 			float dist = 0.0f;
 			player p = get_closest_player_to_tile_x(spawner.position.x, spawner.position.y, &dist);
-			if (dist >= MAX_DISTANCE_BETWEEN_ZOMBIE_AND_PLAYER && p.id != -1) {
+			if ((dist <= MIN_DISTANCE_BETWEEN_ZOMBIE_AND_PLAYER || dist >= MAX_DISTANCE_BETWEEN_ZOMBIE_AND_PLAYER) && p.id != -1) {
 				continue;
 			}
 

@@ -13,7 +13,7 @@ void* allocator_alloc(allocator* al, uint64_t size) {
 	mutex_lock(&al->mutex);
 	if (al->cursor + size < al->size) {
 		al->cursor += size;
-		void* result = al->memory + al->cursor - size;
+		char* result = (char*)al->memory + al->cursor - size;
 		mutex_unlock(&al->mutex);
 		return result;
 	}

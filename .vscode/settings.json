@@ -6,6 +6,7 @@
 		"xutility": "c",
 		"editor.h": "c",
 		"glass_doors.h": "c",
-		"*.rh": "c"
+		"*.rh": "c",
+		"sdl_mixer.h": "c"
 	}
 }

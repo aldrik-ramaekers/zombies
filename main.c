@@ -3,6 +3,16 @@
 #define ASSET_FONT_COUNT 20
 #define NUM_AUDIO_CHANNELS 64
 
+#include <float.h>
+
+#ifndef __FLT_MAX__
+#define __FLT_MAX__ FLT_MAX
+#endif
+
+#ifndef M_PI
+#define _USE_MATH_DEFINES
+#endif
+
 #include "project-base/src/project_base.h"
 
 #include "include/SDL2/SDL_mixer.h"
@@ -91,6 +101,8 @@ void handle_args(int argc, char **argv) {
 
 int main(int argc, char **argv)
 {
+	fill_game_structs();
+
     platform_init(argc, argv, CONFIG_DIRECTORY);
 
 	is_fullscreen = settings_get_number_or_default("FULLSCRN", 1);

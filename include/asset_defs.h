@@ -101,6 +101,16 @@ image* img_painting7;
 image* img_painting8;
 image* img_painting9;
 image* img_painting10;
+image* img_floormat1;
+image* img_floormat2;
+image* img_metal_wall3;
+image* img_metal_wall4;
+image* img_metal_wall5;
+image* img_metal_wall6;
+image* img_metal_wall7;
+image* img_metal_wall8;
+image* img_metal_wall9;
+image* img_metal_wall10;
 
 // Throwables
 image* img_grenade;

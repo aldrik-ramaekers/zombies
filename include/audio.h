@@ -45,7 +45,7 @@ typedef struct t_audio_event {
 #define MAX_AUDIO_EVENTS (NUM_AUDIO_CHANNELS)
 audio_event audio_events[MAX_AUDIO_EVENTS] = {0};
 int max_audio_events = MAX_AUDIO_EVENTS;
-vec3f global_audio_source_position =(vec3f){-1,-1,-1};
+vec3f global_audio_source_position;
 
 void play_music(Mix_Music* music);
 void add_throwable_audio_event_to_queue(audio_event_type event, throwable_type throwable, u32 playerid, vec3f position);

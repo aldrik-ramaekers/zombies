@@ -74,7 +74,7 @@ object get_object_at_tile(float x, float y) {
 
 void add_object(object obj) {
 	object existing_obj = get_object_at_tile(obj.position.x, obj.position.y);
-	if (existing_obj.active) {
+	if (existing_obj.active && existing_obj.collision) {
 		log_info("Space occupied, cannot place object.");
 		return;
 	}
@@ -191,6 +191,26 @@ image* get_image_from_objecttype(object_type tile) {
 		return img_painting9;
 	case OBJECT_PAINTING10:
 		return img_painting10;
+	case OBJECT_FLOORMAT1:
+		return img_floormat1;
+	case OBJECT_FLOORMAT2:
+		return img_floormat2;
+	case OBJECT_METAL_WALL3:
+		return img_metal_wall3;
+	case OBJECT_METAL_WALL4:
+		return img_metal_wall4;
+	case OBJECT_METAL_WALL5:
+		return img_metal_wall5;
+	case OBJECT_METAL_WALL6:
+		return img_metal_wall6;
+	case OBJECT_METAL_WALL7:
+		return img_metal_wall7;
+	case OBJECT_METAL_WALL8:
+		return img_metal_wall8;
+	case OBJECT_METAL_WALL9:
+		return img_metal_wall9;
+	case OBJECT_METAL_WALL10:
+		return img_metal_wall10;
 	default:
 		return 0;
 	}

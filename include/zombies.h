@@ -46,6 +46,9 @@ typedef struct t_spawner {
 // Despawn distance.
 #define MAX_DISTANCE_BETWEEN_ZOMBIE_AND_PLAYER 40
 
+// Spawners closer than this will not spawn.
+#define MIN_DISTANCE_BETWEEN_ZOMBIE_AND_PLAYER 20
+
 #define MAX_SPAWNERS (25)
 spawner spawner_tiles[MAX_SPAWNERS] = {0};
 

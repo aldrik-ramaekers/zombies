@@ -119,6 +119,86 @@ void load_map() {
 	global_state.state = GAMESTATE_LOADING_ASSETS;
 }
 
+void fill_game_structs()
+{
+	global_audio_source_position = (vec3f){-1,-1,-1};
+
+	object _localobject_dict[OBJECT_END] = {
+	{0,(vec3f){0, 0, 0},{1,3,0.5f},OBJECT_SPACE_CONTROL_PANEL, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_SPACE_WINDOW, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL2, 1},
+	{0,(vec3f){0, 0, 0},{3,1,0.5f},OBJECT_SPACE_CONTROL_PANEL2, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CHAIR_UP, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_SPACE_WINDOW_H, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5},OBJECT_ZOMBIE_SPAWNER, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0},OBJECT_LAMP_EAST, 0},
+	{0,(vec3f){0, 0, 0},{3,1,0.5},OBJECT_METAL_TABLE_H, 1},
+	{0,(vec3f){0, 0, 0},{2,2,0.5},OBJECT_CANTINE_GLASS, 1},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_GLASS_DOOR_H, 0},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_LAMP_SOUTH, 0},
+	{0,(vec3f){0, 0, 0},{3,7,0.5f},OBJECT_BIG_CONTROL_PANEL, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CHAIR_DOWN, 1},
+	{0,(vec3f){0, 0, 0},{2,1,1.0f},OBJECT_COMPUTER_RACK, 1},
+	{0,(vec3f){0, 0, 0},{8,2,1.0f},OBJECT_GENERATOR, 1},
+	{0,(vec3f){0, 0, 0},{1,4,0.5f},OBJECT_SCHOOL_TABLE, 1},
+	{0,(vec3f){0, 0, 0},{2,1,0.5f},OBJECT_SCHOOL_BENCH, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1.0f},OBJECT_LOCKER, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_BAR_H, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_BAR_V, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_BAR_HV, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_SEAT1, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_SEAT2, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_SEAT3, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_SEAT4, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_WALL1, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_WALL2, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1.0f},OBJECT_CLUB_WALL3, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_SEAT5, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_SEAT6, 1},
+	{0,(vec3f){0, 0, 0},{1,1,0.5f},OBJECT_CLUB_SEAT7, 1},
+	{0,(vec3f){0, 0, 0},{13,3,0},OBJECT_BOWLING_LANE, 0},
+	{0,(vec3f){0, 0, 0},{2,3,1},OBJECT_BOWLING_LANE_END, 1},
+	{0,(vec3f){0, 0, 0},{1,2,1},OBJECT_GLASS_DOOR_V, 0},
+	{0,(vec3f){0, 0, 0},{3,1,0.5f},OBJECT_BOWLING_MACHINE, 1},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING1, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING2, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING3, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING4, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING5, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING6, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING7, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING8, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING9, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING10, 0},
+	{0,(vec3f){0, 0, 0},{10,10,0},OBJECT_FLOORMAT1, 0},
+	{0,(vec3f){0, 0, 0},{10,10,0},OBJECT_FLOORMAT2, 0},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL3, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL4, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL5, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL6, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL7, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL8, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL9, 1},
+	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL10, 1},
+	};
+	memcpy(object_dict, _localobject_dict, sizeof(_localobject_dict));
+
+	vec2 _local_available_resolutions[] = {
+	(vec2){1366, 769},
+	(vec2){1440, 900},
+	(vec2){1600, 900},
+	(vec2){1920, 1080},
+	(vec2){2560, 1080},
+	(vec2){2560, 1440},
+	(vec2){2560, 1600},
+	(vec2){3440, 1440},
+	(vec2){3840, 2160},
+	(vec2){5120, 1440},
+	};
+	memcpy(available_resolutions, _local_available_resolutions, sizeof(_local_available_resolutions));
+}
+
 void init_game() {
 	log_info("STATE: GAMESTATE_IDLE");
 	global_state.state = GAMESTATE_IDLE;

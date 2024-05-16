@@ -107,6 +107,16 @@ void load_assets() { // Assets loaded at match start.
 	img_painting8 = assets_load_image_from_file("data/imgs/objects/painting8.png");
 	img_painting9 = assets_load_image_from_file("data/imgs/objects/painting9.png");
 	img_painting10 = assets_load_image_from_file("data/imgs/objects/painting10.png");
+	img_floormat1 = assets_load_image_from_file("data/imgs/objects/floormat1.png");
+	img_floormat2 = assets_load_image_from_file("data/imgs/objects/floormat2.png");
+	img_metal_wall3 = assets_load_image_from_file("data/imgs/objects/metal_wall3.png");
+	img_metal_wall4 = assets_load_image_from_file("data/imgs/objects/metal_wall4.png");
+	img_metal_wall5 = assets_load_image_from_file("data/imgs/objects/metal_wall5.png");
+	img_metal_wall6 = assets_load_image_from_file("data/imgs/objects/metal_wall6.png");
+	img_metal_wall7 = assets_load_image_from_file("data/imgs/objects/metal_wall7.png");
+	img_metal_wall8 = assets_load_image_from_file("data/imgs/objects/metal_wall8.png");
+	img_metal_wall9 = assets_load_image_from_file("data/imgs/objects/metal_wall9.png");
+	img_metal_wall10 = assets_load_image_from_file("data/imgs/objects/metal_wall10.png");
 
 	// Players
 	img_gunner_black_run = assets_load_image_from_file("data/imgs/players/Black/Gunner_Black_Run.png");

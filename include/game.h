@@ -40,5 +40,6 @@ game global_state = {GAMESTATE_IDLE,DISCONNECTED,0,0};
 void init_game();
 void start_solo_game();
 bool connect_to_game(char* ip, char* port);
+void fill_game_structs();
 
 #endif

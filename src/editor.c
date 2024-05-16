@@ -474,12 +474,16 @@ void draw_object_panel(platform_window* window) {
 	int cols = 4;
 	int tile_w = editor_width / cols;
 
+	static int scroll = 0;
+	if (_global_mouse.scroll_state == SCROLL_DOWN) scroll+=10;
+	if (_global_mouse.scroll_state == SCROLL_UP) scroll-=10;
+
 	int tile_start = OBJECT_NONE+1;
 	for (int i = tile_start; i < OBJECT_END; i++) {
 		int x = ((i-tile_start) % cols) * tile_w;
 		int y = (start_y + ((i-tile_start) / cols)) * tile_w;
 
-		y += offset_y;
+		y += offset_y + scroll;
 
 		image* img = get_image_from_objecttype((object_type)i);
 		if (push_icon_button(x, y, tile_w, img, object_to_place == (object_type)i)) {
