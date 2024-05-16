@@ -58,6 +58,17 @@ typedef enum t_object_type {
 	OBJECT_BOWLING_LANE = 34,
 	OBJECT_BOWLING_LANE_END = 35,
 	OBJECT_GLASS_DOOR_V = 36, // Substitute.
+	OBJECT_BOWLING_MACHINE = 37,
+	OBJECT_PAINTING1 = 38,
+	OBJECT_PAINTING2 = 39,
+	OBJECT_PAINTING3 = 40,
+	OBJECT_PAINTING4 = 41,
+	OBJECT_PAINTING5 = 42,
+	OBJECT_PAINTING6 = 43,
+	OBJECT_PAINTING7 = 44,
+	OBJECT_PAINTING8 = 45,
+	OBJECT_PAINTING9 = 46,
+	OBJECT_PAINTING10 = 47,
 
 	OBJECT_END,
 } object_type;
@@ -129,6 +140,17 @@ object object_dict[OBJECT_END] = {
 	{0,(vec3f){0, 0, 0},{13,3,0},OBJECT_BOWLING_LANE, 0},
 	{0,(vec3f){0, 0, 0},{2,3,1},OBJECT_BOWLING_LANE_END, 1},
 	{0,(vec3f){0, 0, 0},{1,2,1},OBJECT_GLASS_DOOR_V, 0},
+	{0,(vec3f){0, 0, 0},{3,1,0.5f},OBJECT_BOWLING_MACHINE, 1},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING1, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING2, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING3, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING4, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING5, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING6, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING7, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING8, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING9, 0},
+	{0,(vec3f){0, 0, 0},{2,1,1},OBJECT_PAINTING10, 0},
 };
 
 // decoration objects laying on floor.

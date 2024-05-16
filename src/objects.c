@@ -169,6 +169,28 @@ image* get_image_from_objecttype(object_type tile) {
 		return img_bowling_lane_end;
 	case OBJECT_GLASS_DOOR_V:
 		return img_glass_door_v_closed;
+	case OBJECT_BOWLING_MACHINE:
+		return img_bowling_machine;
+	case OBJECT_PAINTING1:
+		return img_painting1;
+	case OBJECT_PAINTING2:
+		return img_painting2;
+	case OBJECT_PAINTING3:
+		return img_painting3;
+	case OBJECT_PAINTING4:
+		return img_painting4;
+	case OBJECT_PAINTING5:
+		return img_painting5;
+	case OBJECT_PAINTING6:
+		return img_painting6;
+	case OBJECT_PAINTING7:
+		return img_painting7;
+	case OBJECT_PAINTING8:
+		return img_painting8;
+	case OBJECT_PAINTING9:
+		return img_painting9;
+	case OBJECT_PAINTING10:
+		return img_painting10;
 	default:
 		return 0;
 	}
@@ -180,6 +202,7 @@ void add_decoration_object(object o)
 	{
 		if (decoration_objects[i].active) continue;
 		decoration_objects[i] = o;
+		return;
 	}
 }
 
@@ -203,9 +226,9 @@ void draw_objects(platform_window* window) {
 		if (!loaded_map.objects[i].active) continue;
 		object o = loaded_map.objects[i];
 
-		//if (o.type == OBJECT_GLASS_DOOR_H) continue;
-		//if (o.type == OBJECT_GLASS_DOOR_V) continue;
-		//if (o.type == OBJECT_BOWLING_LANE) continue;
+		if (o.type == OBJECT_GLASS_DOOR_H) continue;
+		if (o.type == OBJECT_GLASS_DOOR_V) continue;
+		if (o.type == OBJECT_BOWLING_LANE) continue;
 		
 		box box = get_box_of_object(window, o);
 

@@ -39,6 +39,8 @@ typedef enum t_tile_type {
 	TILE_CLUB_STAIRS11 = 28,
 	TILE_CLUB_STAIRS12 = 29,
 	TILE_CLUB_STAIRS13 = 30,
+	TILE_CONCRETE = 31,
+	TILE_LAMINATE = 32,
 
 	TILE_END,
 } tile_type;

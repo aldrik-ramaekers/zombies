@@ -275,18 +275,15 @@ void load_mapdata_into_world() {
 
 		if (o.type == OBJECT_ZOMBIE_SPAWNER) {
 			create_spawner((vec2){.x = o.position.x, .y = o.position.y});
-			loaded_map.objects[i].active = 0;
 		}
 
 		if (o.type == OBJECT_GLASS_DOOR_H || o.type == OBJECT_GLASS_DOOR_V) {
 			create_glass_door(o);
-			loaded_map.objects[i].active = 0;
 		}
 
 		if (o.type == OBJECT_BOWLING_LANE)
 		{
 			add_decoration_object(o);
-			loaded_map.objects[i].active = 0;
 		}
 	}
 }
@@ -424,6 +421,8 @@ image* get_image_from_tiletype(tile_type tile) {
 		case TILE_CLUB_STAIRS11: return img_tile_club_stairs11;
 		case TILE_CLUB_STAIRS12: return img_tile_club_stairs12;
 		case TILE_CLUB_STAIRS13: return img_tile_club_stairs13;
+		case TILE_LAMINATE: return img_tile_laminate;
+		case TILE_CONCRETE: return img_tile_concrete;
 		default: return 0;
 	}
 }

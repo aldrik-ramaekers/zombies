@@ -87,6 +87,17 @@ image* img_club_wall2;
 image* img_club_wall3;
 image* img_bowling_lane;
 image* img_bowling_lane_end;
+image* img_bowling_machine;
+image* img_painting1;
+image* img_painting2;
+image* img_painting3;
+image* img_painting4;
+image* img_painting5;
+image* img_painting6;
+image* img_painting7;
+image* img_painting8;
+image* img_painting9;
+image* img_painting10;
 
 // Throwables
 image* img_grenade;
@@ -159,6 +170,8 @@ image* img_tile_club_stairs10;
 image* img_tile_club_stairs11;
 image* img_tile_club_stairs12;
 image* img_tile_club_stairs13;
+image* img_tile_laminate;
+image* img_tile_concrete;
 
 // Sounds
 Mix_Chunk* wav_throwable_bounce;
