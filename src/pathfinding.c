@@ -11,6 +11,7 @@ bool can_walk_at(float x, float y)
 		object o = loaded_map.objects[i];
 		if (!o.active) continue;
 		if (!o.collision) continue;
+		if (o.type == OBJECT_ZOMBIE_SPAWNER) continue;
 		if (x >= o.position.x && x < o.position.x + o.size.x && y >= o.position.y && y < o.position.y + o.size.y) return false;
 	}
 	return true;
@@ -61,7 +62,9 @@ bool find_path_to(vec2f start_pos, vec2f end_pos, array *to_fill, pathfinding_re
 		//Pop current off open array, add to closed array
 		list_push(&closed_array, (uint8_t*)current_node);
 		
-		if (closed_array.count > 1000) return false;
+		if (closed_array.count > 400) {
+			return false; 
+		}
 		if (open_array.count > 1000) return false;
 		
 		// Found the goal
@@ -277,8 +280,26 @@ void* pathfinding_thread(void *args)
 		{
 			pathfinding_request* request = *(pathfinding_request**)array_at(&global_pathfinding_queue, 0);
 			array_remove_at(&global_pathfinding_queue, 0);
+
+			#ifdef DEBUG_PATHFINDING
+			// Register request for debugging purposes
+			int req_index = 0;
+			for (int i = 0; i < SERVER_PATHFINDING_THREADS; i++)
+			{
+				if (!active_requests[i].active)
+				{
+					req_index = i;
+					break;
+				}
+			}
+			active_requests[req_index] = *request;
+			#endif
+
 			mutex_unlock(&global_pathfinding_queue.mutex);
 			find_path_to(request->start, request->end, request->to_fill, request);
+			#ifdef DEBUG_PATHFINDING
+			active_requests[req_index].active = 0;
+			#endif
 		}
 		else
 		{

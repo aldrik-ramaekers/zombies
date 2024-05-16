@@ -8,6 +8,8 @@
 #include "objects.h"
 #include "list.h"
 
+//#define DEBUG_PATHFINDING
+
 typedef struct t_pathfinding_request
 {
 	vec2f start;

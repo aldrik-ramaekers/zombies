@@ -110,6 +110,7 @@ static vec2f get_random_target_for_zombie(zombie o) {
 
 	if (target.x <= 0 || target.y <= 0) goto try_again;
 	if (target.x >= MAP_SIZE_X-1 || target.y >= MAP_SIZE_Y-1) goto try_again;
+	if (loaded_map.heightmap[(int)target.y][(int)target.x].type == TILE_NONE) goto try_again; // Outside of map.
 	
 	object obj = get_object_at_tile(target.x, target.y);
 	if (obj.active && obj.active) goto try_again;
@@ -164,6 +165,7 @@ void spawn_zombie(int x, int y) {
 		zombies[i].position = (vec3f){x,y, 0};
 		zombies[i].sec_since_last_step = 0.0f;
 		zombies[i].sec_since_last_attack = 0.0f;
+		zombies[i].time_since_last_successfull_req = 0.0f;
 		switch(zombies[i].type) {
 			case ZOMBIE_TYPE_NORMAL: set_normal_zombie_stats(&zombies[i]); break;
 			case ZOMBIE_TYPE_ENRAGED: set_enraged_zombie_stats(&zombies[i]); break;
@@ -195,7 +197,14 @@ static void despawn_far_zombies_server()
 		{
 			zombies[i].alive = 0;
 			_current_round.zombies++;
-			log_infox("Despawned zombie %d", i);
+			log_infox("Despawned far zombie %d", i);
+		}
+
+		if (o.time_since_last_successfull_req >= 4.0f)
+		{
+			zombies[i].alive = 0;
+			_current_round.zombies++;
+			log_infox("Despawned stuck zombie %d", i);
 		}
 	}
 }
@@ -382,21 +391,25 @@ void update_zombies_server(platform_window* window) {
 		update_sprite(&zombies[i].sprite_run);
 
 		if (zombies[i].type == ZOMBIE_TYPE_ENRAGED && zombies[i].sec_since_last_step > 0.2f) {
-			add_zombie_audio_event_to_queue(EVENT_FOOTSTEP, o.type, o.position);
+			//add_zombie_audio_event_to_queue(EVENT_FOOTSTEP, o.type, o.position);
 			zombies[i].sec_since_last_step = 0.0f;
 		}
 		zombies[i].sec_since_last_step += SERVER_TICK_RATE;
 		zombies[i].sec_since_last_attack += SERVER_TICK_RATE;
+		zombies[i].time_since_last_successfull_req += SERVER_TICK_RATE;
 
 		// Update pathfinding
 		zombies[i].time_since_last_path += SERVER_TICK_RATE;
-		if (zombies[i].time_since_last_path > SERVER_PATHFINDING_INTERVAL) {
+		int length_of_current_path = zombies[i].request.to_fill ? zombies[i].request.to_fill->length : 0;
+		float pathfinding_interval = (length_of_current_path > 20) ? SERVER_FAR_PATHFINDING_INTERVAL : SERVER_CLOSE_PATHFINDING_INTERVAL;
+
+		if (zombies[i].time_since_last_path > pathfinding_interval) {
 			player closest_player = get_closest_player_to_tile(o.position.x, o.position.y);
 			vec2f target_tile = (vec2f){closest_player.playerx, closest_player.playery+(get_player_width_in_tile()/2)};
 			// All players died, move around randomly
 			if (closest_player.id == -1) {
 				target_tile = get_random_target_for_zombie(o);
-			}		
+			}
 
 			array_clear(zombies[i].request.to_fill);
 			make_pathfinding_request((vec2f){o.position.x,o.position.y}, target_tile, &zombies[i].next_path, &zombies[i].request);
@@ -414,16 +427,11 @@ void update_zombies_server(platform_window* window) {
 					player closest_player = get_closest_player_to_tile(o.position.x, o.position.y);
 
 					// All players died, move around randomly
-					if (closest_player.id == -1) {
-						vec2f target = get_random_target_for_zombie(o);
-						closest_player.playerx = target.x;
-						closest_player.playery = target.y;
+					if (closest_player.id != -1) {
+						vec2f final_pos = get_random_point_around_player(closest_player, zombies[i]);
+						array_push_at(&zombies[i].path, (u8*)&final_pos, 0);
+						zombies[i].request.active = false;			
 					}
-					vec2f final_pos = get_random_point_around_player(closest_player, zombies[i]);
-					array_push_at(&zombies[i].path, (u8*)&final_pos, 0);
-
-					zombies[i].request.active = false;
-
 					mutex_unlock(&zombies[i].request.mutex);
 				}
 			}
@@ -446,6 +454,7 @@ void update_zombies_server(platform_window* window) {
 			zombies[i].next2tiles[0] = (vec2f){-1,-1};
 			zombies[i].next2tiles[1] = (vec2f){-1,-1};
 			if (o.path.length > 0) {
+				zombies[i].time_since_last_successfull_req = 0.0f;
 				zombies[i].next2tiles[0] = *(vec2f*)array_at(&o.path, o.path.length-1);
 				zombies[i].next2tiles[1] = zombies[i].next2tiles[0];
 				if (o.path.length > 1) {
@@ -461,6 +470,21 @@ void update_zombies_server(platform_window* window) {
 
 void draw_zombies(platform_window* window, uint32_t ystart, uint32_t yend) {
 	map_info info = get_map_info(window);
+
+	#ifdef DEBUG_PATHFINDING
+	for (int i = 0; i < SERVER_PATHFINDING_THREADS; i++)
+	{
+		if (!active_requests[i].active) continue;
+		pathfinding_request req = active_requests[i];
+
+		int render_x = (info.tile_width * req.start.x) + (info.px_incline * req.start.y);
+		int render_y = info.tile_height * req.start.y;
+		int render_x2 = (info.tile_width * req.end.x) + (info.px_incline * req.end.y);
+		int render_y2 = info.tile_height * req.end.y;
+
+		renderer->render_line(render_x, render_y, render_x2, render_y2, 2, rgb(255,0,0));
+	}
+	#endif
 
 	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
 		zombie o = zombies[i];

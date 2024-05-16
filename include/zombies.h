@@ -29,6 +29,7 @@ typedef struct t_zombie {
 	float sec_since_last_attack;
 	array next_path;
 	float time_since_last_path;
+	float time_since_last_successfull_req;
 	pathfinding_request request;
 	vec2f next2tiles[2];
 	zombie_type type;

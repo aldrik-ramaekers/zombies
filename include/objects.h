@@ -112,7 +112,6 @@ typedef struct t_box {
 	vec2f br_u;
 } box;
 
-// @NEWOBJECT
 object object_dict[OBJECT_END];
 
 // decoration objects laying on floor.

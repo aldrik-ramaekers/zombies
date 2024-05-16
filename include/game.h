@@ -9,7 +9,9 @@
 
 #define SERVER_TICK_RATE (1.0f/60.0f)
 #define SERVER_MAX_PLAYERS (5)
-#define SERVER_PATHFINDING_INTERVAL (0.25f)
+#define SERVER_CLOSE_PATHFINDING_INTERVAL (0.25f)
+#define SERVER_FAR_PATHFINDING_INTERVAL (1.0f)
+#define SERVER_PATHFINDING_THREADS 3
 
 typedef enum t_game_state {
 	GAMESTATE_IDLE,
@@ -36,6 +38,8 @@ typedef struct t_game {
 
 scene_state global_scene_state = SCENE_MAIN_MENU;
 game global_state = {GAMESTATE_IDLE,DISCONNECTED,0,0};
+
+pathfinding_request active_requests[SERVER_PATHFINDING_THREADS] = {0};
 
 void init_game();
 void start_solo_game();

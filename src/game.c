@@ -108,12 +108,11 @@ void load_map() {
 	pathfinding_init();
 	
 	// TODO: only need this on server?
-	thread t1 = thread_start(pathfinding_thread, 0);
-	thread_detach(&t1);
-	thread t2 = thread_start(pathfinding_thread, 0);
-	thread_detach(&t2);
-	thread t3 = thread_start(pathfinding_thread, 0);
-	thread_detach(&t3);
+	for (int i = 0; i < SERVER_PATHFINDING_THREADS; i++)
+	{
+		thread t1 = thread_start(pathfinding_thread, 0);
+		thread_detach(&t1);
+	}
 
 	log_info("STATE: GAMESTATE_LOADING_ASSETS");
 	global_state.state = GAMESTATE_LOADING_ASSETS;
@@ -182,6 +181,7 @@ void fill_game_structs()
 	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL9, 1},
 	{0,(vec3f){0, 0, 0},{1,1,1},OBJECT_METAL_WALL10, 1},
 	};
+	// @NEWOBJECT
 	memcpy(object_dict, _localobject_dict, sizeof(_localobject_dict));
 
 	vec2 _local_available_resolutions[] = {
