@@ -70,6 +70,8 @@ void load_assets() { // Assets loaded at match start.
 	img_cantine_glass = assets_load_image_from_file("data/imgs/objects/cantine_glass.png");
 	img_glass_door_h_open = assets_load_image_from_file("data/imgs/objects/glass_door_h_open.png");
 	img_glass_door_h_closed = assets_load_image_from_file("data/imgs/objects/glass_door_h_closed.png");
+	img_glass_door_v_open = assets_load_image_from_file("data/imgs/objects/glass_door_v_open.png");
+	img_glass_door_v_closed = assets_load_image_from_file("data/imgs/objects/glass_door_v_closed.png");
 	img_big_control_panel = assets_load_image_from_file("data/imgs/objects/big_control_panel.png");
 	img_computer_rack = assets_load_image_from_file("data/imgs/objects/computer_rack.png");
 	img_generator = assets_load_image_from_file("data/imgs/objects/generator.png");

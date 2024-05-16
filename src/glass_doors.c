@@ -62,7 +62,9 @@ void draw_glass_doors(platform_window* window, uint32_t ystart, uint32_t yend)
 		object o = glass_doors[i].obj;
 		box box = get_box_of_object(window, o);
 
-		image* img = glass_doors[i].is_open ? img_glass_door_h_open : img_glass_door_h_closed;
+		image* img = 0;
+		if (o.type == OBJECT_GLASS_DOOR_H) img = glass_doors[i].is_open ? img_glass_door_h_open : img_glass_door_h_closed;
+		if (o.type == OBJECT_GLASS_DOOR_V) img = glass_doors[i].is_open ? img_glass_door_v_open : img_glass_door_v_closed;
 		if (img) {
 			renderer->render_image(img, box.tl_u.x, box.tl_u.y, 
 				box.br_d.x - box.tl_d.x, box.br_d.y - box.tr_u.y);

@@ -167,6 +167,8 @@ image* get_image_from_objecttype(object_type tile) {
 		return img_bowling_lane;
 	case OBJECT_BOWLING_LANE_END:
 		return img_bowling_lane_end;
+	case OBJECT_GLASS_DOOR_V:
+		return img_glass_door_v_closed;
 	default:
 		return 0;
 	}
@@ -181,6 +183,7 @@ void draw_objects(platform_window* window) {
 		object o = loaded_map.objects[i];
 
 		if (o.type == OBJECT_GLASS_DOOR_H) continue;
+		if (o.type == OBJECT_GLASS_DOOR_V) continue;
 		
 		box box = get_box_of_object(window, o);
 

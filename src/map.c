@@ -277,7 +277,7 @@ void load_mapdata_into_world() {
 			create_spawner((vec2){.x = o.position.x, .y = o.position.y});
 		}
 
-		if (o.type == OBJECT_GLASS_DOOR_H) {
+		if (o.type == OBJECT_GLASS_DOOR_H || o.type == OBJECT_GLASS_DOOR_V) {
 			create_glass_door(o);
 		}	
 	}
@@ -477,6 +477,9 @@ void draw_grid(platform_window* window) {
 	int tilemap_render_min_x = (_global_camera.x / info.tile_width);
 	int tilemap_render_max_x = tilemap_render_min_x + (window->width/ info.tile_width) + 1;
 
+	static float dance_floor_disco_timestamp = 0.0f;
+	dance_floor_disco_timestamp += update_delta;
+
 	for (int y = 0; y < MAP_SIZE_Y; y++) {
 
 		if (y < tilemap_render_min_y) continue;
@@ -519,7 +522,20 @@ void draw_grid(platform_window* window) {
 			*/
 			
 			float min_brightness = 150;
-			image* img = get_image_from_tiletype(tile.type);
+			tile_type type_to_draw = tile.type;
+
+			
+			if ((int)dance_floor_disco_timestamp % 2 == 1) {
+				if (type_to_draw == TILE_CLUB3) {
+					type_to_draw = TILE_CLUB4;
+				}
+				else if (type_to_draw == TILE_CLUB4) {
+					type_to_draw = TILE_CLUB3;
+				}
+			}
+			
+
+			image* img = get_image_from_tiletype(type_to_draw);
 			if (img) {
 				renderer->render_image_quad(img, 
 					topleft.x, topleft.y, 
