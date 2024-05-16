@@ -174,16 +174,38 @@ image* get_image_from_objecttype(object_type tile) {
 	}
 }
 
+void add_decoration_object(object o)
+{
+	for (int i = 0; i < MAX_DECORATION_OBJECTS; i++)
+	{
+		if (decoration_objects[i].active) continue;
+		decoration_objects[i] = o;
+	}
+}
+
 void draw_objects(platform_window* window) {
 	map_info info = get_map_info(window);
+
+	// Draw decoration objects laying on floor first.
+	for (int i = 0; i < MAX_DECORATION_OBJECTS; i++) {
+		if (!decoration_objects[i].active) continue;
+		object o = decoration_objects[i];
+		box box = get_box_of_object(window, o);
+		image* img = get_image_from_objecttype(o.type);
+		if (img) {
+			renderer->render_image(img, box.tl_u.x, box.tl_u.y, 
+				box.br_d.x - box.tl_d.x, box.br_d.y - box.tr_u.y);
+		}
+	}
 
 	float prev_y = 0;
 	for (int i = 0; i < MAX_OBJECTS; i++) {
 		if (!loaded_map.objects[i].active) continue;
 		object o = loaded_map.objects[i];
 
-		if (o.type == OBJECT_GLASS_DOOR_H) continue;
-		if (o.type == OBJECT_GLASS_DOOR_V) continue;
+		//if (o.type == OBJECT_GLASS_DOOR_H) continue;
+		//if (o.type == OBJECT_GLASS_DOOR_V) continue;
+		//if (o.type == OBJECT_BOWLING_LANE) continue;
 		
 		box box = get_box_of_object(window, o);
 

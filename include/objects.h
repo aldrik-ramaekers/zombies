@@ -6,6 +6,7 @@
 #include "map.h"
 
 #define MAX_OBJECTS 10000
+#define MAX_DECORATION_OBJECTS 100
 
 typedef struct t_vec3f {
 	float x,y,z;
@@ -130,6 +131,10 @@ object object_dict[OBJECT_END] = {
 	{0,(vec3f){0, 0, 0},{1,2,1},OBJECT_GLASS_DOOR_V, 0},
 };
 
+// decoration objects laying on floor.
+object decoration_objects[MAX_DECORATION_OBJECTS] = {0};
+
+void add_decoration_object(object o);
 object get_object_at_tile(float x, float y);
 object* get_pobject_at_tile(float x, float y);
 object* get_object_at_tile_from_mapfile(float x, float y);
