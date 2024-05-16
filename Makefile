@@ -16,4 +16,4 @@ menu:
 
 debug_client:
 	./build/zombies.exe -ip 127.0.0.1 -port 27015 &
-	gdb --args ./build/zombies.exe -ip 172.29.64.1 -port 27015
+	./build/zombies.exe -ip 172.27.192.1 -port 27015

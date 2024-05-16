@@ -1,3 +1,3 @@
 - client ping is wrong (platform_get_time is not universal)
 - client crash allocator out of space
-- aim cone collides with collision free objects
+- doors dont open on client

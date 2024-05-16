@@ -98,6 +98,7 @@ object_type check_if_bullet_collided_with_object(bullet* b, platform_window* win
 	for (int i = 0; i < MAX_OBJECTS; i++) {
 		object o = loaded_map.objects[i];
 		if (!o.active) continue;
+		if (!o.collision) continue;
 		if (b->position.z <= o.position.z + o.size.z && b->position.z >= o.position.z) {
 			box obj_box = get_box_of_square((vec3f){o.position.x, o.position.y, o.position.z}, o.size);
 			vec2f intersect_point;
