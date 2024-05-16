@@ -43,7 +43,10 @@ typedef struct t_spawner {
 	sprite sprite;
 } spawner;
 
-#define MAX_SPAWNERS (5)
+// Despawn distance.
+#define MAX_DISTANCE_BETWEEN_ZOMBIE_AND_PLAYER 40
+
+#define MAX_SPAWNERS (25)
 spawner spawner_tiles[MAX_SPAWNERS] = {0};
 
 #define SERVER_MAX_ZOMBIES (50)

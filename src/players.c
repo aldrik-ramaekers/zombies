@@ -128,7 +128,7 @@ void add_points_to_player(player* p, u32 points) {
 
 
 void move_user(platform_window* window, u32 id, protocol_move_type move, float delta) {
-	float speed_straight = 15.5f;
+	float speed_straight = 5.5f;
 	float speed = speed_straight * delta;
 	float pad_between_player_and_obj = 0.01f;
 

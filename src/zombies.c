@@ -183,7 +183,26 @@ void spawn_zombie(int x, int y) {
 	}
 }
 
+static void despawn_far_zombies_server()
+{
+	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
+		zombie o = zombies[i];
+		if (!o.alive) continue;
+
+		float dist = 0.0f;
+		player p = get_closest_player_to_tile_x(o.position.x, o.position.y, &dist);
+		if (dist >= MAX_DISTANCE_BETWEEN_ZOMBIE_AND_PLAYER)
+		{
+			zombies[i].alive = 0;
+			_current_round.zombies++;
+			log_infox("Despawned zombie %d", i);
+		}
+	}
+}
+
 void update_spawners_server() {
+	despawn_far_zombies_server();
+
 	for (int x = 0; x < MAX_SPAWNERS; x++) {
 		spawner spawner = spawner_tiles[x];
 		if (!spawner.active) continue;
@@ -191,6 +210,13 @@ void update_spawners_server() {
 		spawner_tiles[x].sec_since_last_spawn += SERVER_TICK_RATE;
 		if (zombies_left_in_current_round() <= 0) continue;
 		if (spawner_tiles[x].sec_since_last_spawn >= 1.0f) {
+
+			float dist = 0.0f;
+			player p = get_closest_player_to_tile_x(spawner.position.x, spawner.position.y, &dist);
+			if (dist >= MAX_DISTANCE_BETWEEN_ZOMBIE_AND_PLAYER) {
+				continue;
+			}
+
 			spawn_zombie(spawner.position.x, spawner.position.y);
 			spawner_tiles[x].sec_since_last_spawn = 0;
 		}
