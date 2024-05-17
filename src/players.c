@@ -69,9 +69,9 @@ void spawn_player(u32 id, network_client client) {
 		players[i].sprite_death = create_sprite(img_gunner_blue_run, 8, 48, 48, 0.1f);
 		players[i].sprite_idle = create_sprite(img_gunner_blue_idle, 5, 48, 48, 0.1f);
 		players[i].sprite_death.loop = false;
-		players[i].sprite.zoom = 1.1f;
-		players[i].sprite_death.zoom = 1.1f;
-		players[i].sprite_idle.zoom = 1.1f;
+		players[i].sprite.zoom = 1.0f;
+		players[i].sprite_death.zoom = 1.0f;
+		players[i].sprite_idle.zoom = 1.0f;
 		players[i].health = 500;
 		players[i].max_health = 500;
 
@@ -243,6 +243,8 @@ int get_my_player_index() {
 void take_player_input(platform_window* window) {
 	player* p = get_player_by_id(player_id);
 	if (!p) return;
+
+	if (game_is_paused) return;
 
 #ifdef MODE_DEBUG
 	update_editor(window);

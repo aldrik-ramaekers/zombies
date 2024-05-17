@@ -9,6 +9,51 @@ static void draw_gun_info(platform_window* window) {
 	player *p = get_player_by_id(player_id);
 	if (!p) return;
 
+	// Overlay background.
+	int overlay_w = window->width / 4;
+	int overlay_h = overlay_w*(img_stats_overlay->height/(float)img_stats_overlay->width);
+
+	int overlay_x = _global_camera.x + window->width/2 - overlay_w/2;
+	int overlay_y = _global_camera.y + window->height - overlay_h;
+
+	renderer->render_image(img_stats_overlay, overlay_x, overlay_y, overlay_w, overlay_h);
+
+	// Round text.
+	{
+		font* round_fnt = get_font(window, 2.0f);
+		char round_text[30];
+		sprintf(round_text, "%d", _current_round.round_nr);
+		int round_text_x = _global_camera.x + window->width / 2 - renderer->calculate_text_width(round_fnt, round_text)/2;
+		int round_text_y = overlay_y + overlay_h/1.35f - round_fnt->px_h/2;
+
+		renderer->render_text(round_fnt, round_text_x+1, round_text_y-1, round_text, rgb(0,0,0));
+		renderer->render_text(round_fnt, round_text_x, round_text_y, round_text, rgb(255,255,255));
+
+		round_fnt = get_font(window, 1.5f);
+		sprintf(round_text, "%s", "Round");
+		round_text_x = _global_camera.x + window->width / 2 - renderer->calculate_text_width(round_fnt, round_text)/2;
+		round_text_y = overlay_y + overlay_h/3.0f - round_fnt->px_h/2;
+
+		renderer->render_text(round_fnt, round_text_x+1, round_text_y-1, round_text, rgb(0,0,0));
+		renderer->render_text(round_fnt, round_text_x, round_text_y, round_text, rgb(255,255,255));
+	}
+
+	// Ammo.
+	{
+		gun g = get_gun_by_type(p->guntype);
+		font* round_fnt = get_font(window, 1.5f);
+		char ammo_txt[50];
+		sprintf(ammo_txt, "%d/%d", p->ammo_in_mag, p->total_ammo);
+		int ammo_text_x = _global_camera.x + window->width / 2 - renderer->calculate_text_width(round_fnt, ammo_txt)/2 - overlay_w/3.2f;
+		int ammo_text_y = overlay_y + overlay_h/1.35f - round_fnt->px_h/2;
+
+		renderer->render_text(round_fnt, ammo_text_x+1, ammo_text_y-1, ammo_txt, rgb(0,0,0));
+		renderer->render_text(round_fnt, ammo_text_x, ammo_text_y, ammo_txt, rgb(255,255,255));
+	}
+
+
+	/*
+
 	gun g = get_gun_by_type(p->guntype);
 
 	int y = window->height - fnt_32->px_h - EDGE_PADDING;
@@ -45,7 +90,7 @@ static void draw_gun_info(platform_window* window) {
 			offset_x += icon_h/3;
 		}
 	}	
-
+	*/
 }
 
 static void draw_leaderboard_entry(int x, int y, int w, int h, char* name, char* kills, char* deaths, char* ping, bool highlighted, bool disconnected) {
@@ -70,6 +115,29 @@ static void draw_leaderboard_entry(int x, int y, int w, int h, char* name, char*
 	else {
 		renderer->render_text(fnt_20, x+pad_x+width_for_name+width_per_entry*2, y+pad_y, ping, rgb(255,255,255));
 	}
+}
+
+static void draw_pause_button(platform_window* window, int x, int y) {
+	int btn_w = 200;
+	int btn_h = 50;
+	color bg_c = rgba(255,100,100,160);
+
+	if (_global_mouse.x + _global_camera.x > x && 
+			_global_mouse.x + _global_camera.x < x + btn_w && 
+			_global_mouse.y + _global_camera.y > y && 
+			_global_mouse.y + _global_camera.y < y + btn_h) 
+	{
+		bg_c = rgba(255,100,100,220);
+		if (is_left_clicked()) {
+			game_is_paused = !game_is_paused;
+		}
+	}
+
+	char* text = game_is_paused ? "Unpause Game" : "Pause Game";
+	int text_w = renderer->calculate_text_width(fnt_20, text);
+
+	renderer->render_rectangle(x, y, btn_w, btn_h, bg_c);
+	renderer->render_text(fnt_20, x + (btn_w/2)-(text_w/2), y+(btn_h/2)-(fnt_20->px_h/2), text, rgb(255,255,255));
 }
 
 static void draw_leaderboard(platform_window* window) {
@@ -97,6 +165,11 @@ static void draw_leaderboard(platform_window* window) {
 			char ping[30]; snprintf(ping, 30, "%d", players[i].ping);
 			draw_leaderboard_entry(x, y + ((i+1)*height_per_row), actual_width, height_per_row, 
 				get_player_name_by_player_index(i), kills, deaths, ping, players[i].id == player_id, players[i].connection_state == DISCONNECTED);
+		}
+
+
+		if (global_state.server) {
+			draw_pause_button(window, x, y + height_total + 20);
 		}
 	}
 }
@@ -229,10 +302,23 @@ static void draw_hurt_borders(platform_window* window) {
 	*/
 }
 
+static void draw_global_message(platform_window* window) {
+	if (!game_is_paused) return;
+	char* text = "Game is paused";
+	int text_w = renderer->calculate_text_width(fnt_52, text);
+
+	int x = _global_camera.x;
+	int y = _global_camera.y + 80;
+
+	renderer->render_text(fnt_52, x + (window->width/2)-(text_w/2)+1, y-1, text, rgb(0,0,0));
+	renderer->render_text(fnt_52, x + (window->width/2)-(text_w/2), y, text, rgb(255,255,255));
+}
+
 void draw_overlay(platform_window* window) {
 	draw_hurt_borders(window);
 	draw_gun_info(window);
 	draw_points(window);
 	draw_leaderboard(window);
 	draw_debug_stats(window);
+	draw_global_message(window);
 }

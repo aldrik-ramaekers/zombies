@@ -316,7 +316,7 @@ static vec2f get_direction_to_next_tile(zombie o) {
 }
 
 static bool is_within_tile(zombie o, vec2f dest) {
-	if (fabs(o.position.x - dest.x) < 0.05f && fabs(o.position.y - dest.y) < 0.1f) {
+	if (fabs(o.position.x - dest.x) < 0.2f && fabs(o.position.y - dest.y) < 0.2f) {
 		return true;
 	}
 	return false;
@@ -379,6 +379,7 @@ static void update_zombie_attacks_server(zombie *zombie) {
 	}
 }
 
+float distance_between(vec2f v1, vec2f v2);
 void update_zombies_server(platform_window* window) {
 	#ifdef MODE_DEBUG
 	if (is_editing_map) return;
@@ -423,6 +424,20 @@ void update_zombies_server(platform_window* window) {
 
 					array_destroy(&zombies[i].path);
 					zombies[i].path = array_copy(zombies[i].request.to_fill);
+
+					// Zombie is between 1st and 2nd tile in path, remove first target. (pathfinding snaps to closest tile so zombie might bug between 2 tiles).
+					/*
+					if (o.path.length > 1) {
+						vec2f* pos0 = array_at(&o.path, 0);
+						vec2f* pos1 = array_at(&o.path, 1);
+						float dist1 = distance_between((vec2f){pos0->x, pos0->y}, (vec2f){zombies[i].position.x, zombies[i].position.y});
+						float dist2 = distance_between((vec2f){pos1->x, pos1->y}, (vec2f){zombies[i].position.x, zombies[i].position.y});
+						float dist3 = distance_between((vec2f){pos1->x, pos1->y}, (vec2f){pos0->x, pos0->y});
+						if (abs(dist1+dist2-dist3) < 0.05f)
+						{
+							log_info("Zombie is tripping!");
+						}
+					}*/
 					
 					player closest_player = get_closest_player_to_tile(o.position.x, o.position.y);
 
@@ -529,7 +544,7 @@ void draw_zombies(platform_window* window, uint32_t ystart, uint32_t yend) {
 			renderer->render_rectangle(zombie_pos.x + (zombie_size/2) - (bar_w/2), zombie_pos.y - bar_h, bar_w*percentage, bar_h, rgb(100,0,0));
 		}
 
-		if (global_state.server) draw_path_of_zombie(window, o);
+		//if (global_state.server) draw_path_of_zombie(window, o);
 	}
 }
 

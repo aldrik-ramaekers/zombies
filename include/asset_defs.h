@@ -35,6 +35,7 @@ image* img_red_border;
 image* img_heart;
 image* img_hurt_overlay_left;
 image* img_hurt_overlay_right;
+image* img_stats_overlay;
 
 // Icons
 image* img_icon_bullets;

@@ -39,6 +39,7 @@ typedef struct t_game {
 scene_state global_scene_state = SCENE_MAIN_MENU;
 game global_state = {GAMESTATE_IDLE,DISCONNECTED,0,0};
 
+bool game_is_paused = false;
 pathfinding_request active_requests[SERVER_PATHFINDING_THREADS] = {0};
 
 void init_game();

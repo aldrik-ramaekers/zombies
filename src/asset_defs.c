@@ -35,6 +35,7 @@ void load_assets() { // Assets loaded at match start.
 	img_heart = assets_load_image_from_file("data/imgs/ui/heart.png");
 	img_hurt_overlay_left = assets_load_image_from_file("data/imgs/ui/hurt_overlay_left.png");
 	img_hurt_overlay_right = assets_load_image_from_file("data/imgs/ui/hurt_overlay_right.png");
+	img_stats_overlay = assets_load_image_from_file("data/imgs/ui/stats_overlay.png");
 
 	// Icons
 	img_icon_bullets = assets_load_image_from_file("data/imgs/bullets.png");

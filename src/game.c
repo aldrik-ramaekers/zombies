@@ -278,51 +278,55 @@ void update_server(platform_window* window) {
 		protocol_generic_message* msg = *(protocol_generic_message**)array_at(&messages_received_on_server, i);
 		set_ping_for_player(msg);
 
-		switch (msg->message->type)
+		// Ignore all messages except join request when game is paused.
+		if (!game_is_paused || msg->message->type == MESSAGE_GET_ID_UPSTREAM)
 		{
-			case MESSAGE_PING_UPSTREAM: {
-				add_message_to_outgoing_queuex(create_protocol_ping_downstream(), msg->client);
+			switch (msg->message->type)
+			{
+				case MESSAGE_PING_UPSTREAM: {
+					add_message_to_outgoing_queuex(create_protocol_ping_downstream(), msg->client);
 
-			} break;
-			case MESSAGE_GET_ID_UPSTREAM: {
-				protocol_get_id_upstream* m = (protocol_get_id_upstream*)msg->message;
-				u32 new_id = get_id_from_ip(msg->client);
+				} break;
+				case MESSAGE_GET_ID_UPSTREAM: {
+					protocol_get_id_upstream* m = (protocol_get_id_upstream*)msg->message;
+					u32 new_id = get_id_from_ip(msg->client);
 
-				if (player_has_old_session(new_id)) {
-					rejoin_player(new_id, msg->client);
-					log_infox("Player rejoined session / ip: %s id: %d", msg->client.ip, new_id);
-				}
-				else {
-					spawn_player(new_id, msg->client);
-					log_infox("Player connected to session / ip: %s id: %d", msg->client.ip, new_id);
-				}
+					if (player_has_old_session(new_id)) {
+						rejoin_player(new_id, msg->client);
+						log_infox("Player rejoined session / ip: %s id: %d", msg->client.ip, new_id);
+					}
+					else {
+						spawn_player(new_id, msg->client);
+						log_infox("Player connected to session / ip: %s id: %d", msg->client.ip, new_id);
+					}
+					
+					add_message_to_outgoing_queuex(create_protocol_get_id_down(new_id), msg->client);
+					
+				} break;
+
+				case MESSAGE_USER_THROW: {
+					protocol_user_throw* throw_msg = (protocol_user_throw*)msg->message;
+					throw_throwable(throw_msg->id, throw_msg->throwable, throw_msg->dirx, throw_msg->diry);
+				} break;
+
+				case MESSAGE_USER_MOVED: {
+					protocol_move* move_msg = (protocol_move*)msg->message;
+					if (move_msg->id != player_id) move_user(window,  move_msg->id, move_msg->move, move_msg->delta);
+				} break;
+
+				case MESSAGE_USER_LOOK: {
+					rotate_user(window, (protocol_user_look*)msg->message);
+				} break;
+
+				case MESSAGE_USER_SHOOT: {
+					protocol_user_shoot* shoot_msg = (protocol_user_shoot*)msg->message;
+					shoot(window, shoot_msg->id, shoot_msg->dirx, shoot_msg->diry);
+				} break;
 				
-				add_message_to_outgoing_queuex(create_protocol_get_id_down(new_id), msg->client);
-				
-			} break;
-
-			case MESSAGE_USER_THROW: {
-				protocol_user_throw* throw_msg = (protocol_user_throw*)msg->message;
-				throw_throwable(throw_msg->id, throw_msg->throwable, throw_msg->dirx, throw_msg->diry);
-			} break;
-
-			case MESSAGE_USER_MOVED: {
-				protocol_move* move_msg = (protocol_move*)msg->message;
-				if (move_msg->id != player_id) move_user(window,  move_msg->id, move_msg->move, move_msg->delta);
-			} break;
-
-			case MESSAGE_USER_LOOK: {
-				rotate_user(window, (protocol_user_look*)msg->message);
-			} break;
-
-			case MESSAGE_USER_SHOOT: {
-				protocol_user_shoot* shoot_msg = (protocol_user_shoot*)msg->message;
-				shoot(window, shoot_msg->id, shoot_msg->dirx, shoot_msg->diry);
-			} break;
-			
-			default:
-				log_info("Unhandled message received");
-				break;
+				default:
+					log_info("Unhandled message received");
+					break;
+			}
 		}
 
 		array_remove_at(&messages_received_on_server, i);
@@ -339,22 +343,25 @@ void update_server(platform_window* window) {
 
 	update_bullets_server(window);
 	if (update_timer >= SERVER_TICK_RATE) { // send at 60 ticks
-		update_spawners_server();
-		update_drops_server();
-		//update_wallitems_server();
-		update_throwables_server();
-		update_zombie_chunks_server();
-		update_round_server();
-		update_points_animation_server();
-		update_glass_doors_server();
+		if (!game_is_paused) {
+			update_spawners_server();
+			update_drops_server();
+			//update_wallitems_server();
+			update_throwables_server();
+			update_zombie_chunks_server();
+			update_round_server();
+			update_points_animation_server();
+			update_glass_doors_server();
+		
 
-		broadcast_players = platform_get_time(TIME_FULL, TIME_NS);
-		update_players_server();
-		broadcast_players = platform_get_time(TIME_FULL, TIME_NS) - broadcast_players;
+			broadcast_players = platform_get_time(TIME_FULL, TIME_NS);
+			update_players_server();
+			broadcast_players = platform_get_time(TIME_FULL, TIME_NS) - broadcast_players;
 
-		broadcast_zombies = platform_get_time(TIME_FULL, TIME_NS);
-		update_zombies_server(window);
-		broadcast_zombies = platform_get_time(TIME_FULL, TIME_NS) - broadcast_zombies;
+			broadcast_zombies = platform_get_time(TIME_FULL, TIME_NS);
+			update_zombies_server(window);
+			broadcast_zombies = platform_get_time(TIME_FULL, TIME_NS) - broadcast_zombies;
+		}
 
 		broadcast_stamp = platform_get_time(TIME_FULL, TIME_NS);
 		broadcast_to_clients(create_protocol_user_list());
@@ -469,7 +476,9 @@ void update_client(platform_window* window) {
 	mutex_unlock(&messages_received_on_client.mutex);
 	logic_update_time = platform_get_time(TIME_FULL, TIME_NS) - logic_update_time;
 
-	update_zombies_client(window);
+	if (!game_is_paused) {
+		update_zombies_client(window);
+	}
 }
 
 static void move_camera(platform_window* window) {

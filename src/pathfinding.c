@@ -1,6 +1,6 @@
 #include "../include/pathfinding.h"
 
-static float distance_between(vec2f v1, vec2f v2)
+float distance_between(vec2f v1, vec2f v2)
 {
 	return ((v1.x-v2.x)*(v1.x-v2.x)+(v1.y-v2.y)*(v1.y-v2.y));
 }
@@ -314,8 +314,8 @@ void* pathfinding_thread(void *args)
 
 void make_pathfinding_request(vec2f start, vec2f end, array *to_fill, pathfinding_request *request)
 {
-	start.x = (int)start.x;
-	start.y = (int)start.y;
+	start.x = (int)nearbyint(start.x);
+	start.y = (int)nearbyint(start.y);
 	end.x = (int)end.x;
 	end.y = (int)end.y;
 

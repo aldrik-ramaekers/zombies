@@ -40,6 +40,7 @@ static float get_round_text_opacity() {
 
 static int round_text_len = 0;
 void draw_round(platform_window* window) {
+	return;
 	if (_current_round.round_nr == 0) return;
 
 	char round_text[30];
