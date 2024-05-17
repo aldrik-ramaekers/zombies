@@ -95,6 +95,7 @@ typedef struct t_protocol_round
 {
 	network_message_type type;
 	zombie_round round;
+	bool game_is_paused;
 } protocol_round;
 
 typedef enum t_protocol_move_type

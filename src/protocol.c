@@ -88,6 +88,7 @@ network_message create_protocol_round_data(zombie_round round)
 	protocol_round *buf = alloc_network_message(protocol_round);
 	buf->type = MESSAGE_ROUND_DATA;
 	buf->round = round;
+	buf->game_is_paused = game_is_paused;
 	return network_create_message((u8*)buf, sizeof(protocol_round), MAX_NETWORK_BUFFER_SIZE);
 }
 

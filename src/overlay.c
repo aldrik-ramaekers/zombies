@@ -234,23 +234,30 @@ static void draw_hurt_borders(platform_window* window) {
 	if (!p) return;
 
 	if (p->max_health == p->health) return;
-	if (p->health == 0) return;
+	if (p->health == 0)
+	{
+		int skull_size = window->width / 7;
+		renderer->render_image(img_skull, 
+			_global_camera.x + (window->width/2)-(skull_size/2), 
+			_global_camera.y + (window->height/2)-(skull_size/2), skull_size, skull_size);
+	}
+	else {
+		float freq = 1.0f * (p->health/(float)p->max_health);
+		static float heatbeat_timestamp = 0.0f;
+		heatbeat_timestamp += update_delta;
 
-	float freq = 1.0f * (p->health/(float)p->max_health);
-	static float heatbeat_timestamp = 0.0f;
-	heatbeat_timestamp += update_delta;
+		float opacity = 1.0f - (heatbeat_timestamp / freq);
+		int heart_size = window->width / 7;
+		color c = rgba(255,255,255,255*opacity);
 
-	float opacity = 1.0f - (heatbeat_timestamp / freq);
-	int heart_size = window->width / 7;
-	color c = rgba(255,255,255,255*opacity);
+		renderer->render_image_tint(img_heart, 
+			_global_camera.x + (window->width/2)-(heart_size/2), 
+			_global_camera.y + (window->height/2)-(heart_size/2), heart_size, heart_size, c);
 
-	renderer->render_image_tint(img_heart, 
-		_global_camera.x + (window->width/2)-(heart_size/2), 
-		_global_camera.y + (window->height/2)-(heart_size/2), heart_size, heart_size, c);
-
-	if (heatbeat_timestamp >= freq) {
-		heatbeat_timestamp = 0.0f;
-		play_sound(-1, wav_heartbeat);
+		if (heatbeat_timestamp >= freq) {
+			heatbeat_timestamp = 0.0f;
+			play_sound(-1, wav_heartbeat);
+		}
 	}
 
 	float border_opacity = 1.0f - (p->health/(float)p->max_health);
@@ -314,6 +321,13 @@ static void draw_global_message(platform_window* window) {
 	renderer->render_text(fnt_52, x + (window->width/2)-(text_w/2), y, text, rgb(255,255,255));
 }
 
+static void draw_fadein_overlay(platform_window* window)
+{
+	float percentage = _current_round.fade_in_timer / FADE_IN_DURATION;
+	if (percentage <= 0.0f) return;
+	renderer->render_rectangle(_global_camera.x, _global_camera.y, window->width, window->height, rgba(0,0,0,255*percentage));
+}
+
 void draw_overlay(platform_window* window) {
 	draw_hurt_borders(window);
 	draw_gun_info(window);
@@ -321,4 +335,5 @@ void draw_overlay(platform_window* window) {
 	draw_leaderboard(window);
 	draw_debug_stats(window);
 	draw_global_message(window);
+	draw_fadein_overlay(window);
 }

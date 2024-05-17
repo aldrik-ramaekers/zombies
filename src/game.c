@@ -1,6 +1,8 @@
 #include "../include/game.h"
 #include "../include/pathfinding.h"
 
+bool game_is_paused = false;
+
 static void server_on_client_disconnect(network_client c) {
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		player p = players[i];
@@ -241,6 +243,17 @@ static void rotate_user(platform_window* window, protocol_user_look *message) {
 	p->diry = message->diry;
 }
 
+bool every_player_died()
+{
+	for (int i = 0; i < MAX_PLAYERS; i++) {
+		player p = players[i];
+		if (!p.active) continue;
+		// TODO: if player is disconnected for 2+ min, kill player.
+		if (p.health != 0) return false;
+	}
+	return true;
+}
+
 static void set_ping_for_player(protocol_generic_message* msg) {
 	u64 diff = platform_get_time(TIME_FULL, TIME_MILI_S) - msg->send_timestamp;
 
@@ -430,6 +443,7 @@ void update_client(platform_window* window) {
 		case MESSAGE_ROUND_DATA: {
 			protocol_round* msg_round = (protocol_round*)msg;
 			_current_round = msg_round->round;
+			game_is_paused = msg_round->game_is_paused;
 		} break;
 
 		case MESSAGE_ZOMBIE_LIST: {

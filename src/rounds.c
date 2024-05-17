@@ -21,6 +21,11 @@ void start_next_round()
 	_current_round.state = ROUND_SWITCHING;
 	_current_round.round_timer = 0.0f;
 
+	// Fade in at start of game.
+	if (_current_round.round_nr == 1) {
+		_current_round.fade_in_timer = FADE_IN_DURATION;
+	}
+
 	add_ui_audio_event_to_queue(EVENT_ROUND_CHANGE);
 
 	log_infox("Next round: %d", _current_round.round_nr);
@@ -85,9 +90,28 @@ void draw_round(platform_window* window) {
 	}
 }
 
+void restart_game()
+{
+	// TODO
+}
+
 void update_round_server()
 {
 	static int visible_previously_count = 0;
+
+	if (!every_player_died()) {
+		_current_round.fade_in_timer -= SERVER_TICK_RATE;
+		if (_current_round.fade_in_timer <= 0.0f)
+			_current_round.fade_in_timer = 0.0f;
+	}
+	else {
+		_current_round.fade_in_timer += SERVER_TICK_RATE;
+		if (_current_round.fade_in_timer >= FADE_IN_DURATION) {
+			_current_round.fade_in_timer = FADE_IN_DURATION;
+
+			restart_game();
+		}
+	}
 
 	_current_round.round_timer += SERVER_TICK_RATE;
 	if (_current_round.state == ROUND_SWITCHING) {

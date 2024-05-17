@@ -10,14 +10,17 @@ typedef enum t_round_state {
 	ROUND_SWITCHING,
 } round_state;
 
+#define FADE_IN_DURATION 3.0f
+
 typedef struct t_zombie_round {
 	u32 round_nr;
 	u32 zombies;
 	round_state state;
 	float round_timer;
+	float fade_in_timer;
 } zombie_round;
 
-zombie_round _current_round = {.round_nr = 12, .zombies = 0, .state = ROUND_SWITCHING};
+zombie_round _current_round = {.round_nr = 0, .zombies = 0, .state = ROUND_SWITCHING, 3.0f};
 
 bool current_round_is_done();
 void start_next_round();
