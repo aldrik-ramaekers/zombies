@@ -5,19 +5,19 @@ int player_zoom = 30;
 static int get_height_of_tile_tl(int current_height, int x, int y) {
 	int highest_point = current_height;
 	if (y > 0) {
-		int tile_above = map_to_load.heightmap[y-1][x];
+		int tile_above = map_to_load->heightmap[y-1][x];
 		if (tile_above > highest_point) {
 			highest_point = tile_above;
 		}
 	}
 	if (y > 0 && x > 0) {
-		int tile_above = map_to_load.heightmap[y-1][x-1];
+		int tile_above = map_to_load->heightmap[y-1][x-1];
 		if (tile_above > highest_point) {
 			highest_point = tile_above;
 		}
 	}
 	if (x > 0) {
-		int tile_above = map_to_load.heightmap[y][x-1];
+		int tile_above = map_to_load->heightmap[y][x-1];
 		if (tile_above > highest_point) {
 			highest_point = tile_above;
 		}
@@ -29,19 +29,19 @@ static int get_height_of_tile_tl(int current_height, int x, int y) {
 static int get_height_of_tile_br(int current_height, int x, int y) {
 	int highest_point = current_height;
 	if (x < MAP_SIZE_X-1) {
-		int tile_right = map_to_load.heightmap[y][x+1];
+		int tile_right = map_to_load->heightmap[y][x+1];
 		if (tile_right > highest_point) {
 			highest_point = tile_right;
 		}
 	}
 	if (y < MAP_SIZE_Y-1 && x < MAP_SIZE_X-1) {
-		int tile_bottom_right = map_to_load.heightmap[y+1][x+1];
+		int tile_bottom_right = map_to_load->heightmap[y+1][x+1];
 		if (tile_bottom_right > highest_point) {
 			highest_point = tile_bottom_right;
 		}
 	}
 	if (y < MAP_SIZE_Y-1) {
-		int tile_bottom = map_to_load.heightmap[y+1][x];
+		int tile_bottom = map_to_load->heightmap[y+1][x];
 		if (tile_bottom > highest_point) {
 			highest_point = tile_bottom;
 		}
@@ -52,19 +52,19 @@ static int get_height_of_tile_br(int current_height, int x, int y) {
 static int get_height_of_tile_bl(int current_height, int x, int y) {
 	int highest_point = current_height;
 	if (y > 0 && x > 0) {
-		int tile_left = map_to_load.heightmap[y][x-1];
+		int tile_left = map_to_load->heightmap[y][x-1];
 		if (tile_left > highest_point) {
 			highest_point = tile_left;
 		}
 	}
 	if (y < MAP_SIZE_Y-1 && x > 0) {
-		int tile_bottom_left = map_to_load.heightmap[y+1][x-1];
+		int tile_bottom_left = map_to_load->heightmap[y+1][x-1];
 		if (tile_bottom_left > highest_point) {
 			highest_point = tile_bottom_left;
 		}
 	}
 	if (y < MAP_SIZE_Y-1) {
-		int tile_bottom = map_to_load.heightmap[y+1][x];
+		int tile_bottom = map_to_load->heightmap[y+1][x];
 		if (tile_bottom > highest_point) {
 			highest_point = tile_bottom;
 		}
@@ -75,19 +75,19 @@ static int get_height_of_tile_bl(int current_height, int x, int y) {
 static int get_height_of_tile_tr(int current_height, int x, int y) {
 	int highest_point = current_height;
 	if (y > 0) {
-		int tile_above = map_to_load.heightmap[y-1][x];
+		int tile_above = map_to_load->heightmap[y-1][x];
 		if (tile_above > highest_point) {
 			highest_point = tile_above;
 		}
 	}
 	if (y > 0 && x < MAP_SIZE_X-1) {
-		int tile_above_right = map_to_load.heightmap[y-1][x+1];
+		int tile_above_right = map_to_load->heightmap[y-1][x+1];
 		if (tile_above_right > highest_point) {
 			highest_point = tile_above_right;
 		}
 	}
 	if (x < MAP_SIZE_X-1) {
-		int tile_right = map_to_load.heightmap[y][x+1];
+		int tile_right = map_to_load->heightmap[y][x+1];
 		if (tile_right > highest_point) {
 			highest_point = tile_right;
 		}
@@ -109,7 +109,7 @@ static bool ray_intersects_with_object(vec3f begin, vec3f end) {
 	vec2f bend = (vec2f){end.x, end.y};
 
 	for (int i = 0; i < MAX_OBJECTS; i++) {
-		object o = loaded_map.objects[i];
+		object o = loaded_map->objects[i];
 		if (!o.active) continue;
 		if (begin.z <= o.position.z + o.size.z && begin.z >= o.position.z) {
 			box obj_box = get_box_of_square((vec3f){o.position.x, o.position.y, o.position.z}, o.size);
@@ -159,34 +159,34 @@ int sort_objects(const void * obj1, const void* obj2) {
 }
 
 void load_mapdata_into_world() {
-	loaded_map.width = map_to_load.width;
-	loaded_map.height = map_to_load.height;
+	loaded_map->width = map_to_load->width;
+	loaded_map->height = map_to_load->height;
 
 	// Load heightmap
 	for (int y = 0; y < MAP_SIZE_Y; y++) {
 		for (int x = MAP_SIZE_X-1; x >= 0; x--) {
-			int h = map_to_load.heightmap[y][x];
+			int h = map_to_load->heightmap[y][x];
 			int highest_point_topleft = get_height_of_tile_tl(h, x, y);
 			int highest_point_topright = get_height_of_tile_tr(h, x, y);
 			int highest_point_bottomright = get_height_of_tile_br(h, x, y);
 			int highest_point_bottomleft = get_height_of_tile_bl(h, x, y);
 
-			if (x >= 205) map_to_load.tiles[y][x] = TILE_NONE;
+			if (x >= 205) map_to_load->tiles[y][x] = TILE_NONE;
 
-			loaded_map.heightmap[y][x] = (tile){.height = h, .type = map_to_load.tiles[y][x], highest_point_topleft, highest_point_topright, highest_point_bottomleft, highest_point_bottomright};
-			loaded_map.lightmap[y][x] = (light_data){0.0f,0.0f,0.0f,0.0f};
+			loaded_map->heightmap[y][x] = (tile){.height = h, .type = map_to_load->tiles[y][x], highest_point_topleft, highest_point_topright, highest_point_bottomleft, highest_point_bottomright};
+			loaded_map->lightmap[y][x] = (light_data){0.0f,0.0f,0.0f,0.0f};
 		}
 	}
 
 	// Load emitters
 	for (int i = 0; i < MAX_LIGHT_EMITTERS; i++) {
-		loaded_map.light_emitters[i] = map_to_load.light_emitters[i];
-		loaded_map.light_emitters[i].position.z = 1;
+		loaded_map->light_emitters[i] = map_to_load->light_emitters[i];
+		loaded_map->light_emitters[i].position.z = 1;
 	}
 
 	// Load lightmap
 	for (int l = 0; l < MAX_LIGHT_EMITTERS; l++) {
-		light_emitter emitter = loaded_map.light_emitters[l];
+		light_emitter emitter = loaded_map->light_emitters[l];
 		if (!emitter.active) continue;
 
 		int ystart = emitter.position.y - emitter.range-2;
@@ -200,12 +200,13 @@ void load_mapdata_into_world() {
 		if (xend >= MAP_SIZE_X) xend = MAP_SIZE_X-1;
 
 		for (int y = ystart; y <= yend; y++) {
+			if (y < 0) continue;
 			for (int x = xstart; x <= xend; x++) {
-							
-				float dist_tl = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].topleft});
-				float dist_tr = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].topright});
-				float dist_bl = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].bottomleft});
-				float dist_br = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map.heightmap[y][x].bottomright});
+				if (x < 0) continue;
+				float dist_tl = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map->heightmap[y][x].topleft});
+				float dist_tr = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map->heightmap[y][x].topright});
+				float dist_bl = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map->heightmap[y][x].bottomleft});
+				float dist_br = distance_between_3f(emitter.position, (vec3f){x, y, loaded_map->heightmap[y][x].bottomright});
 
 				if (dist_tl > emitter.range) {
 					continue;
@@ -220,58 +221,58 @@ void load_mapdata_into_world() {
 				if (p_bl < 0.0f) p_bl = 0.0f;
 				if (p_br < 0.0f) p_br = 0.0f;
 
-				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].topleft}, emitter.position)) {
+				if (ray_intersects_with_ground((vec3f){x, y, loaded_map->heightmap[y][x].topleft}, emitter.position)) {
 					p_tl = 0.0f;
 				}
-				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].topright}, emitter.position)) {
+				if (ray_intersects_with_ground((vec3f){x, y, loaded_map->heightmap[y][x].topright}, emitter.position)) {
 					p_tr = 0.0f;
 				}
-				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].bottomleft}, emitter.position)) {
+				if (ray_intersects_with_ground((vec3f){x, y, loaded_map->heightmap[y][x].bottomleft}, emitter.position)) {
 					p_bl = 0.0f;
 				}
-				if (ray_intersects_with_ground((vec3f){x, y, loaded_map.heightmap[y][x].bottomright}, emitter.position)) {
+				if (ray_intersects_with_ground((vec3f){x, y, loaded_map->heightmap[y][x].bottomright}, emitter.position)) {
 					p_br = 0.0f;
 				}
 /*
-				if (ray_intersects_with_object((vec3f){x, y, loaded_map.heightmap[y][x].topleft}, emitter.position)) {
+				if (ray_intersects_with_object((vec3f){x, y, loaded_map->heightmap[y][x].topleft}, emitter.position)) {
 					p_tl = 0.0f;
 				}
-				if (ray_intersects_with_object((vec3f){x, y, loaded_map.heightmap[y][x].topright}, emitter.position)) {
+				if (ray_intersects_with_object((vec3f){x, y, loaded_map->heightmap[y][x].topright}, emitter.position)) {
 					p_tr = 0.0f;
 				}
-				if (ray_intersects_with_object((vec3f){x, y, loaded_map.heightmap[y][x].bottomleft}, emitter.position)) {
+				if (ray_intersects_with_object((vec3f){x, y, loaded_map->heightmap[y][x].bottomleft}, emitter.position)) {
 					p_bl = 0.0f;
 				}
-				if (ray_intersects_with_object((vec3f){x, y, loaded_map.heightmap[y][x].bottomright}, emitter.position)) {
+				if (ray_intersects_with_object((vec3f){x, y, loaded_map->heightmap[y][x].bottomright}, emitter.position)) {
 					p_br = 0.0f;
 				}
 */
-				p_tl += loaded_map.lightmap[y][x].tl;
-				p_tr += loaded_map.lightmap[y][x].tr;
-				p_bl += loaded_map.lightmap[y][x].bl;
-				p_br += loaded_map.lightmap[y][x].br;
+				p_tl += loaded_map->lightmap[y][x].tl;
+				p_tr += loaded_map->lightmap[y][x].tr;
+				p_bl += loaded_map->lightmap[y][x].bl;
+				p_br += loaded_map->lightmap[y][x].br;
 				if (p_tl > 1.0f) p_tl = 1.0f;
 				if (p_tr > 1.0f) p_tr = 1.0f;
 				if (p_bl > 1.0f) p_bl = 1.0f;
 				if (p_br > 1.0f) p_br = 1.0f;
 
-				loaded_map.lightmap[y][x].tl = p_tl;
-				loaded_map.lightmap[y][x].tr = p_tr;
-				loaded_map.lightmap[y][x].bl = p_bl;
-				loaded_map.lightmap[y][x].br = p_br;
+				loaded_map->lightmap[y][x].tl = p_tl;
+				loaded_map->lightmap[y][x].tr = p_tr;
+				loaded_map->lightmap[y][x].bl = p_bl;
+				loaded_map->lightmap[y][x].br = p_br;
 			}
 		}
 	}
 
 	// Load objects
-	memcpy(loaded_map.objects, map_to_load.objects, sizeof(loaded_map.objects));
+	memcpy(loaded_map->objects, map_to_load->objects, sizeof(loaded_map->objects));
 
 	// Load special objects
 	for (int i = 0; i < MAX_OBJECTS; i++) {
-		object o = loaded_map.objects[i];
+		object o = loaded_map->objects[i];
 		if (!o.active) continue;
 
-		if (o.position.x >= 205) map_to_load.objects[i].active = 0;
+		if (o.position.x >= 205) map_to_load->objects[i].active = 0;
 
 		if (o.type == OBJECT_ZOMBIE_SPAWNER) {
 			create_spawner((vec2){.x = o.position.x, .y = o.position.y});
@@ -289,21 +290,21 @@ void load_mapdata_into_world() {
 }
 
 void create_empty_map() {
-	map_to_load.width = MAP_SIZE_X;
-	map_to_load.height = MAP_SIZE_Y;
+	map_to_load->width = MAP_SIZE_X;
+	map_to_load->height = MAP_SIZE_Y;
 
 	for (int y = 0; y < MAP_SIZE_Y; y++) {
 		for (int x = 0; x < MAP_SIZE_X; x++) {
-			map_to_load.tiles[y][x] = TILE_FLOOR1;
+			map_to_load->tiles[y][x] = TILE_FLOOR1;
 		}
 	}
 
 	for (int x = 0; x < MAP_SIZE_X; x++) {
-		map_to_load.objects[x] = (object){.active = true, .position = (vec3f){x, 0, 0}, .size = (vec3f){1,1,1}, .type = OBJECT_METAL_WALL};
+		map_to_load->objects[x] = (object){.active = true, .position = (vec3f){x, 0, 0}, .size = (vec3f){1,1,1}, .type = OBJECT_METAL_WALL};
 	}
 
-	//map_to_load.light_emitters[0] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 0, 10}, .range = 20.0f, .active = true};
-	//map_to_load.light_emitters[1] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 30, 10}, .range = 20.0f, .active = true};
+	//map_to_load->light_emitters[0] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 0, 10}, .range = 20.0f, .active = true};
+	//map_to_load->light_emitters[1] = (light_emitter){.brightness = 1.0f, .position = (vec3f){0, 30, 10}, .range = 20.0f, .active = true};
 
 	load_mapdata_into_world();
 }
@@ -312,20 +313,20 @@ void load_map_from_file() {
 
 	// load map from file..
 	file_content content = platform_read_file_content("data/maps/map1.dat", "rb");
-	memcpy(&map_to_load, content.content, content.content_length);
+	memcpy(map_to_load, content.content, content.content_length);
 
-	//map_to_load.width = MAP_SIZE_X;
-	//map_to_load.height = MAP_SIZE_Y;
-	//memcpy(map_to_load.heightmap, map, sizeof(map));
+	//map_to_load->width = MAP_SIZE_X;
+	//map_to_load->height = MAP_SIZE_Y;
+	//memcpy(map_to_load->heightmap, map, sizeof(map));
 
-	loaded_map.width = map_to_load.width;
-	loaded_map.height = map_to_load.height;
+	loaded_map->width = map_to_load->width;
+	loaded_map->height = map_to_load->height;
 
 	load_mapdata_into_world();
 }
 
 tile get_tile_under_coords(float x, float y) {
-	return loaded_map.heightmap[(int)(y)][(int)(x)];
+	return loaded_map->heightmap[(int)(y)][(int)(x)];
 }
 
 float get_height_of_tile_under_coords(float tocheckx, float tochecky) {
@@ -497,7 +498,7 @@ void draw_grid(platform_window* window) {
 			if (x < tilemap_render_min_x) continue;
 			if (x > tilemap_render_max_x) continue;
 
-			tile tile = loaded_map.heightmap[y][x];
+			tile tile = loaded_map->heightmap[y][x];
 
 			float xdiff_between_bottom_and_top = info.px_incline;
 			float render_x =  (info.tile_width * x) + (xdiff_between_bottom_and_top * y);
@@ -550,10 +551,10 @@ void draw_grid(platform_window* window) {
 					bottomright.x, bottomright.y, 
 					topright.x, topright.y);
 
-				color c_tl = rgba(0,0,0, (u8)(min_brightness * (1.0f - loaded_map.lightmap[y][x].tl)));
-				color c_tr = rgba(0,0,0, (u8)(min_brightness * (1.0f - loaded_map.lightmap[y][x].tr)));
-				color c_bl = rgba(0,0,0, (u8)(min_brightness * (1.0f - loaded_map.lightmap[y][x].bl)));
-				color c_br = rgba(0,0,0, (u8)(min_brightness * (1.0f - loaded_map.lightmap[y][x].br)));
+				color c_tl = rgba(0,0,0, (u8)(min_brightness * (1.0f - loaded_map->lightmap[y][x].tl)));
+				color c_tr = rgba(0,0,0, (u8)(min_brightness * (1.0f - loaded_map->lightmap[y][x].tr)));
+				color c_bl = rgba(0,0,0, (u8)(min_brightness * (1.0f - loaded_map->lightmap[y][x].bl)));
+				color c_br = rgba(0,0,0, (u8)(min_brightness * (1.0f - loaded_map->lightmap[y][x].br)));
 				renderer->render_quad_gradient(topleft.x, topleft.y, 
 					bottomleft.x, bottomleft.y, 
 					bottomright.x, bottomright.y, 
@@ -571,10 +572,10 @@ void draw_grid(platform_window* window) {
 			}
 */
 
-			loaded_map.heightmap[y][x].tl = topleft;
-			loaded_map.heightmap[y][x].tr = topright;
-			loaded_map.heightmap[y][x].bl = bottomleft;
-			loaded_map.heightmap[y][x].br = bottomright;
+			loaded_map->heightmap[y][x].tl = topleft;
+			loaded_map->heightmap[y][x].tr = topright;
+			loaded_map->heightmap[y][x].bl = bottomleft;
+			loaded_map->heightmap[y][x].br = bottomright;
 		}
 	}
 }

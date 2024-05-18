@@ -51,10 +51,10 @@ typedef struct t_spawner {
 #define MIN_DISTANCE_BETWEEN_ZOMBIE_AND_PLAYER 20
 
 #define MAX_SPAWNERS (25)
-spawner spawner_tiles[MAX_SPAWNERS] = {0};
+spawner* spawner_tiles;
 
 #define SERVER_MAX_ZOMBIES (50)
-zombie zombies[SERVER_MAX_ZOMBIES] = {0};
+zombie* zombies;
 
 bool hit_zombie(int index, int damage);
 void create_spawner(vec2 position);

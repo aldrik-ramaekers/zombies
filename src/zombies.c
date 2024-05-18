@@ -110,7 +110,7 @@ static vec2f get_random_target_for_zombie(zombie o) {
 
 	if (target.x <= 0 || target.y <= 0) goto try_again;
 	if (target.x >= MAP_SIZE_X-1 || target.y >= MAP_SIZE_Y-1) goto try_again;
-	if (loaded_map.heightmap[(int)target.y][(int)target.x].type == TILE_NONE) goto try_again; // Outside of map.
+	if (loaded_map->heightmap[(int)target.y][(int)target.x].type == TILE_NONE) goto try_again; // Outside of map.
 	
 	object obj = get_object_at_tile(target.x, target.y);
 	if (obj.active && obj.active) goto try_again;
@@ -243,7 +243,7 @@ void draw_spawners(platform_window* window) {
 		int render_x = (info.tile_width * spawner.position.x) + (info.px_incline * spawner.position.y);
 		int render_y = info.tile_height * spawner.position.y;
 
-		tile tile = loaded_map.heightmap[spawner.position.y][spawner.position.x];
+		tile tile = loaded_map->heightmap[spawner.position.y][spawner.position.x];
 
 		sprite_frame frame = sprite_get_frame(img_spawner, &spawner.sprite);
 

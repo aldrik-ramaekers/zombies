@@ -32,15 +32,15 @@ static void update_tile_editor(platform_window* window) {
 	vec2 pos = screen_pos_to_world_pos(window, _global_mouse.x, _global_mouse.y);
 
 	if (pos.x < 0 || pos.y < 0) return;
-	if (pos.x >= loaded_map.width || pos.y >= loaded_map.height) return;
+	if (pos.x >= loaded_map->width || pos.y >= loaded_map->height) return;
 	if (_global_mouse.x < editor_width) return;
 
 	switch (tile_edit_state)
 	{
 		case PLACING_TILE:
 			if (is_left_down()) {
-				map_to_load.tiles[pos.y][pos.x] = tile_to_place;
-				loaded_map.heightmap[pos.y][pos.x].type = tile_to_place;
+				map_to_load->tiles[pos.y][pos.x] = tile_to_place;
+				loaded_map->heightmap[pos.y][pos.x].type = tile_to_place;
 				//load_mapdata_into_world();
 				printf("%d %d\n", pos.x, pos.y);
 			}
@@ -48,14 +48,14 @@ static void update_tile_editor(platform_window* window) {
 
 		case RAISING_GROUND:
 			if (is_left_clicked()) {
-				map_to_load.heightmap[pos.y][pos.x]++;
+				map_to_load->heightmap[pos.y][pos.x]++;
 				load_mapdata_into_world();
 			}
 			break;
 
 		case LOWERING_GROUND:
 			if (is_left_clicked()) {
-				if (map_to_load.heightmap[pos.y][pos.x] > 0) map_to_load.heightmap[pos.y][pos.x]--;
+				if (map_to_load->heightmap[pos.y][pos.x] > 0) map_to_load->heightmap[pos.y][pos.x]--;
 				load_mapdata_into_world();
 			}
 			break;
@@ -68,15 +68,15 @@ static void update_tile_editor(platform_window* window) {
 void update_lighting_panel(platform_window* window, vec2 cursor_pos) {
 	if (keyboard_is_key_pressed(KEY_ENTER)) {
 		for (int i = 0; i < MAX_LIGHT_EMITTERS; i++) {
-			light_emitter emitter = loaded_map.light_emitters[i];
+			light_emitter emitter = loaded_map->light_emitters[i];
 			if (emitter.active) continue;
 
-			map_to_load.light_emitters[i].position.x = cursor_pos.x;
-			map_to_load.light_emitters[i].position.y = cursor_pos.y;
-			map_to_load.light_emitters[i].position.z = 1;
-			map_to_load.light_emitters[i].active = 1;
-			map_to_load.light_emitters[i].brightness = 1.0f;
-			map_to_load.light_emitters[i].range = 10.0f;
+			map_to_load->light_emitters[i].position.x = cursor_pos.x;
+			map_to_load->light_emitters[i].position.y = cursor_pos.y;
+			map_to_load->light_emitters[i].position.z = 1;
+			map_to_load->light_emitters[i].active = 1;
+			map_to_load->light_emitters[i].brightness = 1.0f;
+			map_to_load->light_emitters[i].range = 10.0f;
 
 			load_mapdata_into_world();
 			return;
@@ -131,14 +131,14 @@ void update_editor(platform_window* window)
 	if (keyboard_is_key_down(KEY_LEFT_CONTROL) && keyboard_is_key_pressed(KEY_S)) {
 		#if 0
 		map_data2* tmp = malloc(sizeof(map_data2));
-		tmp->width = map_to_load.width;
-		tmp->height = map_to_load.height;
-		memcpy(tmp->heightmap, map_to_load.heightmap, sizeof(map_to_load.heightmap));
-		memcpy(tmp->tiles, map_to_load.tiles, sizeof(map_to_load.tiles));
-		memcpy(tmp->light_emitters, map_to_load.light_emitters, sizeof(map_to_load.light_emitters));
+		tmp->width = map_to_load->width;
+		tmp->height = map_to_load->height;
+		memcpy(tmp->heightmap, map_to_load->heightmap, sizeof(map_to_load->heightmap));
+		memcpy(tmp->tiles, map_to_load->tiles, sizeof(map_to_load->tiles));
+		memcpy(tmp->light_emitters, map_to_load->light_emitters, sizeof(map_to_load->light_emitters));
 
 		for (int i = 0; i < MAX_OBJECTS; i++) {
-			object o = map_to_load.objects[i];
+			object o = map_to_load->objects[i];
 			tmp->objects[i].active = o.active;
 			tmp->objects[i].position = o.position;
 			tmp->objects[i].size = o.size;
@@ -182,9 +182,9 @@ void draw_placing_rectangle(platform_window* window) {
 	int mouse_tile_x = (((_global_mouse.x + _global_camera.x) - (info.px_incline * mouse_tile_y)) / info.tile_width);
 
 	if (mouse_tile_x < 0 || mouse_tile_y < 0) return;
-	if (mouse_tile_x >= loaded_map.width || mouse_tile_y >= loaded_map.height) return;
+	if (mouse_tile_x >= loaded_map->width || mouse_tile_y >= loaded_map->height) return;
 
-	tile t = loaded_map.heightmap[mouse_tile_y][mouse_tile_x];
+	tile t = loaded_map->heightmap[mouse_tile_y][mouse_tile_x];
 	box box = get_render_box_of_square(window, (vec3f){mouse_tile_x, mouse_tile_y, 0}, (vec3f){1,1,t.height});
 
 	render_fill_quad_with_outline(box.tl_d, box.tr_d, box.bl_d, box.br_d, rgba(255,0,0, 70));
@@ -261,7 +261,7 @@ void draw_lighting_panel(platform_window* window) {
 	int offsety = 0;
 
 	for (int i = 0; i < MAX_LIGHT_EMITTERS; i++) {
-		light_emitter emitter = loaded_map.light_emitters[i];
+		light_emitter emitter = loaded_map->light_emitters[i];
 		if (!emitter.active) continue;
 
 		renderer->render_rectangle(_global_camera.x, _global_camera.y + offset_y + row_h + offsety, editor_width, row_h, rgba(255,0,0,40));
@@ -295,14 +295,14 @@ void draw_lighting_panel(platform_window* window) {
 				int newy = (_global_mouse.y - drag_start_y) - _global_camera.y;
 				vec2 newpos = screen_pos_to_world_pos(window, newx, newy);
 
-				map_to_load.light_emitters[i].position.x = orig_x + newpos.x;
-				map_to_load.light_emitters[i].position.y = orig_y + newpos.y;
+				map_to_load->light_emitters[i].position.x = orig_x + newpos.x;
+				map_to_load->light_emitters[i].position.y = orig_y + newpos.y;
 
 				if (_global_mouse.scroll_state == SCROLL_UP) {
-					map_to_load.light_emitters[i].range++;
+					map_to_load->light_emitters[i].range++;
 				}
 				if (_global_mouse.scroll_state == SCROLL_DOWN) {
-					map_to_load.light_emitters[i].range--;
+					map_to_load->light_emitters[i].range--;
 				}
 				load_mapdata_into_world();
 			}
@@ -387,9 +387,9 @@ void update_object_selection(platform_window* window, vec2 cursor_pos) {
 
 						array_push(&l, (void*)&obj);
 
-						int index = (obj-map_to_load.objects);
-						loaded_map.objects[index].position.x += diffx;
-						loaded_map.objects[index].position.y += diffy;
+						int index = (obj-map_to_load->objects);
+						loaded_map->objects[index].position.x += diffx;
+						loaded_map->objects[index].position.y += diffy;
 					}
 				}
 			}
@@ -406,9 +406,9 @@ void update_object_selection(platform_window* window, vec2 cursor_pos) {
 				{
 					object* obj = get_object_at_tile_from_mapfile(x, y);
 					if (obj) {
-						int index = (obj-map_to_load.objects);
-						map_to_load.objects[index].position.x = loaded_map.objects[index].position.x;
-						map_to_load.objects[index].position.y = loaded_map.objects[index].position.y;
+						int index = (obj-map_to_load->objects);
+						map_to_load->objects[index].position.x = loaded_map->objects[index].position.x;
+						map_to_load->objects[index].position.y = loaded_map->objects[index].position.y;
 					}
 				}
 			}
@@ -444,7 +444,7 @@ void update_object_editor(platform_window* window) {
 	if (_global_mouse.x < editor_width) return;
 
 	if (pos.x < 0 || pos.y < 0) return;
-	if (pos.x >= loaded_map.width || pos.y >= loaded_map.height) return;
+	if (pos.x >= loaded_map->width || pos.y >= loaded_map->height) return;
 
 	switch (object_edit_state)
 	{

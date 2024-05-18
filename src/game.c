@@ -133,6 +133,20 @@ void load_map() {
 
 void fill_game_structs()
 {
+	glass_doors = calloc(MAX_GLASS_DOORS, sizeof(glass_door));
+	spawner_tiles = calloc(MAX_SPAWNERS, sizeof(spawner));
+	zombies = calloc(SERVER_MAX_ZOMBIES, sizeof(zombie));
+
+	map_to_load = malloc(sizeof(map_data));
+	loaded_map = malloc(sizeof(extracted_map_data));
+
+	memset(glass_doors, 0, MAX_GLASS_DOORS*sizeof(glass_door));
+	memset(spawner_tiles, 0, MAX_SPAWNERS*sizeof(spawner));
+	memset(zombies, 0, SERVER_MAX_ZOMBIES*sizeof(zombie));
+
+	memset(map_to_load, 0, sizeof(map_data));
+	memset(loaded_map, 0, sizeof(extracted_map_data));
+
 	global_audio_source_position = (vec3f){-1,-1,-1};
 
 	object _localobject_dict[OBJECT_END] = {

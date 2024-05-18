@@ -11,7 +11,7 @@ typedef struct t_glass_door
 } glass_door;
 
 #define MAX_GLASS_DOORS 100
-glass_door glass_doors[MAX_GLASS_DOORS];
+glass_door* glass_doors;
 
 void create_glass_door(object o);
 void draw_glass_doors(platform_window* window, uint32_t ystart, uint32_t yend);

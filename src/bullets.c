@@ -96,7 +96,7 @@ object_type check_if_bullet_collided_with_object(bullet* b, platform_window* win
 	float dist_of_closest_intersect = __FLT_MAX__;
 
 	for (int i = 0; i < MAX_OBJECTS; i++) {
-		object o = loaded_map.objects[i];
+		object o = loaded_map->objects[i];
 		if (!o.active) continue;
 		if (!o.collision) continue;
 		if (b->position.z <= o.position.z + o.size.z && b->position.z >= o.position.z) {

@@ -228,7 +228,7 @@ bool check_if_player_collided_with_box(player p, box o) {
 
 object check_if_player_collided_with_object(player p) {
 	for (int i = 0; i < MAX_OBJECTS; i++) {
-		object o = loaded_map.objects[i];
+		object o = loaded_map->objects[i];
 		if (!o.active) continue;
 		if (!o.collision) continue;
 

@@ -47,25 +47,25 @@ void render_fill_quad_with_outline(vec2f tl, vec2f tr, vec2f bl, vec2f br, color
 
 object* get_object_at_tile_from_mapfile(float x, float y) {
 	for (int i = 0; i < MAX_OBJECTS; i++) {
-		object o = map_to_load.objects[i];
+		object o = map_to_load->objects[i];
 		if (!o.active) continue;
-		if (x >= o.position.x && x < o.position.x + o.size.x && y >= o.position.y && y < o.position.y + o.size.y) return &map_to_load.objects[i];
+		if (x >= o.position.x && x < o.position.x + o.size.x && y >= o.position.y && y < o.position.y + o.size.y) return &map_to_load->objects[i];
 	}
 	return 0;
 }
 
 object* get_pobject_at_tile(float x, float y) {
 	for (int i = 0; i < MAX_OBJECTS; i++) {
-		object o = loaded_map.objects[i];
+		object o = loaded_map->objects[i];
 		if (!o.active) continue;	
-		if (x >= o.position.x && x < o.position.x + o.size.x && y >= o.position.y && y < o.position.y + o.size.y) return &loaded_map.objects[i];
+		if (x >= o.position.x && x < o.position.x + o.size.x && y >= o.position.y && y < o.position.y + o.size.y) return &loaded_map->objects[i];
 	}
 	return 0;
 }
 
 object get_object_at_tile(float x, float y) {
 	for (int i = 0; i < MAX_OBJECTS; i++) {
-		object o = loaded_map.objects[i];
+		object o = loaded_map->objects[i];
 		if (!o.active) continue;	
 		if (x >= o.position.x && x < o.position.x + o.size.x && y >= o.position.y && y < o.position.y + o.size.y) return o;
 	}
@@ -80,13 +80,13 @@ void add_object(object obj) {
 	}
 
 	for (int i = 0; i < MAX_OBJECTS; i++) {
-		object o = map_to_load.objects[i];
+		object o = map_to_load->objects[i];
 		if (o.active) continue;	
-		map_to_load.objects[i] = obj;
-		map_to_load.objects[i].active = true;
+		map_to_load->objects[i] = obj;
+		map_to_load->objects[i].active = true;
 
 		// sort y-axis
-		qsort(map_to_load.objects, MAX_OBJECTS, sizeof(object), sort_objects);
+		qsort(map_to_load->objects, MAX_OBJECTS, sizeof(object), sort_objects);
 		return;
 	}
 
@@ -243,8 +243,8 @@ void draw_objects(platform_window* window) {
 
 	float prev_y = 0;
 	for (int i = 0; i < MAX_OBJECTS; i++) {
-		if (!loaded_map.objects[i].active) continue;
-		object o = loaded_map.objects[i];
+		if (!loaded_map->objects[i].active) continue;
+		object o = loaded_map->objects[i];
 
 		if (o.type == OBJECT_GLASS_DOOR_H) continue;
 		if (o.type == OBJECT_GLASS_DOOR_V) continue;

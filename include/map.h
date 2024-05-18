@@ -109,8 +109,8 @@ typedef struct t_extracted_map_data { // Data extracted from file on disk.
 } extracted_map_data;
 
 extern int player_zoom;
-map_data map_to_load = {0};
-extracted_map_data loaded_map = {0};
+map_data* map_to_load;
+extracted_map_data* loaded_map;
 
 vec2 screen_pos_to_world_pos(platform_window* window, float x, float y);
 vec2f world_pos_to_screen_pos(platform_window* window, float x, float y, float z);

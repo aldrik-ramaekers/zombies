@@ -8,7 +8,7 @@ float distance_between(vec2f v1, vec2f v2)
 bool can_walk_at(float x, float y)
 {
 	for (int i = 0; i < MAX_OBJECTS; i++) {
-		object o = loaded_map.objects[i];
+		object o = loaded_map->objects[i];
 		if (!o.active) continue;
 		if (!o.collision) continue;
 		if (o.type == OBJECT_ZOMBIE_SPAWNER) continue;
