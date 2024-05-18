@@ -114,5 +114,6 @@ char* get_player_name_by_player_index(int index);
 color get_color_tint_by_player_index(int index);
 void add_points_to_player(player* p, u32 points);
 void update_points_animation_server();
+void clear_players();
 
 #endif

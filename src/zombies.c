@@ -351,6 +351,13 @@ void update_zombies_client(platform_window* window) {
 	}
 }
 
+void clear_zombies()
+{
+	for (int i = 0; i < SERVER_MAX_ZOMBIES; i++) {
+		zombies[i].alive = 0;
+	}
+}
+
 static vec2f get_random_point_around_player(player p, zombie o) {
 	 // Convert from degrees to radians via multiplication by PI/180     
 

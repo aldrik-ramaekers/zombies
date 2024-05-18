@@ -50,47 +50,6 @@ static void draw_gun_info(platform_window* window) {
 		renderer->render_text(round_fnt, ammo_text_x+1, ammo_text_y-1, ammo_txt, rgb(0,0,0));
 		renderer->render_text(round_fnt, ammo_text_x, ammo_text_y, ammo_txt, rgb(255,255,255));
 	}
-
-
-	/*
-
-	gun g = get_gun_by_type(p->guntype);
-
-	int y = window->height - fnt_32->px_h - EDGE_PADDING;
-	int x = EDGE_PADDING;
-	int icon_h = 26;
-
-	{ // Ammo
-		char ammo_txt[50];
-		sprintf(ammo_txt, "%d/%d", p->ammo_in_mag, p->total_ammo);
-		renderer->render_text(fnt_32, _global_camera.x + x+1, _global_camera.y + y+1, ammo_txt, rgba(0,0,0,120));
-		renderer->render_text(fnt_32, _global_camera.x + x, _global_camera.y + y, ammo_txt, rgb(255,255,255));
-	}
-
-	y -= icon_h + 5;
-
-	{ // Throwables
-		int offset_x = 0;
-		for (int i = 0; i < p->throwables.grenades; i++)
-		{
-			renderer->render_image_tint(img_icon_grenade, _global_camera.x + x-1 + offset_x, _global_camera.y + y-1, icon_h, icon_h, rgba(0,0,0,100));
-			renderer->render_image(img_icon_grenade, _global_camera.x + x + offset_x, _global_camera.y + y, icon_h, icon_h);
-
-			offset_x += icon_h/3;
-		}
-
-		y -= icon_h + 5;
-
-		offset_x = 0;
-		for (int i = 0; i < p->throwables.molotovs; i++)
-		{
-			renderer->render_image_tint(img_icon_molotov, _global_camera.x + x-1 + offset_x, _global_camera.y + y-1, icon_h, icon_h, rgba(0,0,0,100));
-			renderer->render_image(img_icon_molotov, _global_camera.x + x + offset_x, _global_camera.y + y, icon_h, icon_h);
-
-			offset_x += icon_h/3;
-		}
-	}	
-	*/
 }
 
 static void draw_leaderboard_entry(int x, int y, int w, int h, char* name, char* kills, char* deaths, char* ping, bool highlighted, bool disconnected) {
@@ -115,29 +74,6 @@ static void draw_leaderboard_entry(int x, int y, int w, int h, char* name, char*
 	else {
 		renderer->render_text(fnt_20, x+pad_x+width_for_name+width_per_entry*2, y+pad_y, ping, rgb(255,255,255));
 	}
-}
-
-static void draw_pause_button(platform_window* window, int x, int y) {
-	int btn_w = 200;
-	int btn_h = 50;
-	color bg_c = rgba(255,100,100,160);
-
-	if (_global_mouse.x + _global_camera.x > x && 
-			_global_mouse.x + _global_camera.x < x + btn_w && 
-			_global_mouse.y + _global_camera.y > y && 
-			_global_mouse.y + _global_camera.y < y + btn_h) 
-	{
-		bg_c = rgba(255,100,100,220);
-		if (is_left_clicked()) {
-			game_is_paused = !game_is_paused;
-		}
-	}
-
-	char* text = game_is_paused ? "Unpause Game" : "Pause Game";
-	int text_w = renderer->calculate_text_width(fnt_20, text);
-
-	renderer->render_rectangle(x, y, btn_w, btn_h, bg_c);
-	renderer->render_text(fnt_20, x + (btn_w/2)-(text_w/2), y+(btn_h/2)-(fnt_20->px_h/2), text, rgb(255,255,255));
 }
 
 static void draw_leaderboard(platform_window* window) {
@@ -165,11 +101,6 @@ static void draw_leaderboard(platform_window* window) {
 			char ping[30]; snprintf(ping, 30, "%d", players[i].ping);
 			draw_leaderboard_entry(x, y + ((i+1)*height_per_row), actual_width, height_per_row, 
 				get_player_name_by_player_index(i), kills, deaths, ping, players[i].id == player_id, players[i].connection_state == DISCONNECTED);
-		}
-
-
-		if (global_state.server) {
-			draw_pause_button(window, x, y + height_total + 20);
 		}
 	}
 }
@@ -268,45 +199,6 @@ static void draw_hurt_borders(platform_window* window) {
 		_global_camera.y, hurt_border_width, window->height, border_color);
 	renderer->render_image_tint(img_hurt_overlay_right, _global_camera.x + window->width - hurt_border_width, 
 		_global_camera.y, hurt_border_width, window->height, border_color);
-
-	/*
-	int width = window->width * 0.1f;
-	float opacity = 1.0f - (p->health/(float)p->max_health);
-	if (opacity < 0.0f) opacity = 0.0f;
-	if (opacity > 1.0f) opacity = 1.0f;
-
-	color c = rgba(255,255,255,255*opacity);
-	
-	// left
-	renderer->render_image_tint(img_red_border, _global_camera.x, _global_camera.y, width, window->height, c);
-
-	// top
-	sprite_frame top = {.tl = (vec2f){.x = 0.0f, .y = 0.0f}, .tr = (vec2f){.x = 1.0f, .y = 0.0f}, .bl = (vec2f){.x = 0.0f, .y = 1.0f}, .br = (vec2f){.x = 1.0f, .y = 1.0f}, };
-	top = sprite_swap_rotate_90(top);
-	renderer->render_image_quad_partial_tint(img_red_border, 
-		_global_camera.x, _global_camera.y, 
-		_global_camera.x, _global_camera.y + width, 
-		_global_camera.x + window->width, _global_camera.y + width, 
-		_global_camera.x + window->width, _global_camera.y, 
-		top.tl, top.tr, top.bl, top.br, c);
-
-
-	top = sprite_swap_rotate_90(top);
-	renderer->render_image_quad_partial_tint(img_red_border, 
-		_global_camera.x + window->width - width, _global_camera.y, 
-		_global_camera.x + window->width, _global_camera.y + window->height, 
-		_global_camera.x + window->width - width, _global_camera.y + window->height, 
-		_global_camera.x + window->width, _global_camera.y, 
-		top.tl, top.tr, top.bl, top.br, c);
-
-	top = sprite_swap_rotate_90(top);
-	renderer->render_image_quad_partial_tint(img_red_border, 
-		_global_camera.x, _global_camera.y + window->height - width, 
-		_global_camera.x, _global_camera.y + window->height, 
-		_global_camera.x + window->width, _global_camera.y + window->height, 
-		_global_camera.x + window->width, _global_camera.y + window->height - width, 
-		top.tl, top.tr, top.bl, top.br, c);
-	*/
 }
 
 static void draw_global_message(platform_window* window) {
@@ -328,12 +220,93 @@ static void draw_fadein_overlay(platform_window* window)
 	renderer->render_rectangle(_global_camera.x, _global_camera.y, window->width, window->height, rgba(0,0,0,255*percentage));
 }
 
+static bool draw_ingame_menu_button(platform_window* window, int y, int h, char* text)
+{
+	bool result = false;
+	int btn_w = 300;
+	font* fnt = get_font(window, 1.5);
+	int x = _global_camera.x + window->width/2 - btn_w/2;
+	color bg_c = rgba(0,0,0,0);
+
+	static int was_hovered = 0;
+	if (_global_mouse.x + _global_camera.x > x && 
+			_global_mouse.x + _global_camera.x < x + btn_w && 
+			_global_mouse.y + _global_camera.y > y && 
+			_global_mouse.y + _global_camera.y < y + h) 
+	{
+		if (was_hovered == 0) {
+			play_sound(-1, wav_menu_hover);
+		}
+
+		was_hovered = x+y;
+
+		bg_c = rgb(200,100,100);
+		if (is_left_clicked()) {
+			result = true;
+		}
+	}
+	else if (was_hovered == x+y) {
+		was_hovered = 0;
+	}
+
+	int text_w = renderer->calculate_text_width(fnt, text);	
+	renderer->render_rectangle(x, y, btn_w, h, bg_c);
+	renderer->render_text(fnt, x + (btn_w/2)-(text_w/2), y+(h/2)-(fnt->px_h/2), text, rgb(255,255,255));
+
+	return result;
+}
+
+static bool ingame_menu_open = 0;
+static void draw_ingame_menu(platform_window* window)
+{
+	if (keyboard_is_key_pressed(KEY_ESCAPE)) {
+		ingame_menu_open = !ingame_menu_open;
+	}
+
+	if (global_state.server) {
+		game_is_paused = ingame_menu_open;
+	}
+
+	if (!ingame_menu_open) return;
+
+	renderer->render_rectangle(_global_camera.x, _global_camera.y, window->width, window->height, rgba(0,0,0,220));
+
+	int btn_h = 50;
+	if (draw_ingame_menu_button(window, _global_camera.y + 200, btn_h, "Continue")) {
+		ingame_menu_open = false;
+	}
+
+	if (draw_ingame_menu_button(window, _global_camera.y + 200 + 60, btn_h, "Restart")) {
+		ingame_menu_open = false;
+		restart_game();
+	}
+
+	if (draw_ingame_menu_button(window, _global_camera.y + 200 + 120, btn_h, "Quit")) {
+		ingame_menu_open = false;
+		global_scene_state = SCENE_MAIN_MENU;
+		global_state.state = GAMESTATE_PLAYING;
+		current_menu_state = MENU_STATE_MAIN;
+
+		if (global_state.server) {
+			_current_round.round_nr = 0;
+			clear_players();
+			clear_zombies();
+			network_client_close(global_state.client);
+			networking_destroy_server(global_state.server);
+		}
+		else {
+			network_client_close(global_state.client);
+		}
+	}
+}
+
 void draw_overlay(platform_window* window) {
 	draw_hurt_borders(window);
 	draw_gun_info(window);
 	draw_points(window);
 	draw_leaderboard(window);
 	draw_debug_stats(window);
-	draw_global_message(window);
 	draw_fadein_overlay(window);
+	draw_ingame_menu(window);
+	draw_global_message(window);
 }

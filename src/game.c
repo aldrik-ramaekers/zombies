@@ -31,6 +31,16 @@ static u32 get_session_id() {
 	return (((time * 2654435789U) + time) * 2654435789U) + platform_get_processid();
 }
 
+static void client_on_disconnect()
+{
+	clear_players();
+	clear_zombies();
+	global_scene_state = SCENE_MAIN_MENU;
+	global_state.state = GAMESTATE_PLAYING;
+	current_menu_state = MENU_STATE_MAIN;
+	network_client_close(global_state.client);
+}
+
 bool connect_to_server(char* ip, char* port) {
 	client_incomming_allocator = create_allocator(MAX_NETWORK_BUFFER_SIZE);
 
@@ -40,10 +50,11 @@ bool connect_to_server(char* ip, char* port) {
 	global_state.network_state = CONNECTING;
 	global_state.client = network_connect_to_server(ip, port);
 	global_state.client->on_message = client_on_message_received;
+	global_state.client->on_disconnect = client_on_disconnect;
 
 	if (global_state.server) {
 		player_id = 127001;
-		spawn_player(player_id, (network_client){0, false, 0, "Host"});
+		spawn_player(player_id, (network_client){0, false, 0, 0, "Host"});
 		global_state.network_state = CONNECTED;
 		return true;
 	}

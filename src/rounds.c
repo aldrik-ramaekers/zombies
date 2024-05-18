@@ -24,6 +24,7 @@ void start_next_round()
 	// Fade in at start of game.
 	if (_current_round.round_nr == 1) {
 		_current_round.fade_in_timer = FADE_IN_DURATION;
+		_current_round.fade_out_timer = 0.0f;
 	}
 
 	add_ui_audio_event_to_queue(EVENT_ROUND_CHANGE);
@@ -92,7 +93,36 @@ void draw_round(platform_window* window) {
 
 void restart_game()
 {
-	// TODO
+	// Reset to round 1.
+	_current_round.round_nr = 0;
+	start_next_round();
+
+	clear_zombies();
+
+	// Respawn players.
+	for (int i = 0; i < MAX_PLAYERS; i++) {
+		if (!players[i].active) continue;
+		players[i].sec_since_last_shot = 10.0f;
+		players[i].sec_since_last_damage_taken = 10.0f;
+		players[i].playerx = 40;
+		players[i].playery = 3;
+		players[i].move_state = PLAYER_MOVE_STATE_IDLE;
+		players[i].interact_state = INTERACT_IDLE;
+		players[i].guntype = GUN_MP5;
+		players[i].height = 0.0f;
+		players[i].health = 500;
+		players[i].max_health = 500;
+		players[i].kills = 0;
+		players[i].direction = DIRECTION_DOWN;
+		players[i].throwables.grenades = 3; 
+		players[i].throwables.molotovs = 1;
+		players[i].points = 800;
+		players[i].sec_since_last_step = 0.0f;
+
+		gun g = get_gun_by_type(players[i].guntype);
+		players[i].total_ammo = g.max_ammunition;
+		players[i].ammo_in_mag = g.magazine_size;
+	}
 }
 
 void update_round_server()
@@ -105,11 +135,14 @@ void update_round_server()
 			_current_round.fade_in_timer = 0.0f;
 	}
 	else {
-		_current_round.fade_in_timer += SERVER_TICK_RATE;
-		if (_current_round.fade_in_timer >= FADE_IN_DURATION) {
-			_current_round.fade_in_timer = FADE_IN_DURATION;
-
-			restart_game();
+		_current_round.fade_out_timer += SERVER_TICK_RATE;
+		if (_current_round.fade_out_timer >= FADE_OUT_DELAY_DURATION) {
+			_current_round.fade_in_timer += SERVER_TICK_RATE;
+			
+			if (_current_round.fade_in_timer >= FADE_IN_DURATION) {
+				_current_round.fade_in_timer = FADE_IN_DURATION;
+				restart_game();
+			}
 		}
 	}
 

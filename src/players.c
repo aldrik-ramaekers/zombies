@@ -49,6 +49,13 @@ void rejoin_player(u32 id, network_client client) {
 	}
 }
 
+void clear_players()
+{
+	for (int i = 0; i < MAX_PLAYERS; i++) {
+		players[i].active = 0;
+	}
+}
+
 void spawn_player(u32 id, network_client client) {
 	for (int i = 0; i < MAX_PLAYERS; i++) {
 		if (players[i].active) continue;
@@ -74,6 +81,7 @@ void spawn_player(u32 id, network_client client) {
 		players[i].sprite_idle.zoom = 1.0f;
 		players[i].health = 500;
 		players[i].max_health = 500;
+		players[i].kills = 0;
 
 		players[i].direction = DIRECTION_DOWN;
 		players[i].connection_state = CONNECTED;

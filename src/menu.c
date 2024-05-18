@@ -3,14 +3,6 @@
 int current_res_index = 0;
 bool is_fullscreen = false;
 
-typedef enum t_menu_state {
-	MENU_STATE_MAIN,
-	MENU_STATE_LEVEL_SELECT,
-	MENU_STATE_CREDITS,
-	MENU_STATE_SETTINGS,
-	MENU_STATE_JOIN_GAME,
-} menu_state;
-
 menu_state current_menu_state = MENU_STATE_MAIN;
 float menu_state_change_duration = 0.2f;
 float sec_since_state_change = 999.0f;

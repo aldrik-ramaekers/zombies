@@ -8,6 +8,7 @@
 		"glass_doors.h": "c",
 		"*.rh": "c",
 		"sdl_mixer.h": "c",
-		"allocator.h": "c"
+		"allocator.h": "c",
+		"stdlib.h": "c"
 	}
 }
