@@ -297,6 +297,9 @@ static void draw_ingame_menu(platform_window* window)
 		else {
 			network_client_close(global_state.client);
 		}
+
+		global_state.server = 0;
+		global_state.client = 0;
 	}
 }
 

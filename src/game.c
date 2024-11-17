@@ -39,6 +39,8 @@ static void client_on_disconnect()
 	global_state.state = GAMESTATE_PLAYING;
 	current_menu_state = MENU_STATE_MAIN;
 	network_client_close(global_state.client);
+	global_state.server = 0;
+	global_state.client = 0;
 }
 
 bool connect_to_server(char* ip, char* port) {
