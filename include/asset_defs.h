@@ -1,7 +1,7 @@
 #ifndef INCLUDE_ASSET_DEFS
 #define INCLUDE_ASSET_DEFS
 
-#include <projectbase/project_base.h>
+#include "../project-base/src/project_base.h"
 
 /////// Loaded at game start.
 image* img_splash_art1;

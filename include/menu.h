@@ -1,7 +1,7 @@
 #ifndef INCLUDE_MENU
 #define INCLUDE_MENU
 
-#include <projectbase/project_base.h>
+#include "../project-base/src/project_base.h"
 
 #define PROGRAM_VERSION "0.1 | "__DATE__
 

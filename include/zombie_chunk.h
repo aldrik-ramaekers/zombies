@@ -1,7 +1,7 @@
 #ifndef ZOMBIE_CHUNK
 #define ZOMBIE_CHUNK
 
-#include <projectbase/project_base.h>
+#include "../project-base/src/project_base.h"
 
 #include "objects.h"
 

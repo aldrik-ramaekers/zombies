@@ -1,7 +1,7 @@
 #ifndef INCLUDE_AUDIO_
 #define INCLUDE_AUDIO_
 
-#include <projectbase/project_base.h>
+#include "../project-base/src/project_base.h"
 #include "throwables.h"
 
 #define NUMBER_OF_AUDIO_CHANNELS 64

@@ -584,6 +584,7 @@ void update_game(platform_window* window) {
 		draw_throwables(window);
 		draw_round(window);
 		draw_spawners(window);
+		//draw_fog_of_war(window);
 		draw_overlay(window);
 	
 #ifdef MODE_DEBUG

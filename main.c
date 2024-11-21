@@ -42,6 +42,7 @@
 #include "include/editor.h"
 #include "include/glass_doors.h"
 #include "include/menu.h"
+#include "include/fog_of_war.h"
 
 #include "src/map.c"
 #include "src/players.c"
@@ -67,6 +68,7 @@
 #include "src/editor.c"
 #include "src/glass_doors.c"
 #include "src/menu.c"
+#include "src/fog_of_war.c"
 
 #define CONFIG_DIRECTORY "zombieshooter"
 

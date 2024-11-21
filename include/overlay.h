@@ -1,7 +1,7 @@
 #ifndef INCLUDE_OVERLAY
 #define INCLUDE_OVERLAY
 
-#include <projectbase/project_base.h>
+#include "../project-base/src/project_base.h"
 
 u64 logic_update_time = 0;
 

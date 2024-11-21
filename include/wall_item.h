@@ -1,7 +1,7 @@
 #ifndef INCLUDE_WALL_ITEM
 #define INCLUDE_WALL_ITEM
 
-#include <projectbase/project_base.h>
+#include "../project-base/src/project_base.h"
 
 #include "objects.h"
 #include "guns.h"

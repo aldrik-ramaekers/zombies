@@ -1,7 +1,7 @@
 #ifndef INCLUDE_KEYBINDINGS
 #define INCLUDE_KEYBINDINGS
 
-#include <projectbase/project_base.h>
+#include "../project-base/src/project_base.h"
 
 typedef struct t_keybinding {
 	int key;

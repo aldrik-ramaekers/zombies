@@ -1,7 +1,7 @@
 #ifndef INCLUDE_THROWABLES
 #define INCLUDE_THROWABLES
 
-#include <projectbase/project_base.h>
+#include "../project-base/src/project_base.h"
 
 #include "players.h"
 #include "objects.h"

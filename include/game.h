@@ -1,7 +1,7 @@
 #ifndef INCLUDE_GAME
 #define INCLUDE_GAME
 
-#include <projectbase/project_base.h>
+#include "../project-base/src/project_base.h"
 
 #include "../include/protocol.h"
 #include "../include/players.h"

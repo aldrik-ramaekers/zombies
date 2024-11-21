@@ -1,7 +1,7 @@
 #ifndef INCLUDE_PATHFINDING
 #define INCLUDE_PATHFINDING
 
-#include <projectbase/project_base.h>
+#include "../project-base/src/project_base.h"
 
 #include "allocator.h"
 #include "players.h"

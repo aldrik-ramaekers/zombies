@@ -1,7 +1,7 @@
 #ifndef INCLUDE_PLAYER
 #define INCLUDE_PLAYER
 
-#include <projectbase/project_base.h>
+#include "../project-base/src/project_base.h"
 
 #include "map.h"
 #include "objects.h"
